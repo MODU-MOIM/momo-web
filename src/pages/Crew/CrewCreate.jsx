@@ -27,5 +27,7 @@ export default function CrewCreate() {
             {/* 성별 설정 */}
         </CrewSettings>
 
+        <CrewIntro></CrewIntro>
+        <CreateButton></CreateButton>
     );
 }
