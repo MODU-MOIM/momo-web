@@ -53,10 +53,13 @@ export default function SetCategory() {
 }
 
 const CategoryWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
 `
 const CategoryContainer = styled.div`
-    width: 1024px;
+    width: 100%;
     gap: 10px;
 `;
 
