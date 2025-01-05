@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import SetCategory from "./Components/SetCategory";
+import SetRegion from "./Components/SetRegion";
 
 export default function CrewCreate() {
     return(
@@ -26,6 +27,7 @@ export default function CrewCreate() {
                 <CrewLocation>
                     <ItemTitle>어디서 만날까요?</ItemTitle>
                     {/* 지역,구 선택 */}
+                    <SetRegion/>
                 </CrewLocation>
         
                 <CrewSettings>
