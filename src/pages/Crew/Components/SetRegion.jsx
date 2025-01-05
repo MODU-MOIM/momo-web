@@ -53,10 +53,10 @@ export default function SetPlace() {
   const currentDistricts = districtsByRegion[selectedRegion] || [];
   const selectedDistricts = selectedDistrictsByRegion[selectedRegion] || [];
 
-  // 레이아웃 5개로 분할(5행으로 설정)
+  // 레이아웃 3개로 분할(3행으로 설정)
   const districtsGroups = [];
-  for (let i = 0; i < currentDistricts.length; i += 5) {
-    districtsGroups.push(currentDistricts.slice(i, i + 5));
+  for (let i = 0; i < currentDistricts.length; i += 3) {
+    districtsGroups.push(currentDistricts.slice(i, i + 3));
   }
 
   return (
@@ -123,7 +123,7 @@ const RegionButton = styled.button`
 
 const DistrictsGrid = styled.div`
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(7, 1fr);
     gap: 16px;
 `;
 
