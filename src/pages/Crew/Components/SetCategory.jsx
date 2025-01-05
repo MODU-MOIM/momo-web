@@ -40,11 +40,13 @@ export default function SetCategory() {
                             <CategoryTitle>{category.title}</CategoryTitle>
                             <CategorySubtitle>{category.subtitle}</CategorySubtitle>
                         </CategoryTextContainer>
-                        <SelectButton
-                            type="checkbox"
-                            checked={selectedCategory === index}
-                            readOnly
-                        />
+                        <CategoryGrid>
+                            <SelectButton
+                                type="checkbox"
+                                checked={selectedCategory === index}
+                                readOnly
+                            />
+                        </CategoryGrid>
                     </CategoryItem>
                 ))}
             </CategoryContainer>
@@ -59,7 +61,7 @@ const CategoryWrapper = styled.div`
     
 `
 const CategoryContainer = styled.div`
-    width: 100%;
+    width: 80%;
     gap: 10px;
 `;
 
@@ -101,7 +103,11 @@ const CategorySubtitle = styled.p`
     color: ${theme.colors.subtextgray};
     margin: -5px 0;
 `;
-
+const CategoryGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+`;
 const SelectButton = styled.input`
     appearance: none;
     width: 20px;

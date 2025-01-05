@@ -18,17 +18,13 @@ export default function CrewCreate() {
                     />
                 </CrewName>
                 
-                <CrewTheme>
-                    <ItemTitle>어떤 모임 활동을 하실건가요?</ItemTitle>
-                    {/* 모임활동 선택 */}
-                    <SetCategory/>
-                </CrewTheme>
+                {/* 모임활동 선택 */}
+                <ItemTitle>어떤 모임 활동을 하실건가요?</ItemTitle>
+                <SetCategory/>
         
-                <CrewLocation>
-                    <ItemTitle>어디서 만날까요?</ItemTitle>
-                    {/* 지역,구 선택 */}
-                    <SetRegion/>
-                </CrewLocation>
+                {/* 지역,구 선택 */}
+                <ItemTitle>어디서 만날까요?</ItemTitle>
+                <SetRegion/>
         
                 <CrewSettings>
                     <ItemTitle>참여인원(호스트 포함)</ItemTitle>
@@ -72,12 +68,12 @@ const Container = styled.div`
 const Title = styled.h2`
     font-weight: normal;
     margin: 60px 0px;
-    width: 50vw;
+    width: 60vw;
 `;
 const ItemTitle = styled.h3`
     font-weight: normal;
     margin: 40px 0px 15px 0px;
-    width: 50vw;
+    width: 60vw;
 `;
 
 const CrewName = styled.div`
@@ -95,10 +91,6 @@ const NameInput = styled.input`
     }
 `;
 
-const CrewTheme = styled.div`
-`;
-const CrewLocation = styled.div`
-`;
 
 const CrewSettings = styled.div`
 `;
