@@ -64,15 +64,20 @@ const Wrapper = styled.div`
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    margin: 60px 300px;
+    justify-content: center;
+    align-items: center;
+    margin: 60px 0px;
+    width: 80%;
 `
-const Title = styled.h1`
-    font-size: large;
-    margin: 40px 0px;
+const Title = styled.h2`
+    font-weight: normal;
+    margin: 60px 0px;
+    width: 50vw;
 `;
-const ItemTitle = styled.div`
+const ItemTitle = styled.h3`
+    font-weight: normal;
     margin: 40px 0px 15px 0px;
+    width: 50vw;
 `;
 
 const CrewName = styled.div`
@@ -81,7 +86,7 @@ const CrewName = styled.div`
 const NameInput = styled.input`
     padding: 10px;
     width: 400px;
-    border: 2px solid #4B44B6;
+    border: 1px solid #4B44B6;
     border-radius: 5px;
     box-shadow: none;
 
@@ -91,7 +96,6 @@ const NameInput = styled.input`
 `;
 
 const CrewTheme = styled.div`
-    
 `;
 const CrewLocation = styled.div`
 `;
