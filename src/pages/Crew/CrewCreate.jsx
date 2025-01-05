@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import SetCategory from "./Components/SetCategory";
 
 export default function CrewCreate() {
     return(
@@ -19,6 +20,7 @@ export default function CrewCreate() {
                 <CrewTheme>
                     <ItemTitle>어떤 모임 활동을 하실건가요?</ItemTitle>
                     {/* 모임활동 선택 */}
+                    <SetCategory/>
                 </CrewTheme>
         
                 <CrewLocation>
