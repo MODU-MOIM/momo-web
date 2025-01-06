@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { theme } from "../../../theme";
 
-export default function SetCategory() {
+export default function SetCategory({onCategoryChange}) {
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     // 활동 카테고리
@@ -23,8 +23,10 @@ export default function SetCategory() {
         } else {
             setSelectedCategory(index); // 새로운 카테고리 선택
         }
-        
     };
+    useEffect(() => {
+        onCategoryChange(activityCategories[selectedCategory]);
+    },[selectedCategory]);
 
 
     return(
