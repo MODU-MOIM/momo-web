@@ -15,6 +15,8 @@ export const GenderSelect = () => {
 
 export const AgeSelect = () => {
     const [years, setYears] = useState([]);
+    const [minYear, setMinYear] = useState('noLimit');
+    const [maxYear, setMaxYear] = useState('noLimit');
 
     useEffect(()=>{
         const currentYear = new Date().getFullYear();
@@ -25,23 +27,30 @@ export const AgeSelect = () => {
         setYears(yearsArray);
     },[]);
 
+    const handleMinAgeSelect = (e) => {
+        setMaxYear(e.target.value);
+    }
+    const handleMaxAgeSelect = (e) => {
+        setMinYear(e.target.value);
+    }
+
     return (
       <Wrapper>
         <Container>
             <SubContainer>
                 <Label htmlFor="minAgeSelect">최소 나이</Label>
-                <StyledSelect name="minAgeSelect" defaultValue="noLimit">
+                <StyledSelect name="minAgeSelect" value={maxYear} defaultValue="noLimit" onChange={handleMinAgeSelect}>
                     <option value="noLimit">제한없음</option>
-                    {years.map(year => (
+                    {years.filter(year => year >= minYear || minYear === 'noLimit').map(year => (
                     <option key={year} value={year}>{year}</option>
                     ))}
                 </StyledSelect>
             </SubContainer>
             <SubContainer>
                 <Label htmlFor="maxAgeSelect">최대 나이</Label>
-                <StyledSelect name="maxAgeSelect" defaultValue="noLimit">
+                <StyledSelect name="maxAgeSelect" value={minYear} defaultValue="noLimit" onChange={handleMaxAgeSelect}>
                     <option value="noLimit">제한없음</option>
-                    {years.map(year => (
+                    {years.filter(year => year <= maxYear || maxYear === 'noLimit').map(year => (
                     <option key={year} value={year}>{year}</option>
                     ))}
                 </StyledSelect>
