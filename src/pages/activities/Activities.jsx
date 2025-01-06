@@ -11,13 +11,10 @@ const Activities = () => {
             {[...Array(6)].map((_, index) => (
                 <S.ActivityCard key={index}>
                     <S.ActivityImage/>
-                    <S.Title to={index}>{truncateTitle(`오늘은 자유 달리기 1회차 진행했습니다.${index}`)}[11]</S.Title>
+                    <S.Title to={`/Activities/${index}`}>{truncateTitle(`오늘은 자유 달리기 1회차 진행했습니다.${index}`)}[11]</S.Title>
                     <S.Date>2023-10-01</S.Date>
                 </S.ActivityCard>
             ))}
-            <div>
-                
-            </div>
         </S.Container>
     )
 }
