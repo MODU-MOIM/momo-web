@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
 import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 
 export default function CrewCreate() {
+    const [crewName, setCrewName] = useState();
+    const [minNumber, setMinNumber] = useState();
+    const [maxNumber, setMaxNumber] = useState();
+    const [crewIntro, setCrewIntro] = useState();
+    
+    const handleCrewName = (e) => {
+        setCrewName(e.target.value);
+    }
+    const handleMinNumber = (e) => {
+        setMinNumber(e.target.value);
+    }
+    const handleMaxNumber = (e) => {
+        setMaxNumber(e.target.value);
+    }
+    const handleCrewIntro = (e) => {
+        setCrewIntro(e.target.value);
+    }
+    
     return(
         <Wrapper>
 
@@ -16,6 +34,8 @@ export default function CrewCreate() {
                     <ItemTitle>크루명을 작성해주세요</ItemTitle>
                     <NameInput
                         placeholder="크루명을 작성해주세요."
+                        value={crewName}
+                        onChange={handleCrewName}
                     />
                 </CrewName>
                 
@@ -33,13 +53,23 @@ export default function CrewCreate() {
                         {/* 인원 수 설정 */}
                         <NumberContainer>
                             <TextItem>최소 </TextItem>
-                            <SetNumber type="number" min={2}/>
+                            <SetNumber 
+                                type="number" 
+                                min={2}
+                                value={minNumber}
+                                onChange={handleMinNumber}
+                            />
                             <TextItem>명</TextItem>
                         </NumberContainer>
                         <TextItem>~</TextItem>
                         <NumberContainer>
                             <TextItem>최대 </TextItem>
-                            <SetNumber type="number" max={30}/>
+                            <SetNumber
+                                type="number"
+                                max={30}
+                                value={maxNumber}
+                                onChange={handleMaxNumber}
+                            />
                             <TextItem>명</TextItem>
                         </NumberContainer>
                     </NumberSetting>
@@ -55,7 +85,11 @@ export default function CrewCreate() {
                 </CrewSettings>
         
                 {/* <ItemTitle>크루 설명</ItemTitle> */}
-                <CrewIntro>크루 설명을 입력해주세요</CrewIntro>
+                <CrewIntro
+                    value={crewIntro}
+                    onChange={handleCrewIntro}
+                >
+                    크루 설명을 입력해주세요</CrewIntro>
                 <SubmitContainer>
                     <CreateButton>완료</CreateButton>
                 </SubmitContainer>
