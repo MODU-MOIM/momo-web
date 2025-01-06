@@ -67,23 +67,13 @@ export default function CrewCreate() {
                         {/* 인원 수 설정 */}
                         <NumberContainer>
                             <TextItem>최소 </TextItem>
-                            <SetNumber 
-                                type="number" 
-                                min={2}
-                                value={minNumber}
-                                onChange={handleMinNumber}
-                            />
+                            <SetNumber type="number" min={2}/>
                             <TextItem>명</TextItem>
                         </NumberContainer>
                         <TextItem>~</TextItem>
                         <NumberContainer>
                             <TextItem>최대 </TextItem>
-                            <SetNumber
-                                type="number"
-                                max={30}
-                                value={maxNumber}
-                                onChange={handleMaxNumber}
-                            />
+                            <SetNumber type="number" max={30}/>
                             <TextItem>명</TextItem>
                         </NumberContainer>
                     </NumberSetting>
