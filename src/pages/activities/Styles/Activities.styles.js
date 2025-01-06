@@ -1,3 +1,4 @@
+import { NavLink as RouterNavLink } from "react-router-dom";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -6,7 +7,6 @@ export const Container = styled.div`
 `;
 
 export const ActivityCard = styled.div`
-    border:1px solid red;
     width: 33.33%;
     height: 300px;
     margin: 10px 0;
@@ -27,13 +27,12 @@ export const ActivityImage = styled.img`
     display: flex;
 
 `
-export const Title = styled.p`
+export const Title = styled(RouterNavLink)`
     font-size: 14px;
     font-weight: 600;
-    margin: 10px 0;
+    margin: 6px 0;
 `;
 
 export const Date = styled.p`
     font-size: 12px;
-    font-weight: 600;
 `;
