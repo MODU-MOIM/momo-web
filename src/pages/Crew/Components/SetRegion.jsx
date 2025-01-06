@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { regions, districtsByRegion } from './Region';
-export default function SetPlace() {
+export default function SetRegion({onRegionChange}) {
   const [selectedRegion, setSelectedRegion] = useState('서울');
   const initialDistrictsState = {
     '서울': [],
@@ -31,7 +31,7 @@ export default function SetPlace() {
     // 다른 지역(서울) 선택 시 선택값(종로구,etc) 초기화
     setSelectedDistrictsByRegion(initialDistrictsState);
   };
-
+  
   const handleDistrictSelection = (district) => {
     const currentSelected = selectedDistrictsByRegion[selectedRegion] || [];
     
@@ -49,6 +49,9 @@ export default function SetPlace() {
       });
     }
   };
+  useEffect(()=>{
+    onRegionChange(selectedDistrictsByRegion);
+  },[selectedDistrictsByRegion])
 
   const currentDistricts = districtsByRegion[selectedRegion] || [];
   const selectedDistricts = selectedDistrictsByRegion[selectedRegion] || [];
