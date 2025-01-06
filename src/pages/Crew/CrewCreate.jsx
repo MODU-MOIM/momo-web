@@ -70,12 +70,12 @@ const Container = styled.div`
     width: 80%;
 `
 const Title = styled.h2`
-    font-weight: normal;
+    font-weight: bolder;
     margin: 60px 0px;
     width: 60vw;
 `;
 const ItemTitle = styled.h3`
-    font-weight: normal;
+    font-weight: bolder;
     margin: 40px 0px 15px 0px;
     width: 60vw;
 `;
@@ -107,7 +107,7 @@ const SetNumber = styled.input`
 `;
 const CrewIntro = styled.textarea`
     padding: 50px;
-    width: 500px;
+    width: 60%;
     height: 400px;
     border: 1px solid #DEDFE7;
     border-radius: 10px;
