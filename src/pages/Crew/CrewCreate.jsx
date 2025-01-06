@@ -5,36 +5,22 @@ import SetRegion from "./Components/SetRegion";
 import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 
 export default function CrewCreate() {
-    const [crewName, setCrewName] = useState("");
-    const [category, setCategory] = useState({});
-    const [region, setRegion] = useState([]);
+    const [crewName, setCrewName] = useState();
     const [minNumber, setMinNumber] = useState();
     const [maxNumber, setMaxNumber] = useState();
-    const [crewIntro, setCrewIntro] = useState("");
-    const [gender, setGender] = useState('noLimit');
-    const [minAge, setMinAge] = useState('noLimit');
-    const [maxAge, setMaxAge] = useState('noLimit');
+    const [crewIntro, setCrewIntro] = useState();
     
-    const handleCrewName = (e) => setCrewName(e.target.value);
-    const handleCategory = (selectedCategory) => setCategory(selectedCategory);
-    const handleRegion = (selectedRegion) => setRegion(selectedRegion);
-    const handleMinNumber = (e) => setMinNumber(e.target.value);
-    const handleMaxNumber = (e) => setMaxNumber(e.target.value);
-    const handleGender = (slectedGender) => setGender(slectedGender);
-    const handleMinAge = (selectedMinAge) => setMinAge(selectedMinAge);
-    const handleMaxAge = (selectedMaxAge) => setMaxAge(selectedMaxAge);
-    const handleCrewIntro = (e) => setCrewIntro(e.target.value);
-
-    const handleSubmit = () => {
-        console.log(crewName);
-        console.log(category);
-        console.log(region);
-        console.log(minNumber);
-        console.log(maxNumber);
-        console.log(gender);
-        console.log(minAge);
-        console.log(maxAge);
-        console.log(crewIntro);
+    const handleCrewName = (e) => {
+        setCrewName(e.target.value);
+    }
+    const handleMinNumber = (e) => {
+        setMinNumber(e.target.value);
+    }
+    const handleMaxNumber = (e) => {
+        setMaxNumber(e.target.value);
+    }
+    const handleCrewIntro = (e) => {
+        setCrewIntro(e.target.value);
     }
     
     return(
@@ -67,13 +53,23 @@ export default function CrewCreate() {
                         {/* 인원 수 설정 */}
                         <NumberContainer>
                             <TextItem>최소 </TextItem>
-                            <SetNumber type="number" min={2}/>
+                            <SetNumber 
+                                type="number" 
+                                min={2}
+                                value={minNumber}
+                                onChange={handleMinNumber}
+                            />
                             <TextItem>명</TextItem>
                         </NumberContainer>
                         <TextItem>~</TextItem>
                         <NumberContainer>
                             <TextItem>최대 </TextItem>
-                            <SetNumber type="number" max={30}/>
+                            <SetNumber
+                                type="number"
+                                max={30}
+                                value={maxNumber}
+                                onChange={handleMaxNumber}
+                            />
                             <TextItem>명</TextItem>
                         </NumberContainer>
                     </NumberSetting>
