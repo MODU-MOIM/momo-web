@@ -1,11 +1,10 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 export const GenderSelect = () => {
   return (
     <Wrapper>
-      <StyledSelect name="genderSelect" defaultValue="제한없음">
+      <StyledSelect name="genderSelect" defaultValue="noLimit">
         <option value="onlyFemale">여성만</option>
         <option value="onlyMale">남성만</option>
         <option value="noLimit">제한없음</option>
@@ -15,25 +14,36 @@ export const GenderSelect = () => {
 };
 
 export const AgeSelect = () => {
+    const [years, setYears] = useState([]);
+
+    useEffect(()=>{
+        const currentYear = new Date().getFullYear();
+        const yearsArray = [];
+        for(let i = 1960; i <= currentYear; i++){
+            yearsArray.push(i);
+        }
+        setYears(yearsArray);
+    },[]);
+
     return (
       <Wrapper>
         <Container>
             <SubContainer>
-
-                <Label for="age-select">최소나이</Label>
-                <StyledSelect name="ageSlect" defaultValue="제한없음">
-                <option value="10대">10대</option>
-                <option value="20대">20대</option>
-                <option value="제한없음">제한없음</option>
+                <Label htmlFor="minAgeSelect">최소 나이</Label>
+                <StyledSelect name="minAgeSelect" defaultValue="noLimit">
+                    <option value="noLimit">제한없음</option>
+                    {years.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                    ))}
                 </StyledSelect>
             </SubContainer>
             <SubContainer>
-
-                <Label for="age-select">최대나이</Label>
-                <StyledSelect name="ageSelect" defaultValue="제한없음">
-                <option value="10대">10대</option>
-                <option value="20대">20대</option>
-                <option value="제한없음">제한없음</option>
+                <Label htmlFor="maxAgeSelect">최대 나이</Label>
+                <StyledSelect name="maxAgeSelect" defaultValue="noLimit">
+                    <option value="noLimit">제한없음</option>
+                    {years.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                    ))}
                 </StyledSelect>
             </SubContainer>
         </Container>
