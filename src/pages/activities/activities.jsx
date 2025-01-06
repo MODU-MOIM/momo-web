@@ -1,6 +1,6 @@
 
 
-const activities = () => {
+const Activities = () => {
     return(
         <>
             <div>
@@ -10,4 +10,4 @@ const activities = () => {
     )
 }
 
-export default  activities;
+export default  Activities;
