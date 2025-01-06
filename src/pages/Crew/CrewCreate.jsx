@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
-import { GenderSelect } from "./Components/SelectBox";
+import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 
 export default function CrewCreate() {
     const [crewName, setCrewName] = useState("");
@@ -95,6 +95,7 @@ export default function CrewCreate() {
 
                     {/* 나이 설정 */}
                     <ItemTitle>나이 제한</ItemTitle>
+                    <AgeSelect/>
                     
                 </CrewSettings>
         
