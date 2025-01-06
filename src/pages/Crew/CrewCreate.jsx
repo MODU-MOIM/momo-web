@@ -5,10 +5,13 @@ import SetRegion from "./Components/SetRegion";
 import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 
 export default function CrewCreate() {
-    const [crewName, setCrewName] = useState();
+    const [crewName, setCrewName] = useState("");
     const [minNumber, setMinNumber] = useState();
     const [maxNumber, setMaxNumber] = useState();
-    const [crewIntro, setCrewIntro] = useState();
+    const [crewIntro, setCrewIntro] = useState("");
+    const [gender, setGender] = useState();
+    const [minAge, setMinAge] = useState();
+    const [maxAge, setMaxAge] = useState();
     
     const handleCrewName = (e) => {
         setCrewName(e.target.value);
@@ -21,6 +24,15 @@ export default function CrewCreate() {
     }
     const handleCrewIntro = (e) => {
         setCrewIntro(e.target.value);
+    }
+    const handleGender = (slectedGender) => {
+        setGender(slectedGender);
+    }
+    const handleMinAge = (selectedMinAge) => {
+        setMinAge(selectedMinAge);
+    }
+    const handleMaxAge = (selectedMaxAge) => {
+        setMaxAge(selectedMaxAge);
     }
     
     return(
@@ -76,12 +88,11 @@ export default function CrewCreate() {
 
                     {/* 성별 설정 */}
                     <ItemTitle>성별 제한</ItemTitle>
-
-                    <GenderSelect/>
+                    <GenderSelect onGenderChange={handleGender}/>
 
                     {/* 나이 설정 */}
                     <ItemTitle>나이 제한</ItemTitle>
-                    <AgeSelect/>
+                    <AgeSelect onMinAgeChange={handleMinAge} onMaxAgeChange={handleMaxAge}/>
                     
                 </CrewSettings>
         

@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-export const GenderSelect = () => {
+export const GenderSelect = ({onGenderChange}) => {
+  const handleSelectedGender = (e) => {
+    onGenderChange(e.target.value);
+  }
+
   return (
     <Wrapper>
-      <StyledSelect name="genderSelect" defaultValue="noLimit">
+      <StyledSelect name="genderSelect" defaultValue="noLimit" onChange={handleSelectedGender}>
         <option value="onlyFemale">여성만</option>
         <option value="onlyMale">남성만</option>
         <option value="noLimit">제한없음</option>
@@ -13,7 +17,7 @@ export const GenderSelect = () => {
   );
 };
 
-export const AgeSelect = () => {
+export const AgeSelect = ({onMinAgeChange, onMaxAgeChange}) => {
     const [years, setYears] = useState([]);
     const [minYear, setMinYear] = useState('noLimit');
     const [maxYear, setMaxYear] = useState('noLimit');
@@ -29,9 +33,11 @@ export const AgeSelect = () => {
 
     const handleMinAgeSelect = (e) => {
         setMaxYear(e.target.value);
+        onMinAgeChange(e.target.value);
     }
     const handleMaxAgeSelect = (e) => {
         setMinYear(e.target.value);
+        onMaxAgeChange(e.target.value);
     }
 
     return (
