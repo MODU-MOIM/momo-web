@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
+import { GenderSelect } from "./Components/SelectBox";
 
 export default function CrewCreate() {
     return(
@@ -38,9 +39,11 @@ export default function CrewCreate() {
                     <span>명</span>
                     {/* 성별 설정 */}
                     <ItemTitle>성별 제한</ItemTitle>
+                    <GenderSelect/>
 
                     {/* 나이 설정 */}
                     <ItemTitle>나이 제한</ItemTitle>
+                    
                 </CrewSettings>
         
                 {/* <ItemTitle>크루 설명</ItemTitle> */}
