@@ -13,26 +13,22 @@ export default function CrewCreate() {
     const [minAge, setMinAge] = useState();
     const [maxAge, setMaxAge] = useState();
     
-    const handleCrewName = (e) => {
-        setCrewName(e.target.value);
-    }
-    const handleMinNumber = (e) => {
-        setMinNumber(e.target.value);
-    }
-    const handleMaxNumber = (e) => {
-        setMaxNumber(e.target.value);
-    }
-    const handleCrewIntro = (e) => {
-        setCrewIntro(e.target.value);
-    }
-    const handleGender = (slectedGender) => {
-        setGender(slectedGender);
-    }
-    const handleMinAge = (selectedMinAge) => {
-        setMinAge(selectedMinAge);
-    }
-    const handleMaxAge = (selectedMaxAge) => {
-        setMaxAge(selectedMaxAge);
+    const handleCrewName = (e) => setCrewName(e.target.value);
+    const handleMinNumber = (e) => setMinNumber(e.target.value);
+    const handleMaxNumber = (e) => setMaxNumber(e.target.value);
+    const handleGender = (slectedGender) => setGender(slectedGender);
+    const handleMinAge = (selectedMinAge) => setMinAge(selectedMinAge);
+    const handleMaxAge = (selectedMaxAge) => setMaxAge(selectedMaxAge);
+    const handleCrewIntro = (e) => setCrewIntro(e.target.value);
+
+    const handleSubmit = () => {
+        console.log(crewName);
+        console.log(minNumber);
+        console.log(maxNumber);
+        console.log(gender);
+        console.log(minAge);
+        console.log(maxAge);
+        console.log(crewIntro);
     }
     
     return(
