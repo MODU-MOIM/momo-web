@@ -6,14 +6,18 @@ import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 
 export default function CrewCreate() {
     const [crewName, setCrewName] = useState("");
+    const [category, setCategory] = useState({});
+    const [region, setRegion] = useState([]);
     const [minNumber, setMinNumber] = useState();
     const [maxNumber, setMaxNumber] = useState();
     const [crewIntro, setCrewIntro] = useState("");
-    const [gender, setGender] = useState();
-    const [minAge, setMinAge] = useState();
-    const [maxAge, setMaxAge] = useState();
+    const [gender, setGender] = useState('noLimit');
+    const [minAge, setMinAge] = useState('noLimit');
+    const [maxAge, setMaxAge] = useState('noLimit');
     
     const handleCrewName = (e) => setCrewName(e.target.value);
+    const handleCategory = (selectedCategory) => setCategory(selectedCategory);
+    const handleRegion = (selectedRegion) => setRegion(selectedRegion);
     const handleMinNumber = (e) => setMinNumber(e.target.value);
     const handleMaxNumber = (e) => setMaxNumber(e.target.value);
     const handleGender = (slectedGender) => setGender(slectedGender);
@@ -23,6 +27,8 @@ export default function CrewCreate() {
 
     const handleSubmit = () => {
         console.log(crewName);
+        console.log(category);
+        console.log(region);
         console.log(minNumber);
         console.log(maxNumber);
         console.log(gender);
