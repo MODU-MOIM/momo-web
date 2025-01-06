@@ -29,14 +29,21 @@ export default function CrewCreate() {
         
                 <CrewSettings>
                     <ItemTitle>참여인원(호스트 포함)</ItemTitle>
-                    {/* 인원 수 설정 */}
-                    <span>최소 </span> {/* 최소 2명부터 */}
-                    <SetNumber type="number"/>
-                    <span>명</span>
-                    <span>~</span>
-                    <span>최대 </span>
-                    <SetNumber type="number"/>
-                    <span>명</span>
+                    <NumberSetting>
+                        {/* 인원 수 설정 */}
+                        <NumberContainer>
+                            <TextItem>최소 </TextItem>
+                            <SetNumber type="number" min={2}/>
+                            <TextItem>명</TextItem>
+                        </NumberContainer>
+                        <TextItem>~</TextItem>
+                        <NumberContainer>
+                            <TextItem>최대 </TextItem>
+                            <SetNumber type="number" max={30}/>
+                            <TextItem>명</TextItem>
+                        </NumberContainer>
+                    </NumberSetting>
+
                     {/* 성별 설정 */}
                     <ItemTitle>성별 제한</ItemTitle>
                     <GenderSelect/>
@@ -99,9 +106,23 @@ const NameInput = styled.input`
 const CrewSettings = styled.div`
 `;
 
+const NumberSetting = styled.div`
+    width: 40%;
+    display: flex;
+    justify-content: space-around;
+    `;
+
+const NumberContainer = styled.div`
+    margin: 0px 5px;
+`;
+const TextItem = styled.span`
+    font-size: 15px;
+`;
 const SetNumber = styled.input`
     margin: 0px 10px;
-    width: 50px;  
+    width: 70px;
+    height: 30px;
+    text-align: center;
     border: 1px solid #DEDFE7;
     border-radius: 3px;
 `;
