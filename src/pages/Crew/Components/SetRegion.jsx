@@ -97,7 +97,7 @@ export default function SetRegion({onRegionChange}) {
 
 const Container = styled.div`
     max-width: 800px;
-    margin: 0 auto;
+    margin-bottom: 30px;
     padding: 20px;
 `;
 
