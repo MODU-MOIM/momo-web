@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { BsFillPeopleFill } from "react-icons/bs";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 export default function CrewHome() {
     //crewId로 crewData 받기(API)
@@ -46,9 +48,11 @@ export default function CrewHome() {
                         <User>크루 리더/관리자</User>
                         <InfoItem>
                             <CrewRegion>
+                                <FaMapMarkerAlt />
                                 {crewData.region}
                             </CrewRegion>
                             <CrewNumber>
+                                <BsFillPeopleFill />
                                 {crewData.currentNum} / {crewData.maxNumber}
                             </CrewNumber>
                         </InfoItem>
@@ -98,11 +102,20 @@ const CrewInfo = styled.div`
 `;
 const User = styled.div`
 `;
-const InfoItem = styled.div`    
+const InfoItem = styled.div`
+    width: 25%;
+    display: flex;
+    justify-content: space-between;
 `;
-const CrewRegion = styled.span`
-`;
-const CrewNumber = styled.span`
+const CrewRegion = styled.div`
+    width: 80px;
+    display: flex;
+    justify-content: space-around;
+    `;
+const CrewNumber = styled.div`
+    width: 80px;
+    display: flex;
+    justify-content: space-around;
 `;
 const CrewIntroText = styled.div`
     width: 80%;
@@ -118,6 +131,6 @@ const JoinButton = styled.button`
     border-radius: 30px;
     color: white;
     background-color: #4B44B6;
-    margin: 20px 0px;
+    margin: 20px 0px 25px 0px;
     
 `;
