@@ -2,26 +2,27 @@ import { NavLink as RouterNavLink } from "react-router-dom";
 import styled from "styled-components";
 
 export const Container = styled.div`
-    width: 768px;
+    width: 842px;
     margin: 100px auto;
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
 `;
 
 export const ActivityCard = styled.div`
     width: 33.33%;
-    height: 300px;
-    margin: 10px 0;
+    height: 350px;
     padding: 10px;
     display: flex;
     flex-direction: column;
-    float: left;
-    color:#38383D;
     box-sizing: border-box;
     text-align: left;
 `;
 
 export const ActivityImage = styled(RouterNavLink)`
     width:100%;
-    height:240px;
+    height:280px;
     border:1px solid red;
     box-sizing: border-box;
     display: flex;
@@ -37,4 +38,5 @@ export const Title = styled(RouterNavLink)`
 
 export const Date = styled.p`
     font-size: 12px;
+    color:#38383D;
 `;
