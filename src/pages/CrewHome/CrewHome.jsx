@@ -4,6 +4,8 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { FaMapMarkerAlt } from "react-icons/fa";
 
 export default function CrewHome() {
+    //userId로 크루멤버인지 확인
+    const [isMember, setIsMember] = useState(false);
     //crewId로 crewData 받기(API)
     const [crewData, setCrewData] = useState({
         region: '',
@@ -62,10 +64,11 @@ export default function CrewHome() {
                             <div>{item}<br/></div>
                         ))}
                     </CrewIntroText>
-                    <JoinButton
-                         
-                        // isMember={isMember}
-                    >가입하기</JoinButton>
+                    {isMember ? null : (
+                        <JoinButton
+                            // onClick={}
+                        >가입하기</JoinButton>
+                    )}
                 </CrewMainHome>
             </InfoContainer>
         </Wrapper>
@@ -119,8 +122,9 @@ const CrewNumber = styled.div`
 `;
 const CrewIntroText = styled.div`
     width: 80%;
-    padding: 20px 0px;
     font-size: 13px;
+    margin-bottom: 20px;
+    padding: 20px 0px;
     /* background-color: blueviolet; */
 `;
 const JoinButton = styled.button`
@@ -131,6 +135,6 @@ const JoinButton = styled.button`
     border-radius: 30px;
     color: white;
     background-color: #4B44B6;
-    margin: 20px 0px 25px 0px;
+    margin-bottom: 25px;
     
 `;
