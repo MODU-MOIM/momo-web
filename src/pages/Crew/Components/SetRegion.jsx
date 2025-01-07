@@ -1,34 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { regions, districtsByRegion } from './Region';
+
+
 export default function SetRegion({onRegionChange}) {
+  const [regions, setRegions] = useState([]);
+  const [districtsByRegion, setDistrictsByRegion] = useState({});
   const [selectedRegion, setSelectedRegion] = useState('서울');
-  const initialDistrictsState = {
-    '서울': [],
-    '부산': [],
-    '대구': [],
-    '인천': [],
-    '광주': [],
-    '대전': [],
-    '울산': [],
-    '세종': [],
-    '경기도': [],
-    '강원도': [],
-    '충청북도': [],
-    '충청남도': [],
-    '경상북도': [],
-    '경상남도': [],
-    '전라남도': [],
-    '전라북도': [],
-    '제주도': []
-  };
-
-  const [selectedDistrictsByRegion, setSelectedDistrictsByRegion] = useState(initialDistrictsState);
-
+  const [selectedDistrictsByRegion, setSelectedDistrictsByRegion] = useState({});
+  
+  // 데이터 가져오기
+  useEffect(()=>{
+    fetch('/Region.json')
+    .then(res => res.json())
+    .then(data=>{
+      setRegions(data.regions);
+      setDistrictsByRegion(data.districtsByRegion);
+    })
+    .catch(error=>console.error(error)
+  )
+},[]);
   
   const handleRegionChange = (region) => {
     setSelectedRegion(region);
     // 다른 지역(서울) 선택 시 선택값(종로구,etc) 초기화
+    const initialDistrictsState = Object.keys(districtsByRegion).reduce((acc, region)=>({
+      ...acc, [region] : []
+    }),{});
     setSelectedDistrictsByRegion(initialDistrictsState);
   };
   
@@ -37,18 +34,20 @@ export default function SetRegion({onRegionChange}) {
     
     if (currentSelected.includes(district)) {
       // 선택한 지역 한 번 더 눌러서 취소
-      setSelectedDistrictsByRegion({
-        ...selectedDistrictsByRegion,
+      setSelectedDistrictsByRegion(prev => ({
+        ...prev,
         [selectedRegion]: currentSelected.filter(d => d !== district)
-      });
-    } else if (currentSelected.length < 3) {
-      // 3개 이하로 선택 시 저장
-      setSelectedDistrictsByRegion({
-        ...selectedDistrictsByRegion,
+      }));
+    } 
+    // 3개 이하로 선택 시 저장
+    else if (currentSelected.length < 3) {
+      setSelectedDistrictsByRegion(prev => ({
+        ...prev,
         [selectedRegion]: [...currentSelected, district]
-      });
+      }));
     }
   };
+
   useEffect(()=>{
     onRegionChange(selectedDistrictsByRegion);
   },[selectedDistrictsByRegion])
