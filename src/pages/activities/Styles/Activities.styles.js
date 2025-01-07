@@ -19,7 +19,7 @@ export const ActivityCard = styled.div`
     text-align: left;
 `;
 
-export const ActivityImage = styled.img`
+export const ActivityImage = styled(RouterNavLink)`
     width:100%;
     height:240px;
     border:1px solid red;
@@ -28,6 +28,8 @@ export const ActivityImage = styled.img`
 
 `
 export const Title = styled(RouterNavLink)`
+    text-decoration: none;
+    color:#38383D;
     font-size: 14px;
     font-weight: 600;
     margin: 6px 0;
