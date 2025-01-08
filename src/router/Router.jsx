@@ -4,6 +4,7 @@ import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
 import Activities from "../pages/activities/Activities";
 import Details from "../pages/activities/components/Details";
+import Community from "../pages/community/Community";
 import Home from "../pages/home/Home";
 
 const Router = () => {
@@ -15,6 +16,7 @@ const Router = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/Activities" element={<Activities />} />
                 <Route path="/Activities/:index" element={<Details />} />
+                <Route path="/Community" element={<Community />} />
             </Route>
         </Routes>
     )
