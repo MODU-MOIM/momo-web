@@ -55,3 +55,24 @@ export const AuthButtons = styled.div`
     color: #000;
     padding: 10px 0;
 `;
+
+
+// Mypage.jsx
+
+export const UserButton = styled.button`
+    border: none;
+    background: none;
+    cursor:pointer;
+`;
+
+
+export const Panel = styled.div`
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    display: flex;
+    top: 0;
+    left: 0;
+    z-index:1;
+`;
