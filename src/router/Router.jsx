@@ -18,12 +18,12 @@ const Router = () => {
                 <Route index element={<Home />} />
                 <Route path="/signup" element={<AddInfo />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/Activities" element={<Activities />} />
-                <Route path="/Activities/:index" element={<Details />} />
-                <Route path="/Community" element={<Community />} />
                 <Route path="/crewcreate" element={<CrewCreate />} />
                 <Route path="/crew" element={<CrewMain />}>
                     <Route path="crewHome" element={<CrewHome />} />
+                    <Route path="crewActivity" element={<Activities />} />
+                    <Route path="crewActivity/:index" element={<Details />} />
+                    <Route path="crewCommunity" element={<Community />} />
                 </Route>
             </Route>
         </Routes>
