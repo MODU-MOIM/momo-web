@@ -60,41 +60,48 @@ export default function CrewCreate() {
                 {/* 지역,구 선택 */}
                 <ItemTitle>어디서 만날까요?</ItemTitle>
                 <SetRegion onRegionChange={handleRegion}/>
-        
+            
                 <CrewSettings>
-                    <ItemTitle>참여인원(호스트 포함)</ItemTitle>
-                    <NumberSetting>
-                        {/* 인원 수 설정 */}
-                        <NumberContainer>
-                            <TextItem>최소 </TextItem>
-                            <SetNumber 
-                                type="number" 
-                                min={2}
-                                value={minNumber}
-                                onChange={handleMinNumber}
-                            />
-                            <TextItem>명</TextItem>
-                        </NumberContainer>
-                        <TextItem>~</TextItem>
-                        <NumberContainer>
-                            <TextItem>최대 </TextItem>
-                            <SetNumber
-                                type="number"
-                                max={30}
-                                value={maxNumber}
-                                onChange={handleMaxNumber}
-                            />
-                            <TextItem>명</TextItem>
-                        </NumberContainer>
-                    </NumberSetting>
-
+                    {/* 인원 수 설정 */}
+                    <ItemContainer>
+                        <ItemTitle>참여인원(호스트 포함)</ItemTitle>
+                        <NumberSetting>
+                            <NumberContainer>
+                                <TextItem>최소 </TextItem>
+                                <SetNumber 
+                                    type="number" 
+                                    min={2}
+                                    value={minNumber}
+                                    onChange={handleMinNumber}
+                                />
+                                <TextItem>명</TextItem>
+                            </NumberContainer>
+                            <TextItem>~</TextItem>
+                            <NumberContainer>
+                                <TextItem>최대 </TextItem>
+                                <SetNumber
+                                    type="number"
+                                    min={2}
+                                    max={30}
+                                    value={maxNumber}
+                                    onChange={handleMaxNumber}
+                                />
+                                <TextItem>명</TextItem>
+                            </NumberContainer>
+                        </NumberSetting>
+                    </ItemContainer>
+                    
                     {/* 성별 설정 */}
-                    <ItemTitle>성별 제한</ItemTitle>
-                    <GenderSelect onGenderChange={handleGender}/>
-
+                    <ItemContainer>
+                        <ItemTitle>성별 제한</ItemTitle>
+                        <GenderSelect onGenderChange={handleGender}/>
+                    </ItemContainer>
+                    
                     {/* 나이 설정 */}
-                    <ItemTitle>나이 제한</ItemTitle>
-                    <AgeSelect onMinAgeChange={handleMinAge} onMaxAgeChange={handleMaxAge}/>
+                    <ItemContainer>
+                        <ItemTitle>나이 제한</ItemTitle>
+                        <AgeSelect onMinAgeChange={handleMinAge} onMaxAgeChange={handleMaxAge}/>
+                    </ItemContainer>
                     
                 </CrewSettings>
         
@@ -152,6 +159,9 @@ const NameInput = styled.input`
 
 
 const CrewSettings = styled.div`
+`;
+const ItemContainer = styled.div`
+    margin-bottom: 50px;
 `;
 
 const NumberSetting = styled.div`
