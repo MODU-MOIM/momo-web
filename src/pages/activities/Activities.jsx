@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import * as S from "./Styles/Activities.styles";
+import Banner from "./components/Banner";
 
 
 const Activities = () => {
@@ -42,21 +43,29 @@ const Activities = () => {
 
     return(
         <S.Container>
-            {posts.slice(0, visiblePosts).map((post, index) => (
-            <S.ActivityCard key={post.id}>
-                <S.ActivityImage to={`/Activities/${post.id}`}/>
-                <S.Title to={`/Activities/${post.id}`}>{truncateTitle(post.title)}[11]</S.Title>
-                <S.Date>{post.date}</S.Date>
-            </S.ActivityCard>
-            ))}
-            {visiblePosts < posts.length && (
-                <div ref={observerRef} style={{
-                    width: '100%',
-                    height: '20px',
-                    margin: '0',
-                    padding: '0'
-                }} />
-            )}
+            <Banner />
+            <S.TotalPosts>{posts.length}개의 글</S.TotalPosts>
+            <S.List>
+                {posts.slice(0, visiblePosts).map((post, index) => (
+                <S.ActivityCard key={post.id}>
+                    <S.ActivityImage to={`/Activities/${post.id}`}/>
+                    <S.Title to={`/Activities/${post.id}`}>{truncateTitle(post.title)}[11]</S.Title>
+                    <S.Date>{post.date}</S.Date>
+                </S.ActivityCard>
+                ))}
+                {/*
+                    사용자가 스크롤을 내려 div가 화면에서 보이면 observer가 div를 감지하고
+                    추가 게시글 3개를 불러오도록 하는 trigger
+                */}
+                {visiblePosts < posts.length && (
+                    // observer를 작동하기 위한 감지점
+                    <div ref={observerRef} style={{
+                        height: '1px',
+                        margin: '0',
+                        padding: '0'
+                    }} />
+                )}
+            </S.List>
         </S.Container>
     );
 };
