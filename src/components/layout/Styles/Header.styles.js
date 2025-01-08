@@ -86,4 +86,47 @@ export const MyPage = styled.div`
     position: fixed;
     top: 60px;
     right: 400px;
+    flex-direction: column;
+`;
+
+export const UserPanel = styled.div`
+    width: 100%;
+    height:150px;
+    border:1px solid red;
+    display:flex;
+    align-items: center;
+`;
+
+export const ProfileImage = styled.img`
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 1px solid red;
+    display: flex;
+    margin: 0 20px;
+`;
+
+export const Name = styled.p`
+    color: #fff;
+    font-size:22px;
+    font-weight: 600;
+    letter-spacing: 5px;
+    margin: 0 20px;
+`;
+
+export const Manners = styled.p`
+`;
+
+export const SelectButton = styled.div`
+    width: 100%:
+    border: 1px solid red;
+`;
+
+export const Button = styled.button`
+    width: 50%;
+    height: 60px;
+    border: none;
+    font-size: 14px;
+    background: #222;
+    color: #fff;
 `
