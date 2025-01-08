@@ -5,6 +5,7 @@ import Login from "../pages/Login/Login";
 import Home from "../pages/home/Home";
 import CrewCreate from "../pages/CrewCreate/CrewCreate";
 import CrewHome from "../pages/CrewHome/CrewHome";
+import CrewMain from "../pages/CrewMain/CrewMain";
 
 
 const Router = () => {
@@ -15,7 +16,9 @@ const Router = () => {
                 <Route path="/signup" element={<AddInfo />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/crewcreate" element={<CrewCreate />} />
-                <Route path="/crewHome" element={<CrewHome />} />
+                <Route path="/crew" element={<CrewMain />}>
+                    <Route path="crewHome" element={<CrewHome />} />
+                </Route>
             </Route>
         </Routes>
     )
