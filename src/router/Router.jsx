@@ -3,7 +3,7 @@ import Layout from "../components/layout/Layout";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
 import Home from "../pages/home/Home";
-import CrewCreate from "../pages/Crew/CrewCreate";
+import CrewCreate from "../pages/CrewCreate/CrewCreate";
 import CrewHome from "../pages/CrewHome/CrewHome";
 
 
