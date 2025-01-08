@@ -1,25 +1,14 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import * as S from "./Styles/Header.styles";
 
 const Header = () => {
-    const navigate = useNavigate();
-
-    const handleSignUp = () => {
-        navigate("/signup");
-    };
-
-    const handleLogin = () => {
-        navigate("/login");
-    };
-
     return (
         <S.HeaderContainer>
             <S.Logo to="/">Logo</S.Logo>
             <S.Container>
                 <S.Nav>
-                    <S.StyledNavLink to="/Activities">크루</S.StyledNavLink>
-                    <S.StyledNavLink>피드</S.StyledNavLink>
+                    <S.StyledNavLink to="/crew">크루</S.StyledNavLink>
+                    <S.StyledNavLink to="">피드</S.StyledNavLink>
                     <S.StyledNavLink>핫 플레이스</S.StyledNavLink>
                 </S.Nav>
                 <S.AuthButtons>

@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import styled from "styled-components";
 
 export default function FloatingMenu() {
     const navigate = useNavigate();
@@ -25,7 +25,7 @@ export default function FloatingMenu() {
             <MenuContainer>
                 {Object.entries(menu).map(([item, path])=>(
                     <MenuButton onClick={()=>handleNavigate(path)}>
-                            <MenuText 
+                            <MenuText
                                 isSelected={selectedMenu===path}
                             >
                                 {item}
