@@ -76,3 +76,14 @@ export const Panel = styled.div`
     left: 0;
     z-index:1;
 `;
+
+export const MyPage = styled.div`
+    width: 350px;
+    height: 450px;
+    background: #0b0b0b;
+    border-radius: 15px;
+    display: flex;
+    position: fixed;
+    top: 60px;
+    right: 400px;
+`
