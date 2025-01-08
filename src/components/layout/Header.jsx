@@ -1,18 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import * as S from "./Styles/Header.styles";
 
 const Header = () => {
-    const navigate = useNavigate();
-
-    const handleSignUp = () => {
-        navigate("/signup");
-    };
-
-    const handleLogin = () => {
-        navigate("/login");
-    };
-
     return (
         <S.HeaderContainer>
             <S.Logo to="/">Logo</S.Logo>
