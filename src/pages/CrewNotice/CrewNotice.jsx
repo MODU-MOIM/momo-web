@@ -8,9 +8,9 @@ export default function CrewNotice() {
     const navigate = useNavigate();
     const [notices, setNotices] = useState([]);
     const initialNotices = [
-        { id: 1, content: "첫 번째 공지사항 내용입니다.", date: "2024.12.12 (수)", isPinned: false },
-        { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.12 (수)", isPinned: false },
-        { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12 (수)", isPinned: false }
+        { id: 1, content: "첫 번째 공지사항 내용입니다.", date: "2024.12.10", isPinned: false },
+        { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.11", isPinned: false },
+        { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12", isPinned: false }
     ];
     
     useEffect(()=>{
@@ -19,7 +19,14 @@ export default function CrewNotice() {
     
     // 공지들 정렬
     const sortNotices = (notices) => {
-        return notices.sort((a, b) => b.isPinned - a.isPinned);
+        return [...notices].sort((a, b) => {
+            if (b.isPinned !== a.isPinned) {
+                // isPinned == true인 notice를 상단에 배치
+                return b.isPinned - a.isPinned;
+            }
+            // isPinned 상태가 같은 경우 날짜 순으로 정렬
+            return a.date > b.date ? -1 : 1;
+        });
     };
     useEffect(() => {
         setNotices(currentNotices => sortNotices([...currentNotices]));
