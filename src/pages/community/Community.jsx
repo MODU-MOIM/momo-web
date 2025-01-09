@@ -51,7 +51,7 @@ const Community = () => {
                         {/* 작성일은 현재 시간 - 작성 시간으로 계산 */}
                         <S.Date> · 1일</S.Date>
                     </S.UserInfoContainer>
-                    <S.ActivityImage to={`/Community/${post.id}`}/>
+                    <S.ActivityImage to={`/crew/crewCommunity/${post.id}`}/>
                     <S.PostInfoContainer>
                         <S.ButtonsContainer>
                             {/* uid를 통해 좋아요는 한번만 가능하도록 설정 */}
@@ -64,7 +64,7 @@ const Community = () => {
                         </S.ButtonsContainer>
                         <S.TextContainer>
                             <S.UserName>러닝초보123</S.UserName>
-                            <S.Title to={`/Community/${post.id}`}>{truncateTitle(post.title)}</S.Title>
+                            <S.Title to={`/crew/crewCommunity/${post.id}`}>{truncateTitle(post.title)}</S.Title>
                         </S.TextContainer>
                     </S.PostInfoContainer>
                 </S.ActivityCard>
