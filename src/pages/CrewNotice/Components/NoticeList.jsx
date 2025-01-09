@@ -4,8 +4,13 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useState } from "react";
 
 // user정보도 받아오기 (이름, 포지션)
-export default function NoticeList({notices}) {
+export default function NoticeList({notices, togglePin}) {
     const [isManager, setIsManager] = useState(true);
+    // const [isPinned, setIsPinned] = useState(false);
+
+    const handlePin = (id)=> {
+        togglePin(id);
+    }
 
     return(
         <Wrapper>
@@ -26,7 +31,11 @@ export default function NoticeList({notices}) {
                         {/* 관리자만 보이도록 */}
                         {/* 버튼 기능 추가하기 */}
                         <SettingContainer>
-                            <BsPinAngleFill size={20} color="#000000"/>
+                            <BsPinAngleFill 
+                                size={20}
+                                color={notice.isPinned ? "#000000" : "#929292"}
+                                onClick={()=>handlePin(notice.id)}
+                            />
                             {isManager && <BsThreeDotsVertical size={20} color="#929292"/>}
                         </SettingContainer>
                     </TopContainer>

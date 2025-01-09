@@ -8,10 +8,15 @@ export default function CrewNotice() {
     const navigate = useNavigate();
     const [notices, setNotices] = useState([]);
     const initialNotices = [
-        { id: 1, content: "첫 번째 공지사항 내용입니다.", date: "2024.12.12 (수)" },
-        { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.12 (수)" },
-        { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12 (수)" }
+        { id: 1, content: "첫 번째 공지사항 내용입니다.", date: "2024.12.12 (수)", isPinned: false },
+        { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.12 (수)", isPinned: false },
+        { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12 (수)", isPinned: false }
     ];
+    const togglePin = (id) => {
+        setNotices(notices.map(notice => 
+            notice.id === id ? {...notice, isPinned: !notice.isPinned} : notice
+        ));
+    };
 
     useEffect(()=>{
         setNotices(initialNotices);
@@ -26,7 +31,7 @@ export default function CrewNotice() {
             <AddNoticeButton onClick={linktoAddNotice} >+ 공지추가</AddNoticeButton>
             {/* 무한스크롤 적용해야 함 */}
             <NoticeContainer>
-                <NoticeList notices={notices}/>
+                <NoticeList notices={notices} togglePin={togglePin}/>
             </NoticeContainer>
         </Wrapper>
     );
