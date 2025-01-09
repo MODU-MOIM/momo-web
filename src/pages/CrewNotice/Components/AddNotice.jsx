@@ -1,20 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 export default function AddNotice() {
     const [isDeleted, setIsDeleted] = useState(false);
+    const [voteInfo, setVoteInfo] = useState({});
+    const [notice, setNotice] = useState("");
+
+    // voteInfo 직접 수정 기능 만들기
+    useEffect(()=>{
+        const initialVoteInfo = {
+            title: "정모 참여 여부 투표",
+            selectList: ["참여", "미참여"]
+        }
+        setVoteInfo(initialVoteInfo);
+    },[]);
+
+    const handleNotice = (e) => setNotice(e.target.value);
+
+    const handleSubmit = ()=>{
+        console.log("공지내용:",notice);
+        console.log("voteTitle: ",voteInfo.title);
+        console.log("voteList: ",voteInfo.selectList);
+    }
 
     return(
         <Wrapper>
             <Container>
                 <MainContainer>
-                    <InputText placeholder="공지사항 입력"></InputText>
+                    <InputText 
+                        placeholder="공지사항 입력"
+                        onChange={handleNotice}
+                    />
                     <VoteContainer>
                         <VoteBox shouldHide={isDeleted}>
-                            <VoteTitle>정모 참여 여부 투표</VoteTitle>
+                            <VoteTitle>{voteInfo.title}</VoteTitle>
                             <SelectBox>
-                                <SelectList>참여</SelectList>
-                                <SelectList>미참여</SelectList>
+                                {voteInfo.selectList?.map((list, index)=>(
+                                    <SelectList key={index}>{list}</SelectList>
+                                ))}
                             </SelectBox>
                         </VoteBox>
                         <ButtonContainer>
@@ -32,7 +55,7 @@ export default function AddNotice() {
                     </VoteContainer>
                 </MainContainer>
                 <SubContainer>
-                    <PostNotice>공지 생성</PostNotice>
+                    <PostNotice onClick={handleSubmit}>공지 생성</PostNotice>
                 </SubContainer>
             </Container>
         </Wrapper>
