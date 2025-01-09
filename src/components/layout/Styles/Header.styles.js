@@ -78,8 +78,7 @@ export const Panel = styled.div`
 `;
 
 export const MyPage = styled.div`
-    width: 350px;
-    height: 450px;
+    width: 340px;
     background: #0b0b0b;
     border-radius: 15px;
     display: flex;
@@ -92,7 +91,6 @@ export const MyPage = styled.div`
 export const UserPanel = styled.div`
     width: 100%;
     height:150px;
-    border:1px solid red;
     display:flex;
     align-items: center;
 `;
@@ -113,7 +111,7 @@ export const ProfileImage = styled.img`
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    border: 1px solid red;
+    border: 1px solid #fff;
     display: flex;
     margin: 0 20px;
 `;
@@ -130,8 +128,6 @@ export const Manners = styled.p`
 `;
 
 export const SelectButton = styled.div`
-    width: 100%:
-    border: 1px solid red;
 `;
 
 export const Button = styled.button`
@@ -142,4 +138,62 @@ export const Button = styled.button`
     background: #222;
     color: #fff;
     cursor: pointer;
+`;
+
+export const ContentContainer = styled.div`
+`;
+
+export const MyPageContent = styled.div`
+    height:250px;
+`;
+
+export const CrewContent = styled.div`
+`;
+
+export const CrewList = styled.div`
+    width:100%;
+`;
+
+export const CrewItem = styled.div`
+    width:100%;
+    height: 80px;
+    border-bottom:1px solid #797979;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding:0 35px;
+`;
+
+export const CreateCrewButton = styled(RouterNavLink)`
+    display: flex;
+    width: 100%;
+    height: 70px;
+    font-size: 15px;
+    text-decoration: none;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    bottom: 0;
+    cursor: pointer;
+    color: #fff;
+`;
+
+export const CrewImage = styled.img`
+    width:45px;
+    height:45px;
+    border:1px solid #797979;
+    border-radius: 50%;
+`;
+
+export const CrewName = styled.p`
+    margin:13px;
+    font-weight: 600;
+`;
+
+export const CrewMember = styled.p`
+    font-size: 13px;
+    position: absolute;
+    display:flex;
+    bottom: 15px;
+    right: 30px;
 `
