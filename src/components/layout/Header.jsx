@@ -12,6 +12,10 @@ const Header = () => {
         setIsPopupOpen(!isPopupOpen);
     };
 
+    const closeModal = () => {
+        setIsPopupOpen(false);
+    }
+
     return (
         <S.HeaderContainer>
             <S.Logo to="/">Logo</S.Logo>
@@ -23,14 +27,13 @@ const Header = () => {
                 </S.Nav>
                 <S.AuthButtons>
                     <S.UserButton onClick={togglePopup}>
-                        {isPopupOpen && <Mypage />}
                         <AiOutlineUser size={21} />
                     </S.UserButton>
                     <S.StyledLoginLink to="/login">로그인</S.StyledLoginLink>
                     <S.StyledLoginLink to="/signup">회원가입</S.StyledLoginLink>
                 </S.AuthButtons>
             </S.Container>
-            
+            {isPopupOpen && <Mypage closeModal={closeModal}/>}
         </S.HeaderContainer>
     );
 }

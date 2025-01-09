@@ -62,7 +62,7 @@ export const AuthButtons = styled.div`
 export const UserButton = styled.button`
     border: none;
     background: none;
-    cursor:pointer;
+    cursor: pointer;
 `;
 
 
@@ -97,6 +97,18 @@ export const UserPanel = styled.div`
     align-items: center;
 `;
 
+export const CloseButton = styled.div`
+    background: none;
+    border: none;
+    position: absolute;
+    display: flex;
+    top: 10px;
+    right: 10px;
+    z-index:2;
+    color: #999;
+    cursor: pointer;
+`;
+
 export const ProfileImage = styled.img`
     width: 80px;
     height: 80px;
@@ -129,4 +141,5 @@ export const Button = styled.button`
     font-size: 14px;
     background: #222;
     color: #fff;
+    cursor: pointer;
 `

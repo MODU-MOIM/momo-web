@@ -1,11 +1,28 @@
+import { AiOutlineClose } from "react-icons/ai";
 import * as S from "./Styles/Header.styles";
 
-const MyPage = () => {
+
+const MyPage = ({ closeModal }) => {
+    const handlePanelClick = (e) => {
+        if(e.target === e.currentTarget){
+            closeModal();
+        }
+    }
+
+    const handleUserPanelClick = (e) => {
+        e.stopPropagation();
+    }
+
     return(
-        <S.Panel>
-            <S.MyPage>
-                <S.UserPanel>
+        <S.Panel onClick={handlePanelClick}>
+            <S.MyPage onClick={(e) => e.stopPropagation()}>
+                <S.UserPanel onClick={handleUserPanelClick}>
+                    <S.CloseButton onClick={closeModal}>
+                        <AiOutlineClose size={24}/>
+                    </S.CloseButton>
+                    {/* 프로필 이미지 */}
                     <S.ProfileImage/>
+                    {/* 사용자 닉네임 or 이름 */}
                     <S.Name>김매너</S.Name>
                     <S.Manners></S.Manners>
                 </S.UserPanel>
