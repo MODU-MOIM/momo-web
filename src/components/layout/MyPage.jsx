@@ -26,8 +26,11 @@ const MyPage = ({ closeModal }) => {
                     {/* 프로필 이미지 */}
                     <S.ProfileImage/>
                     {/* 사용자 닉네임 or 이름 */}
-                    <S.Name>김매너</S.Name>
-                    <S.Manners></S.Manners>
+                    <S.UserInfo>
+                        <S.Name>김매너</S.Name>
+                        {/* 매너점수를 score에 넣어 출력 */}
+                        <S.Manners score={25.1}/>
+                    </S.UserInfo>
                 </S.UserPanel>
                 <S.SelectButton>
                     <S.Button

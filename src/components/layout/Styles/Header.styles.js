@@ -108,12 +108,21 @@ export const CloseButton = styled.div`
 `;
 
 export const ProfileImage = styled.img`
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     border: 1px solid #fff;
     display: flex;
-    margin: 0 20px;
+    margin-left:30px;
+`;
+
+export const UserInfo = styled.div`
+    width:50%;
+    height:100px;
+    margin:0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `;
 
 export const Name = styled.p`
@@ -121,10 +130,46 @@ export const Name = styled.p`
     font-size:22px;
     font-weight: 600;
     letter-spacing: 5px;
-    margin: 0 20px;
+    margin: 30px 20px;
 `;
 
 export const Manners = styled.p`
+    position: relative;
+    display: flex;
+    width:140px;
+    height:8px;
+    background: #EAEAEA;
+    border-radius:4px;
+    margin:0 20px;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        height:100%;
+        width: ${props => props.score || 0}%;
+
+        background: ${props => {
+            if (props.score < 30) return '#FF666F'; //빨간색
+            if (props.score < 60) return '#FF9F3E'; //주황색
+            return '#75C1A7'; //초록색
+        }};
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    &::after {
+        content: '${props => props.score || 0}℃';
+        position: absolute;
+        top:-20px;
+        right: 0;
+        color:${props => {
+            if (props.score < 30) return '#FF666F';
+            if (props.score < 60) return '#FF9F3E';
+            return '#75C1A7';
+        }};
+        font-size:13px;
+        font-wieght:600;
+    }
 `;
 
 export const SelectButton = styled.div`
