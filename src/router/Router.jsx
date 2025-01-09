@@ -8,6 +8,7 @@ import Login from "../pages/Login/Login";
 import Activities from "../pages/activities/Activities";
 import Details from "../pages/activities/components/Details";
 import Home from "../pages/home/Home";
+import CrewNotice from "../pages/CrewNotice/CrewNotice";
 
 
 const Router = () => {
@@ -22,6 +23,7 @@ const Router = () => {
                 <Route path="/crewcreate" element={<CrewCreate />} />
                 <Route path="/crew" element={<CrewMain />}>
                     <Route path="crewHome" element={<CrewHome />} />
+                    <Route path="crewNotice" element={<CrewNotice />} />
                 </Route>
             </Route>
         </Routes>
