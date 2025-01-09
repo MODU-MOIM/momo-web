@@ -6,7 +6,6 @@ import { useState } from "react";
 // user정보도 받아오기 (이름, 포지션)
 export default function NoticeList({notices, togglePin}) {
     const [isManager, setIsManager] = useState(true);
-    // const [isPinned, setIsPinned] = useState(false);
 
     const handlePin = (id)=> {
         togglePin(id);
@@ -24,7 +23,7 @@ export default function NoticeList({notices, togglePin}) {
                                     <UserPosition>관리자</UserPosition>
                                     <UserName>러닝초보123</UserName>
                                 </ProfileText>
-                                <Date>{notice.date}</Date>
+                                <Date>{notice.date}<br/>{notice.time}</Date>
                             </Profile>
                         </UserInfoContainer>
 
@@ -99,7 +98,7 @@ const UserName = styled.p`
     font-weight: 600;
 `;
 const Date = styled.div`
-    margin: 0 0 20px 10px;
+    margin: 0 0 10px 10px;
     color: #666666;
     font-size: 13px;
 `

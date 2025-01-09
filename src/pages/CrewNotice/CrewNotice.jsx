@@ -8,9 +8,9 @@ export default function CrewNotice() {
     const navigate = useNavigate();
     const [notices, setNotices] = useState([]);
     const initialNotices = [
-        { id: 1, content: "첫 번째 공지사항 내용입니다.", date: "2024.12.10", isPinned: false },
-        { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.11", isPinned: false },
-        { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12", isPinned: false }
+        { id: 1, content: "첫 번째 공지사항 내용입니다.", date: "2024.12.10 (화)", time: "16:00", isPinned: false },
+        { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.10 (화)", time: "13:00", isPinned: false },
+        { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12 (목)", time: "03:00", isPinned: false }
     ];
     
     useEffect(()=>{
@@ -25,6 +25,10 @@ export default function CrewNotice() {
                 return b.isPinned - a.isPinned;
             }
             // isPinned 상태가 같은 경우 날짜 순으로 정렬
+            if (a.date == b.date){
+                return a.time > b.time ? -1 : 1;
+            }
+            // -1(음수)가 하단으로
             return a.date > b.date ? -1 : 1;
         });
     };
