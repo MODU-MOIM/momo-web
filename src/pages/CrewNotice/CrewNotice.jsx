@@ -12,19 +12,27 @@ export default function CrewNotice() {
         { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.12 (수)", isPinned: false },
         { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12 (수)", isPinned: false }
     ];
+    
+    useEffect(()=>{
+        setNotices(initialNotices);
+    },[]);
+    
+    // 공지들 정렬
+    const sortNotices = (notices) => {
+        return notices.sort((a, b) => b.isPinned - a.isPinned);
+    };
+    useEffect(() => {
+        setNotices(currentNotices => sortNotices([...currentNotices]));
+    }, [notices]);
+    
+    // 경로 추가하기 
+    const linktoAddNotice = () => navigate('/crew/crewNotice/addNotice');
+    
     const togglePin = (id) => {
         setNotices(notices.map(notice => 
             notice.id === id ? {...notice, isPinned: !notice.isPinned} : notice
         ));
     };
-
-    useEffect(()=>{
-        setNotices(initialNotices);
-    },[]);
-
-    // 경로 추가하기 
-    const linktoAddNotice = () => navigate('/crew/crewNotice/addNotice');
-
     return(
         <Wrapper>
             {/* userid 받아서 관리자만 보이도록 수정해야 함 */}
