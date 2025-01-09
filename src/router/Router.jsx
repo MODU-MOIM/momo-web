@@ -9,6 +9,7 @@ import Activities from "../pages/activities/Activities";
 import Details from "../pages/activities/components/Details";
 import Home from "../pages/home/Home";
 import CrewNotice from "../pages/CrewNotice/CrewNotice";
+import AddNotice from "../pages/CrewNotice/Components/AddNotice";
 
 
 const Router = () => {
@@ -24,6 +25,7 @@ const Router = () => {
                 <Route path="/crew" element={<CrewMain />}>
                     <Route path="crewHome" element={<CrewHome />} />
                     <Route path="crewNotice" element={<CrewNotice />} />
+                    <Route path="crewNotice/addNotice" element={<AddNotice />} />
                 </Route>
             </Route>
         </Routes>

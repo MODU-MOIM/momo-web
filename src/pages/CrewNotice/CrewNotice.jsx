@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import NoticeList from "./Components/NoticeList";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AddNotice from "./Components/AddNotice";
 
 export default function CrewNotice() {
+    const navigate = useNavigate();
     const [notices, setNotices] = useState([]);
     const initialNotices = [
         { id: 1, content: "첫 번째 공지사항 내용입니다.", date: "2024.12.12 (수)" },
@@ -14,15 +17,37 @@ export default function CrewNotice() {
         setNotices(initialNotices);
     },[]);
 
+    // 경로 추가하기 
+    const linktoAddNotice = () => navigate('/crew/crewNotice/addNotice');
+
     return(
         <Wrapper>
-            {/* 무한스크롤 적용해야함 */}
-            <NoticeList notices={notices}/>
+            {/* userid 받아서 관리자만 보이도록 수정해야 함 */}
+            <AddNoticeButton onClick={linktoAddNotice} >+ 공지추가</AddNoticeButton>
+            {/* 무한스크롤 적용해야 함 */}
+            <NoticeContainer>
+                <NoticeList notices={notices}/>
+            </NoticeContainer>
         </Wrapper>
     );
 }
 
 const Wrapper = styled.div`
+`;
+const AddNoticeButton = styled.button`
+    position: fixed;
+    top: 190px;
+    width: 150px;
+    margin-left: 60px;
+    padding: 10px;
+    border: none;
+    color: white;
+    font-size: 15px;
+    background-color: #352EAE;
+    border: 1px solid #DEDFE7;
+    border-radius: 20px;
+`;
+const NoticeContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
