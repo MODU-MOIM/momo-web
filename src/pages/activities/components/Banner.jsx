@@ -40,8 +40,10 @@ const Banner = () => {
             {/* Banner Image */}
             <S.BannerImage/>
             <S.Setting>
+                <S.Link to="crewSetting">
                 {/* 관리자만 볼 수 있도록 */}
-                <FaCog size={20}/>
+                    <FaCog size={20}/>
+                </S.Link>
             </S.Setting>
         </S.Banner>
     );
