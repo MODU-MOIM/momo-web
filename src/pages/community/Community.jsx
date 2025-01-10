@@ -41,7 +41,6 @@ const Community = () => {
 
     return(
         <S.Container>
-            <Banner />
             <S.List>
                 {posts.slice(0, visiblePosts).map((post, index) => (
                 <S.ActivityCard key={post.id}>
