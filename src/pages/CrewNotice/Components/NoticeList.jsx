@@ -1,13 +1,14 @@
 import styled from "styled-components";
 import { BsPinAngleFill } from "react-icons/bs";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // user정보도 받아오기 (이름, 포지션)
 export default function NoticeList({notices, togglePin, toggleMenu, setNotices}) {
     const navigate = useNavigate();
     const [isManager, setIsManager] = useState(true);
+    const menuRefs = useRef([]);
 
     const handlePin = (id)=> togglePin(id);
     const handleMenu = (id) => toggleMenu(id);
@@ -17,7 +18,7 @@ export default function NoticeList({notices, togglePin, toggleMenu, setNotices})
         navigate(`/crew/updateNotice/${notice.id}`, {
             state: {noticeData: notice}
         });
-        console.log("수정: ", notice.id);
+        // console.log("수정: ", notice.id);
     }
     const handleDelete = (id)=>{
         // 삭제페이지 이동(notice.id에 맞는) => 경고창 띄워야함
@@ -25,16 +26,28 @@ export default function NoticeList({notices, togglePin, toggleMenu, setNotices})
             // 공지 삭제 후 상태 업데이트
             setNotices(currentNotices => currentNotices.filter(notice => notice.id !== id));
         }
-        console.log("삭제: ", id);
+        // console.log("삭제: ", id);
     }
+    // 메뉴 열린 상태에서 외부영역 클릭 시 닫힘
+    useEffect(() => {
+        function handleClickOutside(e) {
+            if (notices.some((notice, index) => notice.isOpenedMenu && menuRefs.current[index] && !menuRefs.current[index].contains(e.target))) {
+                setNotices(notices.map(notice => ({...notice, isOpenedMenu: false})));
+            }   
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [notices]);
 
     return(
         <Wrapper>
-            {notices.map((notice)=>(
+            {notices.map((notice, index)=>(
                 <>
                     <SubContainer key={notice.id}>
                         {notice.isOpenedMenu && 
-                            <SubMenu>
+                            <SubMenu ref={el => menuRefs.current[index] = el}>
                                 <MenuItem onClick={()=>handleUpdate({notice})}>수정</MenuItem>
                                 <MenuItem onClick={()=>handleDelete(notice.id)}>삭제</MenuItem>
                             </SubMenu>
