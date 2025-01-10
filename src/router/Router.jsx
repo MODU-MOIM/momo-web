@@ -10,6 +10,7 @@ import Details from "../pages/activities/components/Details";
 import Home from "../pages/home/Home";
 import CrewNotice from "../pages/CrewNotice/CrewNotice";
 import AddNotice from "../pages/CrewNotice/Components/AddNotice";
+import UpdateNotice from "../pages/CrewNotice/Components/UpdateNotice";
 
 
 const Router = () => {
@@ -25,7 +26,8 @@ const Router = () => {
                 <Route path="/crew" element={<CrewMain />}>
                     <Route path="crewHome" element={<CrewHome />} />
                     <Route path="crewNotice" element={<CrewNotice />} />
-                    <Route path="crewNotice/addNotice" element={<AddNotice />} />
+                    <Route path="addNotice" element={<AddNotice />} />
+                    <Route path="updateNotice/:noticeId" element={<UpdateNotice />} />
                 </Route>
             </Route>
         </Routes>

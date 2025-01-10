@@ -37,7 +37,7 @@ export default function CrewNotice() {
     }, []);
     
     // 경로 추가하기 
-    const linktoAddNotice = () => navigate('/crew/crewNotice/addNotice');
+    const linktoAddNotice = () => navigate('/crew/addNotice');
     
     const togglePin = (id) => {
         setNotices(sortNotices(notices.map(notice => 

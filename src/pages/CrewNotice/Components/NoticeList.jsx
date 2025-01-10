@@ -2,17 +2,22 @@ import styled from "styled-components";
 import { BsPinAngleFill } from "react-icons/bs";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // user정보도 받아오기 (이름, 포지션)
 export default function NoticeList({notices, togglePin, toggleMenu}) {
+    const navigate = useNavigate();
     const [isManager, setIsManager] = useState(true);
 
     const handlePin = (id)=> togglePin(id);
     const handleMenu = (id) => toggleMenu(id);
 
-    const handleUpdate = (id)=>{
+    const handleUpdate = ({notice})=>{
         // 수정페이지 이동(notice.id에 맞는)
-        console.log("수정: ", id);
+        navigate(`/crew/updateNotice/${notice.id}`, {
+            state: {noticeData: notice}
+        });
+        console.log("수정: ", notice.id);
     }
     const handleDelete = (id)=>{
         // 삭제페이지 이동(notice.id에 맞는) => 경고창 띄워야함
@@ -26,7 +31,7 @@ export default function NoticeList({notices, togglePin, toggleMenu}) {
                     <SubContainer key={notice.id}>
                         {notice.isOpenedMenu && 
                             <SubMenu>
-                                <MenuItem onClick={()=>handleUpdate(notice.id)}>수정</MenuItem>
+                                <MenuItem onClick={()=>handleUpdate({notice})}>수정</MenuItem>
                                 <MenuItem onClick={()=>handleDelete(notice.id)}>삭제</MenuItem>
                             </SubMenu>
                         }
