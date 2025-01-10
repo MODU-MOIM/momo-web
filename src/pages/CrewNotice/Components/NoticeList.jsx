@@ -56,9 +56,9 @@ export default function NoticeList({notices, togglePin, toggleMenu, setNotices})
                             {/* 관리자만 보이도록 */}
                             {/* 버튼 기능 추가하기 */}
                             <SettingContainer>
-                                <BsPinAngleFill 
+                                <StyledBsPinAngleFill 
                                     size={20}
-                                    color={notice.isPinned ? "#000000" : "#929292"}
+                                    isPinned={notice.isPinned}
                                     onClick={()=>handlePin(notice.id)}
                                 />
                                 {isManager && 
@@ -136,7 +136,7 @@ const Date = styled.div`
     margin: 0 0 10px 10px;
     color: #666666;
     font-size: 13px;
-    `
+    `;
 const SettingContainer = styled.div`
     position: relative;
     width: 10%;
@@ -144,8 +144,19 @@ const SettingContainer = styled.div`
     justify-content: space-between;
     margin: 20px;
     `;
+const StyledBsPinAngleFill = styled(BsPinAngleFill)`
+    color: ${props=> props.isPinned ? "#000000" : "#929292"};
+    &:hover{
+        color: black;
+        cursor: pointer;
+    }
+`;
 const StyledBsThreeDotsVertical = styled(BsThreeDotsVertical)`
     color: #929292;
+    &:hover{
+        color: black;
+        cursor: pointer;
+    }
 `;
 
 const NoticeContainer = styled.div`

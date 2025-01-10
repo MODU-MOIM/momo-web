@@ -62,6 +62,10 @@ export const VoteButton = styled.button`
     background-color: #F0F0F0;
     display: ${props => props.shouldHide ? 'none' : 'inline-block'};
     color: ${props => props.isDeleted ? "black" : "red"};
+    &:hover{
+        background-color: #D8D8D8;
+        cursor: pointer;
+    }
 `;
 export const InputText = styled.textarea`
     margin: 40px 0px 20px 40px;
@@ -87,5 +91,6 @@ export const PostNotice = styled.button`
     &:hover{
         background: #352EAE;
         border: 1px solid white;
+        cursor: pointer;
     }
 `;

@@ -77,9 +77,13 @@ const AddNoticeButton = styled.button`
     border: none;
     color: white;
     font-size: 15px;
-    background-color: #352EAE;
+    background-color: #4B44B6;
     border: 1px solid #DEDFE7;
     border-radius: 20px;
+    &:hover{
+        background-color: #352EAE;
+        cursor: pointer;
+    }
 `;
 const NoticeContainer = styled.div`
     display: flex;
