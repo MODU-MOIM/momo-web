@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 export default function CrewNotice() {
     const navigate = useNavigate();
     const [notices, setNotices] = useState([]);
-    const [isOpenedMenu, setIsOpenedMenu] = useState(false);
     const initialNotices = [
         { id: 1, content: "첫 번째 공지사항 내용입니다.\ndd", date: "2024.12.10 (화)", time: "12:00", isPinned: false, isOpenedMenu: false },
         { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.10 (화)", time: "13:00", isPinned: false, isOpenedMenu: false },
@@ -60,6 +59,7 @@ export default function CrewNotice() {
                     notices={notices}
                     togglePin={togglePin}
                     toggleMenu={toggleMenu}
+                    setNotices={setNotices}
                 />
             </NoticeContainer>
         </Wrapper>

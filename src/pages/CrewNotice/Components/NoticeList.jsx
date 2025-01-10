@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // user정보도 받아오기 (이름, 포지션)
-export default function NoticeList({notices, togglePin, toggleMenu}) {
+export default function NoticeList({notices, togglePin, toggleMenu, setNotices}) {
     const navigate = useNavigate();
     const [isManager, setIsManager] = useState(true);
 
@@ -21,6 +21,10 @@ export default function NoticeList({notices, togglePin, toggleMenu}) {
     }
     const handleDelete = (id)=>{
         // 삭제페이지 이동(notice.id에 맞는) => 경고창 띄워야함
+        if (window.confirm("정말로 삭제하시겠습니까?")) {
+            // 공지 삭제 후 상태 업데이트
+            setNotices(currentNotices => currentNotices.filter(notice => notice.id !== id));
+        }
         console.log("삭제: ", id);
     }
 
