@@ -2,15 +2,15 @@ import styled from "styled-components";
 import NoticeList from "./Components/NoticeList";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AddNotice from "./Components/AddNotice";
 
 export default function CrewNotice() {
     const navigate = useNavigate();
     const [notices, setNotices] = useState([]);
+    const [isOpenedMenu, setIsOpenedMenu] = useState(false);
     const initialNotices = [
-        { id: 1, content: "첫 번째 공지사항 내용입니다.", date: "2024.12.10 (화)", time: "16:00", isPinned: false },
-        { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.10 (화)", time: "13:00", isPinned: false },
-        { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12 (목)", time: "03:00", isPinned: false }
+        { id: 1, content: "첫 번째 공지사항 내용입니다.\ndd", date: "2024.12.10 (화)", time: "12:00", isPinned: false, isOpenedMenu: false },
+        { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.10 (화)", time: "13:00", isPinned: false, isOpenedMenu: false },
+        { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12 (목)", time: "03:00", isPinned: false, isOpenedMenu: false }
     ];
     
     useEffect(()=>{
@@ -34,14 +34,20 @@ export default function CrewNotice() {
     };
     useEffect(() => {
         setNotices(currentNotices => sortNotices([...currentNotices]));
-    }, [notices]);
+    }, []);
     
     // 경로 추가하기 
     const linktoAddNotice = () => navigate('/crew/crewNotice/addNotice');
     
     const togglePin = (id) => {
-        setNotices(notices.map(notice => 
-            notice.id === id ? {...notice, isPinned: !notice.isPinned} : notice
+        setNotices(sortNotices(notices.map(notice => 
+            notice.id === id ? {...notice, isPinned: !notice.isPinned} : notice)
+        ));
+        console.log(notices);
+    };
+    const toggleMenu = (id)=>{
+        setNotices(notices.map(notice=>
+            notice.id === id ? {...notice, isOpenedMenu: !notice.isOpenedMenu} : notice
         ));
     };
     return(
@@ -50,7 +56,11 @@ export default function CrewNotice() {
             <AddNoticeButton onClick={linktoAddNotice} >+ 공지추가</AddNoticeButton>
             {/* 무한스크롤 적용해야 함 */}
             <NoticeContainer>
-                <NoticeList notices={notices} togglePin={togglePin}/>
+                <NoticeList 
+                    notices={notices}
+                    togglePin={togglePin}
+                    toggleMenu={toggleMenu}
+                />
             </NoticeContainer>
         </Wrapper>
     );
