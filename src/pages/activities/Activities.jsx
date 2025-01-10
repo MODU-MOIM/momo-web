@@ -43,7 +43,6 @@ const Activities = () => {
 
     return(
         <S.Container>
-            <Banner />
             <S.TotalPosts>{posts.length}개의 글</S.TotalPosts>
             <S.List>
                 {posts.slice(0, visiblePosts).map((post, index) => (
