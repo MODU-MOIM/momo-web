@@ -48,8 +48,8 @@ const Activities = () => {
             <S.List>
                 {posts.slice(0, visiblePosts).map((post, index) => (
                 <S.ActivityCard key={post.id}>
-                    <S.ActivityImage to={`/Activities/${post.id}`}/>
-                    <S.Title to={`/Activities/${post.id}`}>{truncateTitle(post.title)}[11]</S.Title>
+                    <S.ActivityImage to={`/crew/crewActivity/${post.id}`}/>
+                    <S.Title to={`/crew/crewActivity/${post.id}`}>{truncateTitle(post.title)}[11]</S.Title>
                     <S.Date>{post.date}</S.Date>
                 </S.ActivityCard>
                 ))}

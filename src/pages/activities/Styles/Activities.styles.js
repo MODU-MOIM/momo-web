@@ -28,7 +28,6 @@ export const ActivityCard = styled.div`
     padding: 10px;
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
     text-align: left;
 `;
 
@@ -36,7 +35,6 @@ export const ActivityImage = styled(RouterNavLink)`
     width:100%;
     height:280px;
     border:1px solid red;
-    box-sizing: border-box;
     display: flex;
 
 `
