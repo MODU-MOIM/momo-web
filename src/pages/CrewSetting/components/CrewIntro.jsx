@@ -11,14 +11,21 @@ const CrewIntro = ({ onClose }) => {
 
     return (
         <S.Panel onClick={handlePanelClick}>
-            <S.MyPage onClick={(e) => e.stopPropagation()}>
-                <S.BannerContainer>
+            <S.BannerContainer onClick={(e) => e.stopPropagation()}
+                style={{
+                    width: '1024px',
+                    right: '23%',
+                }}
+            >
+                <S.DeleteContainer>
+                    <S.SettingTitle>
+                        크루 소개 설정
+                    </S.SettingTitle>
                     <S.CloseButton onClick={onClose}>
                         <AiOutlineClose size={24}/>
                     </S.CloseButton>
-                    <h2>크루 소개 설정</h2>
-                </S.BannerContainer>
-            </S.MyPage>
+                </S.DeleteContainer>
+            </S.BannerContainer>
         </S.Panel>
     );
 };
