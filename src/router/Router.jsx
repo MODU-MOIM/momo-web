@@ -1,14 +1,15 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "../components/layout/Layout";
-import CrewCreate from "../pages/CrewCreate/CrewCreate";
-import CrewHome from "../pages/CrewHome/CrewHome";
-import CrewMain from "../pages/CrewMain/CrewMain";
-import AddInfo from "../pages/Login/AddInfo";
-import Login from "../pages/Login/Login";
 import Activities from "../pages/activities/Activities";
 import Details from "../pages/activities/components/Details";
 import Community from "../pages/community/Community";
+import CrewCreate from "../pages/CrewCreate/CrewCreate";
+import CrewHome from "../pages/CrewHome/CrewHome";
+import CrewMain from "../pages/CrewMain/CrewMain";
+import Setting from "../pages/CrewSetting/CrewSetting";
 import Home from "../pages/home/Home";
+import AddInfo from "../pages/Login/AddInfo";
+import Login from "../pages/Login/Login";
 
 
 const Router = () => {
@@ -24,6 +25,7 @@ const Router = () => {
                     <Route path="crewActivity" element={<Activities />} />
                     <Route path="crewActivity/:index" element={<Details />} />
                     <Route path="crewCommunity" element={<Community />} />
+                    <Route path="crewSetting" element={<Setting />} />
                 </Route>
             </Route>
         </Routes>
