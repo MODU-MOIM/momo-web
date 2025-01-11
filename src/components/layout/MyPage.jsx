@@ -4,7 +4,7 @@ import * as S from "./Styles/Header.styles";
 
 
 const MyPage = ({ closeModal }) => {
-    const [selectedMenu, setSelectedMenu] = useState('mypage');
+    const [selectedMenu, setSelectedMenu] = useState('crew');
 
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
