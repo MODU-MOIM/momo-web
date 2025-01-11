@@ -2,7 +2,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import * as S from "../Styles/CrewSetting.styles";
 
 
-const SettingBanner = ({ onClose }) => {
+const Administrator = ({ onClose }) => {
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
             onClose();
@@ -16,11 +16,11 @@ const SettingBanner = ({ onClose }) => {
                     <S.CloseButton onClick={onClose}>
                         <AiOutlineClose size={24}/>
                     </S.CloseButton>
-                    <h2>크루 이름 및 배너사진 설정</h2>
+                    <h2>크루 관리자 관리</h2>
                 </S.BannerContainer>
             </S.MyPage>
         </S.Panel>
     );
 };
 
-export default SettingBanner;
+export default Administrator;

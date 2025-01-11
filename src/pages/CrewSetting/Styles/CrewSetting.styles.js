@@ -66,24 +66,42 @@ export const Button = styled.button`
     margin-left: auto;
 `;
 
-export const Panel = styled.div`
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-`;
+// SettingBanner.jsx
 
-export const Overlay = styled.div`
+export const Panel = styled.div`
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
     position: fixed;
+    display: flex;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    z-index:1;
+`;
+
+export const BannerContainer = styled.div`
+    width:100%;
+    height:100%;
+    background-color: #D7D5EF;
+`;
+
+export const MyPage = styled.div`
+    width: 50%;
+    height: 50%;
+    background: #0b0b0b;
+    border-radius: 15px;
+    display: flex;
+    position: fixed;
+    top: 20%;
+    right: 25%;
+    flex-direction: column;
+`;
+
+export const CloseButton = styled.button`
+    background: none;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    margin-left: auto;
 `;
