@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import React, { useState } from 'react';
-// import Calendar from 'react-calendar';
-// import '../Calendar.css';
+import Calendar from "react-calendar/dist/cjs/Calendar.js";
 import moment from "moment";
 
 export default function ScheduleCalendar({value, onChange}) {
@@ -14,9 +13,11 @@ export default function ScheduleCalendar({value, onChange}) {
                 value={value}
                 next2Label={null}
                 prev2Label={null}
+                 minDetail="year"
                 // formatDay={(locale, date) => moment(date).format('D')}
                 // tileContent={addContent}
                 showNeighboringMonth={false}
+                calendarType="gregory"
                 // onActiveStartDateChange={({ activeStartDate }) =>
                 //   getActiveMonth(activeStartDate)
                 // }
@@ -31,29 +32,30 @@ export default function ScheduleCalendar({value, onChange}) {
 const Wrapper = styled.div`
     /* height: 60vh; */
 `;
-const StyledCalendar = styled.div`
+const StyledCalendar = styled(Calendar)`
     width: 70vh;
     height: 60vh;
-    border: none;
-    border-radius: 10px; // 모서리를 둥글게 처리합니다.
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1); // 그림자를 부드럽게 추가합니다.
+    border: 1px solid #E2E2E2;
+    background-color: white;
 
-    // 헤더 (월 표시)
+    // 헤더 (상단 네비게이션) => 년도 제외 월만 표시!!!!!!!!!!!!!!!!!👍🍞
     .react-calendar__navigation {
-        background-color: transparent; // 헤더의 배경색을 제거합니다.
+        display: flex;
+        justify-content: center;
+        background-color: transparent;
         /* height: 50px; */
         margin-bottom: 10px;
 
         button {
             background: none;
             border: none;
-            min-width: 100px;
+            min-width: 30%;
             height: 80px;
-            color: #333;
-            font-size: 2em; // 아이콘 크기를 적절히 조절합니다.
+            color: black;
+            font-size: 2em; // 아이콘 크기 설정
 
             &:hover {
-                background-color: #f0f0f0; // 버튼 호버 배경색 변경
+                background-color: #f0f0f0;
             }
 
             &:disabled {
@@ -61,30 +63,48 @@ const StyledCalendar = styled.div`
             }
         }
     }
+    .react-calendar__viewContainer{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        
+    }
+    .react-calendar__month-view {
+    }
 
-    // 요일 표시
+    // 요일 표시 -> 센터로
     .react-calendar__month-view__weekdays {
         text-align: center;
         color: #666;
         font-weight: bold;
         /* text-decoration: underline; */
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid brown;
     }
 
-    /* // 특정 날짜 선택
+    // 특정 날짜 선택
     .react-calendar__month-view__days__day {
+        font-size: larger;
         border-radius: 50%; // 날짜 버튼을 원형으로 디자인합니다.
         &:hover {
-        background-color: #e0e0e0; // 날짜 호버 배경색 변경
+            background-color: #e0e0e0; // 날짜 호버 배경색 변경
         }
     }
-
+    .react-calendar__tile {
+        text-align: center;
+        height: 60px;
+        border: none;
+        padding:0px;
+    }
     .react-calendar__tile--now {
         background-color: #3f51b5;
         color: white;
     }
 
     .react-calendar__tile--active {
-        background-color: #9fa8da;
+        background-color: #656565;
         color: white;
-    } */
+    }
 `;
