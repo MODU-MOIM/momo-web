@@ -9,6 +9,7 @@ import Activities from "../pages/activities/Activities";
 import Details from "../pages/activities/components/Details";
 import Community from "../pages/community/Community";
 import Home from "../pages/home/Home";
+import CrewSchedule from "../pages/CrewSchedule/CrewSchedule";
 
 
 const Router = () => {
@@ -25,6 +26,7 @@ const Router = () => {
                     <Route path="crewActivity/:index" element={<Details />} />
                     <Route path="crewCommunity" element={<Community />} />
                 </Route>
+                <Route path="/crew/crewSchedule" element={<CrewSchedule />} />
             </Route>
         </Routes>
     )
