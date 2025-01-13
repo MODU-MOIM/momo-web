@@ -49,6 +49,7 @@ export const authAPI = {
     reissue: () => api.post('/auth/reissue'),
     sendSms: (phoneNumber) => api.post('/auth/send-sms', { toPhoneNumber: phoneNumber }),
     verifySms: (code) => api.post('/auth/verify-sms', { verificationCode: code }),
+    signOut: () => api.post('/auth/sign-out'),
 };
 
 export default api;
