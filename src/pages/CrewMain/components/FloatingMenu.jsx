@@ -61,6 +61,11 @@ const MenuButton = styled.button`
     
     display: flex;
     justify-content: space-between;
+    &:hover{
+        cursor: pointer;
+        border-radius: 15px;
+        background-color: #DEDFE7;
+    }
     `;
 const MenuText = styled.div`
     font-size: 14px;
