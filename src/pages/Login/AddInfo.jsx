@@ -8,8 +8,10 @@ import * as S from "./Styles/Login.styles";
 
 const AddInfo = () => {
     const [showCategory, setShowCategory] = useState(false);
+    const [formData, setFormData] = useState({});
 
-    const handleConfirmCode = () => {
+    const handleConfirmCode = (data) => {
+        setFormData(data);
         setShowCategory(true);
     };
 
@@ -25,7 +27,7 @@ const AddInfo = () => {
                         <UserInfo onConfirm={handleConfirmCode} />
                     </S.Section>
                     <S.Section>
-                        <Category onComplete={handleComplete}/>
+                        <Category onComplete={handleComplete} formData={formData}/>
                     </S.Section>
                 </S.SlideContainer>
             </S.AnimationWrapper>
