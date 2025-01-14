@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import { authAPI } from './api';
 
 export const AuthContext = createContext();
 
@@ -11,10 +12,17 @@ export const AuthProvider = ({ children }) => {
         localStorage.getItem('token')
     );
 
-    const [userInfo, setUserInfo] = useState(() => ({
-        email: localStorage.getItem('email') || '',
-        nickname: localStorage.getItem('nickname') || ''
-    }));
+    const [userInfo, setUserInfo] = useState(() => {
+        const savedUserInfo = localStorage.getItem('userInfo');
+        if(savedUserInfo){
+            try{
+                return JSON.parse(savedUserInfo);
+            } catch (e){
+                return null;
+            }
+        }
+        return null;
+    });
 
     const login = (tokenValue, user) => {
         localStorage.setItem('token', tokenValue);
@@ -27,20 +35,19 @@ export const AuthProvider = ({ children }) => {
         setUserInfo(user);
     };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('email');
-        localStorage.removeItem('nickname');
-
-        setIsLoggedIn(false);
-        setToken(null);
-        setUserInfo({
-            email: '',
-            nickname: ''
-        });
+    const logout = async () => {
+        try {
+            await authAPI.signOut();
+        } catch (error) {
+            console.error('로그아웃 API 호출 실패:', error);
+        } finally {
+            localStorage.clear();
+            setIsLoggedIn(false);
+            setToken(null);
+            setUserInfo(null);
+            window.location.href = '/';
+        }
     };
-
     const value = {
         isLoggedIn,
         token,
