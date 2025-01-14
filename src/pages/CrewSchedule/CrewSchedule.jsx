@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 `;
 const CalendarContainer = styled.div`
     margin-top: 100px;
-    height: 60vh;
+    min-height: 60vh;
     display: flex;
     justify-content: center;
 `;
