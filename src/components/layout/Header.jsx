@@ -12,6 +12,15 @@ const Header = () => {
         setIsPopupOpen(!isPopupOpen);
     };
 
+    const handleLogout = async () => {
+        try {
+            await logout();
+            closeModal();
+        } catch (error) {
+            console.error('로그아웃 실패:', error);
+        }
+    };
+    
     const closeModal = () => {
         setIsPopupOpen(false);
     }
@@ -26,11 +35,13 @@ const Header = () => {
                     <S.StyledNavLink>핫 플레이스</S.StyledNavLink>
                 </S.Nav>
                 <S.AuthButtons>
-                    {/* 로그인 기능 구현 후 uid를 통해 uid가 있으면 userbutton출력 */}
                     {isLoggedIn ? (
-                        <S.UserButton onClick={togglePopup}>
-                            <AiOutlineUser size={21} />
-                        </S.UserButton>
+                        <>
+                            <S.UserButton onClick={togglePopup}>
+                                <AiOutlineUser size={21} />
+                            </S.UserButton>
+                            <S.StyledLoginLink onClick={handleLogout}>로그아웃</S.StyledLoginLink>
+                        </>
                     ) : (
                         <>
                             <S.StyledLoginLink to="/login">로그인</S.StyledLoginLink>
