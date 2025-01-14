@@ -1,10 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import { useAuth } from "../../AuthProvider";
 import * as S from "./Styles/Header.styles";
 
 
 const MyPage = ({ closeModal }) => {
     const [selectedMenu, setSelectedMenu] = useState('crew');
+    const { userInfo } = useAuth();
+    const [nickname, setNickname] = useState('');
+
+    useEffect(() => {
+        if (userInfo && userInfo.data) {
+            setNickname(userInfo.data.nickname || '');
+        } else if (userInfo && userInfo.nickname) {
+            setNickname(userInfo.nickname || '');
+        }
+    }, [userInfo]);
+
 
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
@@ -27,7 +39,7 @@ const MyPage = ({ closeModal }) => {
                     <S.ProfileImage/>
                     {/* 사용자 닉네임 or 이름 */}
                     <S.UserInfo>
-                        <S.Name>김매너</S.Name>
+                        <S.Name>{nickname}</S.Name>
                         {/* 매너점수를 score에 넣어 출력 */}
                         <S.Manners score={25.1}/>
                     </S.UserInfo>
