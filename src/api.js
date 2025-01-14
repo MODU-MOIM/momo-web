@@ -1,55 +1,57 @@
 import axios from 'axios';
 
-// axios 인스턴스 생성
 const api = axios.create({
     baseURL: 'http://localhost:8080',
-    // baseURL: 'http://13.124.54.225:8080',
     headers: {
         'Content-Type': 'application/json',
     },
-    withCredentials: true, // 쿠키 및 인증 정보 포함
+    withCredentials: true,
 });
 
-// 요청 인터셉터 - JWT 토큰이 있다면 헤더에 추가
+// 요청 인터셉터
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token'); // 또는 sessionStorage
+        const token = localStorage.getItem('token');
         if (token) {
-        config.headers.Authorization = `${token}`;
+            config.headers.Authorization = token;
         }
         return config;
     },
     (error) => {
+        console.error('인터셉터 에러:', error);
         return Promise.reject(error);
     }
 );
 
-// 응답 인터셉터 - 토큰 만료 등의 에러 처리
 api.interceptors.response.use(
     (response) => {
         return response;
     },
     (error) => {
-        if (error.response.status === 401) {
-        // 토큰 만료 등의 인증 에러 처리
-        localStorage.removeItem('token');
-        // 로그인 페이지로 리다이렉트 등의 처리
+        console.error('응답 에러:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status
+        });
+        
+        if(error.response?.status === 401){
+            localStorage.clear();
+            window.location.href = '/';
         }
+
         return Promise.reject(error);
     }
 );
-
 // API
 export const authAPI = {
-    signIn: async (data) => {
-        const response = await api.post('/auth/sign-in', data);
-        return response;
-    },
     signUp: (data) => api.post('/auth/sign-up', data),
+    signIn: (data) => api.post('/auth/sign-in', data),
+    getUserInfo: () => api.get('/users/me'),
+    signOut: () => api.post('/auth/sign-out'),
     reissue: () => api.post('/auth/reissue'),
     sendSms: (phoneNumber) => api.post('/auth/send-sms', { toPhoneNumber: phoneNumber }),
     verifySms: (code) => api.post('/auth/verify-sms', { verificationCode: code }),
-    signOut: () => api.post('/auth/sign-out'),
+    
 };
 
 export default api;
