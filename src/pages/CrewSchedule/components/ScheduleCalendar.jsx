@@ -2,16 +2,20 @@ import styled from "styled-components";
 import React, { useState } from 'react';
 import Calendar from "react-calendar/dist/cjs/Calendar.js";
 import moment from "moment";
+import { weekdays } from "moment/moment";
 
 export default function ScheduleCalendar({value, onChange}) {
     const mark = [10];
     const formatMonthYear = (locale, date) => {
         return date.toLocaleString(locale, { month: 'long' }).toUpperCase();  // "long" 옵션은 월 이름 전체를 반환합니다.
-      };
-      const handleMonthClick = (monthDate) => {
-        console.log("월이 클릭되었습니다:", monthDate);
-        onChange(new Date()); // 예를 들어 여기서 오늘 날짜로 설정
-      };
+    };
+    const formatShortWeekday = (locale, date) => {
+        return date.toLocaleString(locale, { weekday: 'short' }).toUpperCase();  // "long" 옵션은 월 이름 전체를 반환합니다.
+    };
+    const handleMonthClick = (monthDate) => {
+    console.log("월이 클릭되었습니다:", monthDate);
+    onChange(new Date()); // 예를 들어 여기서 오늘 날짜로 설정
+  };
         
     return(
         <Wrapper>
@@ -24,6 +28,7 @@ export default function ScheduleCalendar({value, onChange}) {
                 prev2Label={null}
                 minDetail="month"
                 formatMonthYear={formatMonthYear}
+                formatShortWeekday={formatShortWeekday}
                 // formatDay={(locale, date) => moment(date).format('D')}
                 // tileContent={addContent}
                 showNeighboringMonth={false}
@@ -79,11 +84,11 @@ const StyledCalendar = styled(Calendar)`
             height: 100px;
             color: black;
             font-size: 2em; // 아이콘 크기 설정
-
+            
             &:hover {
                 background-color: #f0f0f0;
             }
-
+            
             &:disabled {
                 background: none;
             }
@@ -91,7 +96,8 @@ const StyledCalendar = styled(Calendar)`
     }
     // 헤더 상단 월
     .react-calendar__navigation__label{
-
+        font-weight: 600;
+        
     }
     .react-calendar__viewContainer{
         width: 90%;
@@ -106,8 +112,8 @@ const StyledCalendar = styled(Calendar)`
     // 요일 표시 -> 센터로
     .react-calendar__month-view__weekdays {
         text-align: center;
-        color: #666;
-        font-weight: bold;
+        /* color: #666; */
+        /* font-weight: bold; */
         margin-bottom: 10px;
         padding-bottom: 10px;
         border-bottom: 1px solid #E2E2E2;
@@ -122,8 +128,7 @@ const StyledCalendar = styled(Calendar)`
     }
     // 특정 날짜 선택
     .react-calendar__month-view__days__day {
-        /* width: 100%; */
-        height: 50px;
+        height: 70px;
         /* margin: 5px; */
         /* margin-right: 5px; */
         /* padding: 10px 0px; */
@@ -138,8 +143,8 @@ const StyledCalendar = styled(Calendar)`
     }
     .react-calendar__tile {
         text-align: center;
-        /* height: 8vh; */
-        border: 1px solid;
+        /* height: 9.5vh; */
+        border: 10px solid white;
         border-radius: 50%;
         /* margin: 10px; */
     }
@@ -153,13 +158,13 @@ const StyledCalendar = styled(Calendar)`
         /* font-size: 18px; */
         font-weight: bold;
     }
-    .react-calendar__tile--now {
-        background-color: #2F80ED;
-        color: white;
-    }
-
+    
     .react-calendar__tile--active {
         background-color: #e0e0e0;
+        color: white;
+    }
+    .react-calendar__tile--now {
+        background-color: #2F80ED;
         color: white;
     }
     /* .dot {
