@@ -10,7 +10,7 @@ import * as S from "./Styles/Login.styles";
 
 const Login = () => {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, setUserInfo } = useAuth();
 
     const [formData, setFormData] = useState({
         email: "",
@@ -35,34 +35,41 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-    
-        const loginData = {
-            email: formData.email,
-            password: formData.password
-        };
-    
+        
         try {
-            const response = await authAPI.signIn(loginData);
-            console.log('로그인 성공:', response);
+            // 1. 로그인 요청
+            const loginResponse = await authAPI.signIn(formData);
             
-            if (response.headers.authorization) {
-                localStorage.setItem('token', response.headers.authorization);
+            if (loginResponse.headers.authorization) {
+                // 2. 토큰 저장
+                const token = loginResponse.headers.authorization;
+                localStorage.setItem('token', token);
                 localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('email', formData.email);
-                navigate('/');
+                
+                try {
+                    // 3. 사용자 정보 조회
+                    const userResponse = await authAPI.getUserInfo();
+                    const userData = userResponse.data.data;
+                
+                    // 4. 사용자 정보 저장
+                    localStorage.setItem('userInfo', JSON.stringify(userData));
+                    
+                    // 5. Context 업데이트
+                    login(token, userData);  // userData 직접 전달
+                    
+                    navigate('/', { replace: true });
+                } catch (userError) {
+                    setError('사용자 정보를 가져오는데 실패했습니다.');
+                }
+            } else {
+                setError('로그인 응답에 토큰이 없습니다.');
             }
         } catch (error) {
             if (error.response) {
-                // 서버 응답이 있는 경우
-                console.error('서버 에러 응답:', error.response.data);
                 setError(error.response.data.message || '로그인에 실패했습니다.');
             } else if (error.request) {
-                // 요청은 보냈지만 응답을 받지 못한 경우
-                console.error('응답 없음:', error.request);
                 setError('서버 응답이 없습니다.');
             } else {
-                // 요청 설정 중 에러 발생
-                console.error('요청 에러:', error.message);
                 setError('요청 중 오류가 발생했습니다.');
             }
         }
