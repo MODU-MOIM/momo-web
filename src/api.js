@@ -23,6 +23,7 @@ api.interceptors.request.use(
     }
 );
 
+// 응답 인터셉터
 api.interceptors.response.use(
     (response) => {
         return response;
@@ -45,6 +46,7 @@ api.interceptors.response.use(
 // API
 export const authAPI = {
     signUp: (data) => api.post('/auth/sign-up', data),
+    signUpCategory: (data) => api.post('/users/interests', data),
     signIn: (data) => api.post('/auth/sign-in', data),
     getUserInfo: () => api.get('/users/me'),
     signOut: () => api.post('/auth/sign-out'),
