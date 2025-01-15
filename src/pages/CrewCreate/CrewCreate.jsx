@@ -109,8 +109,8 @@ export default function CrewCreate() {
                 <CrewIntro
                     value={crewIntro}
                     onChange={handleCrewIntro}
-                >
-                    크루 설명을 입력해주세요</CrewIntro>
+                    placeholder="크루 설명을 입력해주세요"
+                />
                 <SubmitContainer>
                     <CreateButton onClick={handleSubmit}>완료</CreateButton>
                 </SubmitContainer>
@@ -190,6 +190,7 @@ const CrewIntro = styled.textarea`
     height: 400px;
     border: 1px solid #DEDFE7;
     border-radius: 10px;
+    resize: none;
 `;
 const SubmitContainer = styled.div`
     display: flex;
@@ -204,4 +205,8 @@ const CreateButton = styled.button`
     background-color: #4B44B6;
     color: white;
     border-radius: 10px;
+    &:hover{
+        background-color: #352EAE;
+        cursor: pointer;
+    }
 `;

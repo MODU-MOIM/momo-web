@@ -87,9 +87,9 @@ const CategoryItem = styled.div`
     align-items: center;
     background-color: white;
     cursor: pointer;
-    /* & > * {
-        float: left;
-    } */
+    &:hover{
+        background-color: #eeeeee;
+    }
 `;
 
 const CategoryImage = styled.img`
