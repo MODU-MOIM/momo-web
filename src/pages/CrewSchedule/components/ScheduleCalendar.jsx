@@ -4,55 +4,54 @@ import Calendar from "react-calendar/dist/cjs/Calendar.js";
 import moment from "moment";
 import { weekdays } from "moment/moment";
 
-export default function ScheduleCalendar({value, onChange}) {
-    const mark = [10];
+export default function ScheduleCalendar({onChange, date, schedules, handleMonthChange}) {
     const formatMonthYear = (locale, date) => {
         return date.toLocaleString(locale, { month: 'long' }).toUpperCase();  // "long" 옵션은 월 이름 전체를 반환합니다.
     };
     const formatShortWeekday = (locale, date) => {
         return date.toLocaleString(locale, { weekday: 'short' }).toUpperCase();  // "long" 옵션은 월 이름 전체를 반환합니다.
     };
-    const handleMonthClick = (monthDate) => {
-    console.log("월이 클릭되었습니다:", monthDate);
-    onChange(new Date()); // 예를 들어 여기서 오늘 날짜로 설정
-  };
-        
+
+
+  const tileClassName = ({ date, view }) => {
+      if (view === 'month') {
+            const momentDate = moment(date);
+
+            const isPast = momentDate.isBefore(moment(), 'day');
+            // `2024/12/14 (SAT)`형식으로 포맷 후 날짜를 문자열로 변환
+            const formattedDate = momentDate.format("YYYY/MM/DD (ddd)").toUpperCase();
+            // schedules 배열에서 일치하는 날짜를 찾기
+            const scheduleExists = schedules.some(e => e.date === formattedDate);
+
+            // className 지정
+            if (scheduleExists) {
+                return isPast ? 'event-day past-day' : 'event-day';
+            } else {
+                return isPast ? 'past-day' : '';
+            }
+        }
+    };
     return(
         <Wrapper>
             <StyledCalendar
                 locale="en"
                 onChange={onChange}
-                value={value}
-                onClickMonth={handleMonthClick}
+                value={date}
                 next2Label={null}
                 prev2Label={null}
                 minDetail="month"
+                // maxDetail="month"
                 formatMonthYear={formatMonthYear}
                 formatShortWeekday={formatShortWeekday}
-                // formatDay={(locale, date) => moment(date).format('D')}
-                // tileContent={addContent}
                 showNeighboringMonth={false}
                 calendarType="gregory"
-                // onActiveStartDateChange={({ activeStartDate }) =>
-                //   getActiveMonth(activeStartDate)
-                // }
-                // tileContent={({ date }) => {
-
-                //     const html = [];
-                //     if (mark.find((x) => x === moment(date).format('YYYY-MM-DD'))) {
-                //       html.push(<div className="dot"></div>);
-                //     }
-                //     return (
-                //       <>
-                //       <div className="flex justify-center items-center absoluteDiv">
-                //         {html}
-                //       </div>
-                //       </>
-                //     );
-                // }}
+                onActiveStartDateChange={({ activeStartDate }) =>
+                  handleMonthChange(activeStartDate)
+                }
+                tileClassName={tileClassName}
             ></StyledCalendar>
             <div>
-                {/* {moment(value).format("YYYY년 MM월 DD일")} */}
+                {/* {moment(date).format("YYYY년 MM월 DD일")} */}
             </div>
         </Wrapper>
     );
@@ -97,6 +96,9 @@ const StyledCalendar = styled(Calendar)`
     // 헤더 상단 월
     .react-calendar__navigation__label{
         font-weight: 600;
+        &:hover{
+            cursor: pointer;
+        }
         
     }
     .react-calendar__viewContainer{
@@ -159,21 +161,22 @@ const StyledCalendar = styled(Calendar)`
         font-weight: bold;
     }
     
-    .react-calendar__tile--active {
-        background-color: #e0e0e0;
+    .event-day{
+        background-color: #ED2F32;
         color: white;
     }
     .react-calendar__tile--now {
         background-color: #2F80ED;
         color: white;
     }
-    /* .dot {
-    height: 8px;
-    width: 8px;
-    background-color: #51F8C4;
-    border-radius: 50%;
-    text-align: center;
-    margin-top: 3px;
-  } */
-   
+    .react-calendar__tile--active {
+        background-color: #e0e0e0;
+        color: white;
+    }
+    .past-day{
+        /* background-color: #e0e0e0; */
+        opacity: 30%;
+        
+    }
+    
 `;
