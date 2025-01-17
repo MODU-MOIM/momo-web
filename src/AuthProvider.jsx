@@ -1,17 +1,22 @@
 import { createContext, useContext, useState } from 'react';
 import { authAPI } from './api';
 
+// 인증 관련 전역 상태를 관리할 Context 생성
 export const AuthContext = createContext();
 
+// 인증 관련 상태와 기능을 제공하는 Provider 컴포넌트
 export const AuthProvider = ({ children }) => {
+    // 로그인 상태 관리
     const [isLoggedIn, setIsLoggedIn] = useState(() =>
         localStorage.getItem('isLoggedIn') === 'true'
     );
     
+    // 인증 토큰 상태 관리
     const [token, setToken] = useState(() =>
         localStorage.getItem('token')
     );
 
+    // 사용자 정보 상태 관리
     const [userInfo, setUserInfo] = useState(() => {
         const savedUserInfo = localStorage.getItem('userInfo');
         if(savedUserInfo){
@@ -24,6 +29,7 @@ export const AuthProvider = ({ children }) => {
         return null;
     });
 
+    // 로그인 처리 함수
     const login = (tokenValue, user) => {
         localStorage.setItem('token', tokenValue);
         localStorage.setItem('isLoggedIn', 'true');
@@ -35,6 +41,7 @@ export const AuthProvider = ({ children }) => {
         setUserInfo(user);
     };
 
+    // 로그아웃 처리 함수
     const logout = async () => {
         try {
             await authAPI.signOut();
@@ -48,6 +55,8 @@ export const AuthProvider = ({ children }) => {
             window.location.href = '/';
         }
     };
+    
+    // Context에 제공할 값들을 객체로 구성
     const value = {
         isLoggedIn,
         token,
@@ -56,6 +65,7 @@ export const AuthProvider = ({ children }) => {
         logout
     };
 
+    // Provider를 통해 자식 컴포넌트들에게 인증 관련 상태와 함수들을 제공
     return (
         <AuthContext.Provider value={value}>
         {children}
@@ -63,7 +73,7 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-// 커스텀 훅
+// Context를 쉽게 사용하기 위한 커스텀 훅
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {

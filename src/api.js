@@ -23,6 +23,7 @@ api.interceptors.request.use(
     }
 );
 
+// 응답 인터셉터
 api.interceptors.response.use(
     (response) => {
         return response;
@@ -44,10 +45,17 @@ api.interceptors.response.use(
 );
 // API
 export const authAPI = {
+    // 회원가입
     signUp: (data) => api.post('/auth/sign-up', data),
+    // 카테고리 저장
+    signUpCategory: (data) => api.post('/users/interests', data),
+    // 로그인
     signIn: (data) => api.post('/auth/sign-in', data),
+    // 사용자 정보 조회
     getUserInfo: () => api.get('/users/me'),
+    // 로그아웃
     signOut: () => api.post('/auth/sign-out'),
+    // 토큰 재발급
     reissue: () => api.post('/auth/reissue'),
     sendSms: (phoneNumber) => api.post('/auth/send-sms', { toPhoneNumber: phoneNumber }),
     verifySms: (code) => api.post('/auth/verify-sms', { verificationCode: code }),
