@@ -9,10 +9,13 @@ import { useState } from "react";
 import { AddScheduleButton, ButtonContainer } from "../CrewSchedule";
 
 export default function ViewScheduleBox({showSchedules, isPast, isClickedAddButton, date, handleAddSchedule}) {
-    const [crew, setCrew] = useState('초코러닝');
+    const [crew, setCrew] = useState('초코러닝(초보자 코스 러닝)');
     const [spot, setSpot] = useState('꿈트리 움 갤러리');
     const [time, setTime] = useState('18:00');
 
+    const handleCrew = (e) => setCrew(e.target.value);
+    const handleSpot = (e) => setSpot(e.target.value);
+    const handleTime = (e) => setTime(e.target.value);
     const submitSchedule = () => {
         const newSchedule = {
             id: Math.random(), // 랜덤 ID 생성
@@ -34,21 +37,31 @@ export default function ViewScheduleBox({showSchedules, isPast, isClickedAddButt
                             <DateSchedule>{moment(date, "YYYY년 MM월 DD일").format("MM/DD (ddd)").toUpperCase()}</DateSchedule>
                             <SelectCrewContainer>
                                 <ItemContainer>크루선택</ItemContainer>
+                                {/* 유저가 가입한 크루 목록 보이기 */}
                                 <CrewInfoBox>
                                     <CrewInfo>
                                         <CrewImage src={MainImage} style={{width: '30px', height: '30px', marginRight: '10px'}}/>
-                                        <CrewName>초코러닝(초보자 코스 러닝)</CrewName>
+                                        <CrewName
+                                            onChange={handleCrew}
+                                        >{crew}</CrewName>
                                     </CrewInfo>
                                     <MdOutlineArrowRight />
                                 </CrewInfoBox>
                             </SelectCrewContainer>
                             <ItemContainer>
                                 <FaMapMarkerAlt />
-                                <SelectSpot>{spot}</SelectSpot>
+                                <SelectSpot
+                                    value={spot}
+                                    onChange={handleSpot}
+                                ></SelectSpot>
                             </ItemContainer>
                             <ItemContainer>
                                 <MdAccessTimeFilled />
-                                <SelectTime>{time}</SelectTime>
+                                <SelectTime
+                                    type="time"
+                                    value={time}
+                                    onChange={handleTime}
+                                ></SelectTime>
                             </ItemContainer>
                             <ButtonContainer>
                                 <AddScheduleButton
@@ -140,11 +153,19 @@ const SelectCrewContainer = styled.div`
     border-radius: 15px;
     margin: 10px 0px;
 `;
-const CrewInfoBox = styled.div`
+const CrewInfoBox = styled.button`
+    width: 90%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 0px 10px 20px 10px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    &:hover{
+        cursor: pointer;
+        /* background-color: #8681CE; */
+    }
 `;
 const CrewInfo = styled.div`
     display: flex;
@@ -155,9 +176,9 @@ const ItemContainer = styled.div`
     margin: 10px;
     font-size: small;
 `;
-const SelectSpot = styled.div`
+const SelectSpot = styled.input`
     margin-left: 10px;
     `;
-const SelectTime = styled.div`
+const SelectTime = styled.input`
     margin-left: 10px;
 `;
