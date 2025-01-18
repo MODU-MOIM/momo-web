@@ -2,7 +2,6 @@ import styled from "styled-components";
 import React, { useState } from 'react';
 import Calendar from "react-calendar/dist/cjs/Calendar.js";
 import moment from "moment";
-import { weekdays } from "moment/moment";
 
 export default function ScheduleCalendar({onChange, date, schedules, handleMonthChange}) {
     const formatMonthYear = (locale, date) => {
@@ -40,7 +39,6 @@ export default function ScheduleCalendar({onChange, date, schedules, handleMonth
                 next2Label={null}
                 prev2Label={null}
                 minDetail="month"
-                // maxDetail="month"
                 formatMonthYear={formatMonthYear}
                 formatShortWeekday={formatShortWeekday}
                 showNeighboringMonth={false}
@@ -50,9 +48,6 @@ export default function ScheduleCalendar({onChange, date, schedules, handleMonth
                 }
                 tileClassName={tileClassName}
             ></StyledCalendar>
-            <div>
-                {/* {moment(date).format("YYYY년 MM월 DD일")} */}
-            </div>
         </Wrapper>
     );
 }
@@ -96,10 +91,6 @@ const StyledCalendar = styled(Calendar)`
     // 헤더 상단 월
     .react-calendar__navigation__label{
         font-weight: 600;
-        &:hover{
-            cursor: pointer;
-        }
-        
     }
     .react-calendar__viewContainer{
         width: 90%;

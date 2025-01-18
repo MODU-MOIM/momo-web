@@ -1,0 +1,163 @@
+import styled from "styled-components";
+import MainImage from "../../../assets/MainImage.png";
+import { IoIosArrowDown } from "react-icons/io";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { MdAccessTimeFilled } from "react-icons/md";
+import { MdOutlineArrowRight } from "react-icons/md";
+import moment from "moment";
+import { useState } from "react";
+import { AddScheduleButton, ButtonContainer } from "../CrewSchedule";
+
+export default function ViewScheduleBox({showSchedules, isPast, isClickedAddButton, date, handleAddSchedule}) {
+    const [crew, setCrew] = useState('초코러닝');
+    const [spot, setSpot] = useState('꿈트리 움 갤러리');
+    const [time, setTime] = useState('18:00');
+
+    const submitSchedule = () => {
+        const newSchedule = {
+            id: Math.random(), // 랜덤 ID 생성
+            crew: crew,
+            spot: spot,
+            time: time,
+            date: moment(date, "YYYY년 MM월 DD일").format("YYYY/MM/DD (ddd)").toUpperCase()
+        };
+        handleAddSchedule(newSchedule);
+    };
+
+    return(
+        <>
+                <ViewContainer>
+                    {isClickedAddButton && !isPast ? (
+                        
+                        // add schedule 
+                        <ViewScheduleButton>
+                            <DateSchedule>{moment(date, "YYYY년 MM월 DD일").format("MM/DD (ddd)").toUpperCase()}</DateSchedule>
+                            <SelectCrewContainer>
+                                <ItemContainer>크루선택</ItemContainer>
+                                <CrewInfoBox>
+                                    <CrewInfo>
+                                        <CrewImage src={MainImage} style={{width: '30px', height: '30px', marginRight: '10px'}}/>
+                                        <CrewName>초코러닝(초보자 코스 러닝)</CrewName>
+                                    </CrewInfo>
+                                    <MdOutlineArrowRight />
+                                </CrewInfoBox>
+                            </SelectCrewContainer>
+                            <ItemContainer>
+                                <FaMapMarkerAlt />
+                                <SelectSpot>{spot}</SelectSpot>
+                            </ItemContainer>
+                            <ItemContainer>
+                                <MdAccessTimeFilled />
+                                <SelectTime>{time}</SelectTime>
+                            </ItemContainer>
+                            <ButtonContainer>
+                                <AddScheduleButton
+                                    onClick={submitSchedule}
+                                >+ 추가하기</AddScheduleButton>
+                            </ButtonContainer>
+                        </ViewScheduleButton>
+                    ) : (
+                            showSchedules.map((e, index)=>(
+                            // schedule box
+                            <ViewScheduleButton key={index}>
+                                <CrewName>{e.crew}</CrewName>
+                                <ScheduleInfo>
+                                    <CrewImage src={MainImage}/>
+                                    <div>
+                                        <DateSchedule>{moment(e.date, "YYYY/MM/DD (ddd)").format("MM/DD (ddd)").toUpperCase()}</DateSchedule>
+                                        <ScheduleTime>{e.time}</ScheduleTime>
+                                    </div>
+                                </ScheduleInfo>
+                                <StyledIoIosArrowDown />
+                            </ViewScheduleButton>
+                        ))
+                    )}
+                </ViewContainer>
+        </>
+    );
+}
+
+// view schedule
+const ViewContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+`;
+const ViewScheduleButton = styled.div`
+    width: 90%;
+    height: 20%;
+    /* border: 1px solid blue; */
+    border-radius: 15px;
+    margin: 5px 0px;
+    padding: 10px;
+    color: white;
+    background-color: #8681CE;
+
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    /* align-items: center; */
+`;
+const CrewImage = styled.img`
+    width: 60px;
+    height: 60px;
+    /* border: 1px solid red; */
+    border-radius: 50%;
+    margin-left: 10px;
+`;
+const ScheduleInfo = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 10px;
+    `;
+const CrewName = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    font-size: x-small;
+    margin-right: 10px;
+`;
+const DateSchedule = styled.div`
+    font-size: x-large;
+    font-weight: 600;
+`;
+const ScheduleTime = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    font-size: x-large;
+    font-weight: 600;
+`;
+const StyledIoIosArrowDown = styled(IoIosArrowDown)`
+    margin-top: 3px;
+    width: 180%;
+`;
+
+// add schedule
+const SelectCrewContainer = styled.div`
+    background-color: #605D8A;
+    border-radius: 15px;
+    margin: 10px 0px;
+`;
+const CrewInfoBox = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0px 10px 20px 10px;
+`;
+const CrewInfo = styled.div`
+    display: flex;
+    align-items: center;
+`;
+const ItemContainer = styled.div`
+    display: flex;
+    margin: 10px;
+    font-size: small;
+`;
+const SelectSpot = styled.div`
+    margin-left: 10px;
+    `;
+const SelectTime = styled.div`
+    margin-left: 10px;
+`;

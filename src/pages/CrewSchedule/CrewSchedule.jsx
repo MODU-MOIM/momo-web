@@ -2,9 +2,8 @@ import styled from "styled-components";
 import React, { useEffect, useState } from 'react';
 import FloatingMenu from "../CrewMain/components/FloatingMenu";
 import Calendar from "./components/ScheduleCalendar";
-import MainImage from "../../assets/MainImage.png";
-import { IoIosArrowDown } from "react-icons/io";
 import moment from "moment";
+import ViewScheduleBox from "./components/ViewScheduleBox";
 
 
 export default function CrewSchedule() {
@@ -12,15 +11,27 @@ export default function CrewSchedule() {
     const [isPast, setIsPast] = useState(moment().isAfter(moment(date), 'day'));
     const [schedules, setSchedules] = useState([]);
     const [showSchedules, setShowSchedules] = useState([]);
-    const initialSchedule = [
-        {id: 1, crew: "초코러닝", spot:"꿈트리 움 갤러리", time: "18:00", date:"2025/01/18 (SAT)"},
-        {id: 2, crew: "초코러닝", spot:"경상북도 남매지", time: "18:00", date:"2025/01/03 (FRI)"},
-        {id: 2, crew: "초코러닝", spot:"경상북도 남매지", time: "19:00", date:"2024/12/20 (FRI)"},
-    ];
+    const [isClickedAddButton, setIsClickedAddButton] = useState(false);
 
+    const initialSchedule = [
+        {id: 1, crew: "초코러닝", spot:"꿈트리 움 갤러리", time: "18:00", date:"2025/01/04 (SAT)"},
+        {id: 2, crew: "초코러닝", spot:"경상북도 남매지", time: "18:00", date:"2025/01/19 (SUN)"},
+        {id: 3, crew: "초코러닝", spot:"경상북도 남매지", time: "19:00", date:"2024/12/20 (FRI)"},
+    ];
+    
+    const SelectedDate = moment(date).format("YYYY년 MM월 DD일");
     useEffect(()=>{ setSchedules(initialSchedule)},[]);
+    useEffect(()=>{ setShowSchedules(schedules)},[schedules]);
     useEffect(()=>{setIsPast(moment().isAfter(moment(date), 'day'))},[date]);
 
+    const handleClickAddButton = () => { 
+        setIsClickedAddButton(!isClickedAddButton);
+    };
+    const handleAddSchedule = (newSchedule) => {
+        // 유효성 검사 필요(크루선택&&장소선택&&시간선택했는지)
+        setSchedules(prevSchedules => [...prevSchedules, newSchedule]);
+        setIsClickedAddButton(false); // 일정 추가 후 버튼 상태 초기화
+    };
     const handleDate = (date) => {
         const formattedDate = moment(date).format("YYYY/MM/DD (ddd)").toUpperCase();
         const filteredSchedules = schedules.filter((schedule)=>(schedule.date === formattedDate));
@@ -49,31 +60,25 @@ export default function CrewSchedule() {
                 <ScheduleContainer>
                     {/* 해당 월/날 일정 보여주기 */}
                     <DetailScheduleContainer>
-                        <div>{moment(date).format("YYYY년 MM월 DD일")}</div>
-                        {showSchedules.map((e, index)=>(
-                            <ViewContainer>
-                                <ViewScheduleButton key={index}>
-                                    <CrewName>{e.crew}</CrewName>
-                                    <ScheduleInfo>
-                                        <CrewImage src={MainImage}/>
-                                        <div>
-                                            <DateSchedule>{moment(e.date, "YYYY/MM/DD (ddd)").format("MM/DD (ddd)").toUpperCase()}</DateSchedule>
-                                            <ScheduleTime>{e.time}</ScheduleTime>
-                                            {/* <div>토글아이콘</div> */}
-
-                                        </div>
-                                    </ScheduleInfo>
-                                    <StyledIoIosArrowDown />
-                                </ViewScheduleButton>
-                            </ViewContainer>
-                        ))}
+                        <div>{SelectedDate}</div>
+                        <ViewScheduleBox
+                            showSchedules={showSchedules}
+                            isPast={isPast}
+                            isClickedAddButton={isClickedAddButton}
+                            date={SelectedDate}
+                            handleAddSchedule={handleAddSchedule}
+                        />
                     </DetailScheduleContainer>
                     {/* 일정 추가 버튼 */}
-                    {isPast ? null :
-                        <ButtonContainer>
-                            <AddScheduleButton>+ 일정 추가</AddScheduleButton>
-                        </ButtonContainer>
-                    }
+                    {isPast ? null : (
+                        isClickedAddButton ? 
+                            null :
+                            <ButtonContainer>
+                                <AddScheduleButton
+                                    onClick={handleClickAddButton}
+                                >+ 일정 추가</AddScheduleButton>
+                            </ButtonContainer>
+                    )}
                 </ScheduleContainer>
                 {/* 캘린더 */}
                 <Calendar
@@ -110,67 +115,14 @@ const DetailScheduleContainer = styled.div`
     /* margin-top: 5px; */
 `;
 
-// view schedule
-const ViewContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    margin: 20px 0px;
-`
-const ViewScheduleButton = styled.div`
-    width: 90%;
-    height: 20%;
-    /* border: 1px solid blue; */
-    border-radius: 15px;
-    padding: 10px;
-    color: white;
-    background-color: #8681CE;
 
-    display: flex;
-    flex-direction: column;
-    /* justify-content: center; */
-    /* align-items: center; */
-`;
-const CrewImage = styled.img`
-    width: 60px;
-    height: 60px;
-    /* border: 1px solid red; */
-    border-radius: 50%;
-    margin-left: 10px;
-`;
-const ScheduleInfo = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-right: 10px;
-    `;
-const CrewName = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    font-size: x-small;
-    margin-right: 10px;
-`;
-const DateSchedule = styled.div`
-    font-size: x-large;
-    font-weight: 600;
-`;
-const ScheduleTime = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    font-size: x-large;
-    font-weight: 600;
-`;
-const StyledIoIosArrowDown = styled(IoIosArrowDown)`
-    margin-top: 3px;
-    width: 180%;
-`;
-
-const ButtonContainer = styled.div`
+export const ButtonContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: flex-end;
     margin-bottom: 15px;
 `;
-const AddScheduleButton = styled.button`
+export const AddScheduleButton = styled.button`
     /* display: flex; */
     /* justify-content: center; */
     width: 90%;
