@@ -1,6 +1,6 @@
 
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { ItemContainer } from "./ViewScheduleBox";
+import { ItemContainer } from "../Styles/ViewSchedule.styles";
 import { RiEdit2Fill } from "react-icons/ri";
 import { FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
