@@ -53,6 +53,9 @@ export default function CrewSchedule() {
         setShowSchedules(filteredSchedules);
         setDate(activeStartDate);
     };
+    const handleDeleteSchedule = (id) => {
+        setSchedules((prevSchedules) => prevSchedules.filter(schedule => schedule.id !== id));
+    };
     return(
         <Wrapper>
             <FloatingMenu/>
@@ -68,6 +71,7 @@ export default function CrewSchedule() {
                             isClickedAddButton={isClickedAddButton}
                             date={SelectedDate}
                             handleAddSchedule={handleAddSchedule}
+                            deleteSchedule={handleDeleteSchedule}
                         />
                     </DetailScheduleContainer>
                     {/* 일정 추가 버튼 */}

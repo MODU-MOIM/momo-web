@@ -10,7 +10,7 @@ import { useState } from "react";
 import { AddScheduleButton, ButtonContainer } from "../CrewSchedule";
 import ScheduleDetail from "./ScheduleDetail";
 
-export default function ViewScheduleBox({showSchedules, setShowSchedules, isPast, isClickedAddButton, date, handleAddSchedule}) {
+export default function ViewScheduleBox({showSchedules, setShowSchedules, isPast, isClickedAddButton, date, handleAddSchedule, deleteSchedule}) {
     const [crew, setCrew] = useState('초코러닝(초보자 코스 러닝)');
     const [spot, setSpot] = useState('꿈트리 움 갤러리');
     const [time, setTime] = useState('18:00');
@@ -93,7 +93,8 @@ export default function ViewScheduleBox({showSchedules, setShowSchedules, isPast
                                     <>
                                         <StyledIoIosArrowUp />
                                         <ScheduleDetail
-                                        schedule={e}
+                                            schedule={e}
+                                            deleteSchedule={deleteSchedule}
                                         />
                                     </>
                                     : 

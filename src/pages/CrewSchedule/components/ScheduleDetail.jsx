@@ -5,7 +5,7 @@ import { RiEdit2Fill } from "react-icons/ri";
 import { FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
 
-export default function ScheduleDetail({schedule}) {
+export default function ScheduleDetail({schedule, deleteSchedule}) {
     const handleClick = (e) => {
         e.stopPropagation();  // isDetailVisible 변경 안되도록.
     };
@@ -24,7 +24,7 @@ export default function ScheduleDetail({schedule}) {
                 </SubButton>
                 {/* 삭제버튼 */}
                 <SubButton>
-                    <StyledFaTrashAlt />
+                    <StyledFaTrashAlt onClick={()=>deleteSchedule(schedule.id)}/>
                 </SubButton>
             </SubButtonContainer>
         </Wrapper>
