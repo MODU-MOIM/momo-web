@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import MainImage from "../../../assets/MainImage.png";
+import { IoIosArrowUp } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdAccessTimeFilled } from "react-icons/md";
@@ -7,8 +8,9 @@ import { MdOutlineArrowRight } from "react-icons/md";
 import moment from "moment";
 import { useState } from "react";
 import { AddScheduleButton, ButtonContainer } from "../CrewSchedule";
+import ScheduleDetail from "./ScheduleDetail";
 
-export default function ViewScheduleBox({showSchedules, isPast, isClickedAddButton, date, handleAddSchedule}) {
+export default function ViewScheduleBox({showSchedules, setShowSchedules, isPast, isClickedAddButton, date, handleAddSchedule}) {
     const [crew, setCrew] = useState('초코러닝(초보자 코스 러닝)');
     const [spot, setSpot] = useState('꿈트리 움 갤러리');
     const [time, setTime] = useState('18:00');
@@ -26,12 +28,17 @@ export default function ViewScheduleBox({showSchedules, isPast, isClickedAddButt
         };
         handleAddSchedule(newSchedule);
     };
+    const handleScheduleButton = (id) => {
+        // console.log(setShowSchedules);
+        setShowSchedules(showSchedules.map(schedule =>
+            schedule.id === id ? {...schedule, isDetailVisible: !schedule.isDetailVisible} : schedule
+        ));
+    }
 
     return(
         <>
                 <ViewContainer>
                     {isClickedAddButton && !isPast ? (
-                        
                         // add schedule 
                         <ViewScheduleButton>
                             <DateSchedule>{moment(date, "YYYY년 MM월 DD일").format("MM/DD (ddd)").toUpperCase()}</DateSchedule>
@@ -70,9 +77,9 @@ export default function ViewScheduleBox({showSchedules, isPast, isClickedAddButt
                             </ButtonContainer>
                         </ViewScheduleButton>
                     ) : (
-                            showSchedules.map((e, index)=>(
+                            showSchedules.map((e)=>(
                             // schedule box
-                            <ViewScheduleButton key={index}>
+                            <ViewScheduleButton key={e.id}  onClick={()=>handleScheduleButton(e.id)}>
                                 <CrewName>{e.crew}</CrewName>
                                 <ScheduleInfo>
                                     <CrewImage src={MainImage}/>
@@ -81,7 +88,17 @@ export default function ViewScheduleBox({showSchedules, isPast, isClickedAddButt
                                         <ScheduleTime>{e.time}</ScheduleTime>
                                     </div>
                                 </ScheduleInfo>
-                                <StyledIoIosArrowDown />
+                                {/* shcedule 세부사항 */}
+                                {e.isDetailVisible ?
+                                    <>
+                                        <StyledIoIosArrowUp />
+                                        <ScheduleDetail
+                                        schedule={e}
+                                        />
+                                    </>
+                                    : 
+                                    <StyledIoIosArrowDown />
+                                }
                             </ViewScheduleButton>
                         ))
                     )}
@@ -112,6 +129,10 @@ const ViewScheduleButton = styled.div`
     flex-direction: column;
     /* justify-content: center; */
     /* align-items: center; */
+    &:hover{
+        cursor: pointer;
+        /* background-color: ${(props) => props.isClickedAddButton ? '#8681CE' : '#786bcf'}; */
+    }
 `;
 const CrewImage = styled.img`
     width: 60px;
@@ -146,6 +167,10 @@ const StyledIoIosArrowDown = styled(IoIosArrowDown)`
     margin-top: 3px;
     width: 180%;
 `;
+const StyledIoIosArrowUp = styled(IoIosArrowUp)`
+    margin-top: 3px;
+    width: 180%;
+`;
 
 // add schedule
 const SelectCrewContainer = styled.div`
@@ -171,8 +196,9 @@ const CrewInfo = styled.div`
     display: flex;
     align-items: center;
 `;
-const ItemContainer = styled.div`
+export const ItemContainer = styled.div`
     display: flex;
+    align-items: center;
     margin: 10px;
     font-size: small;
 `;

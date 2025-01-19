@@ -14,9 +14,9 @@ export default function CrewSchedule() {
     const [isClickedAddButton, setIsClickedAddButton] = useState(false);
 
     const initialSchedule = [
-        {id: 1, crew: "초코러닝", spot:"꿈트리 움 갤러리", time: "18:00", date:"2025/01/04 (SAT)"},
-        {id: 2, crew: "초코러닝", spot:"경상북도 남매지", time: "18:00", date:"2025/01/19 (SUN)"},
-        {id: 3, crew: "초코러닝", spot:"경상북도 남매지", time: "19:00", date:"2024/12/20 (FRI)"},
+        {id: 1, crew: "초코러닝", spot:"꿈트리 움 갤러리", time: "18:00", date:"2025/01/04 (SAT)", isDetailVisible: false},
+        {id: 2, crew: "초코러닝", spot:"경상북도 남매지", time: "18:00", date:"2025/01/19 (SUN)", isDetailVisible: false},
+        {id: 3, crew: "초코러닝", spot:"경상북도 남매지", time: "19:00", date:"2024/12/20 (FRI)", isDetailVisible: false},
     ];
     
     const SelectedDate = moment(date).format("YYYY년 MM월 DD일");
@@ -63,6 +63,7 @@ export default function CrewSchedule() {
                         <div>{SelectedDate}</div>
                         <ViewScheduleBox
                             showSchedules={showSchedules}
+                            setShowSchedules={setShowSchedules}
                             isPast={isPast}
                             isClickedAddButton={isClickedAddButton}
                             date={SelectedDate}
