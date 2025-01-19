@@ -1,13 +1,15 @@
-
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { ItemContainer } from "../Styles/ViewSchedule.styles";
 import { RiEdit2Fill } from "react-icons/ri";
 import { FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
 
-export default function ScheduleDetail({schedule, deleteSchedule}) {
+export default function ScheduleDetail({schedule, deleteSchedule, setEditMode}) {
     const handleClick = (e) => {
         e.stopPropagation();  // isDetailVisible 변경 안되도록.
+    };
+    const handleEditClick = (id) => {
+        setEditMode(id);
     };
 
     return(
@@ -19,12 +21,12 @@ export default function ScheduleDetail({schedule, deleteSchedule}) {
             </ItemContainer>
             <SubButtonContainer>
                 {/* 수정 버튼 */}
-                <SubButton>
-                    <StyledRiEdit2Fill />
+                <SubButton onClick={()=>handleEditClick(schedule.id)}>
+                    <StyledRiEdit2Fill/>
                 </SubButton>
                 {/* 삭제버튼 */}
-                <SubButton>
-                    <StyledFaTrashAlt onClick={()=>deleteSchedule(schedule.id)}/>
+                <SubButton  onClick={()=>deleteSchedule(schedule.id)}>
+                    <StyledFaTrashAlt/>
                 </SubButton>
             </SubButtonContainer>
         </Wrapper>

@@ -12,6 +12,7 @@ export default function CrewSchedule() {
     const [schedules, setSchedules] = useState([]);
     const [showSchedules, setShowSchedules] = useState([]);
     const [isClickedAddButton, setIsClickedAddButton] = useState(false);
+    const [editMode, setEditMode] = useState(null);
 
     const initialSchedule = [
         {id: 1, crew: "초코러닝", spot:"꿈트리 움 갤러리", time: "18:00", date:"2025/01/04 (SAT)", isDetailVisible: false},
@@ -56,6 +57,12 @@ export default function CrewSchedule() {
     const handleDeleteSchedule = (id) => {
         setSchedules((prevSchedules) => prevSchedules.filter(schedule => schedule.id !== id));
     };
+    const handleUpdateSchedule = (updatedSchedule) => {
+        setSchedules(prevSchedules => prevSchedules.map(sch =>
+            sch.id === updatedSchedule.id ? updatedSchedule : sch
+        ));
+        setEditMode(null);  // 수정 모드 종료
+    };
     return(
         <Wrapper>
             <FloatingMenu/>
@@ -71,6 +78,9 @@ export default function CrewSchedule() {
                             isClickedAddButton={isClickedAddButton}
                             date={SelectedDate}
                             handleAddSchedule={handleAddSchedule}
+                            editMode={editMode}
+                            setEditMode={setEditMode}
+                            handleUpdateSchedule={handleUpdateSchedule}
                             deleteSchedule={handleDeleteSchedule}
                         />
                     </DetailScheduleContainer>
