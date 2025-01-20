@@ -32,11 +32,7 @@ export const authAPI = {
     getUserInfo: () => api.get('/users/me'),
     sendSms: phoneNumber => api.post('/auth/send-sms', { toPhoneNumber: phoneNumber }),
     verifySms: code => api.post('/auth/verify-sms', { verificationCode: code }),
-    uploadProfileImage: (formData) => api.post('/users/upload-profile', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    }),
+    uploadProfileImage: (formData) => api.post('/users/upload-profile', formData),
     updateUserInfo: (data) => api.put('/users', data),
 };
 

@@ -10,7 +10,7 @@ import * as S from "./Styles/Login.styles";
 
 const Login = () => {
     const navigate = useNavigate();
-    const { login, setUserInfo } = useAuth();
+    const { login } = useAuth();
 
     const [formData, setFormData] = useState({
         email: "",
