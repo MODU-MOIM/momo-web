@@ -18,7 +18,17 @@ export const AuthProvider = ({ children }) => {
     );
 
     // 사용자 정보 상태 관리
-    const [userInfo, setUserInfo] = useState(null);
+    const [userInfo, setUserInfo] = useState(() => {
+        const savedUserInfo = localStorage.getItem('userInfo');
+        if(savedUserInfo) {
+            try {
+                return JSON.parse(savedUserInfo);
+            } catch {
+                return null;
+            }
+        }
+        return null;
+    });
 
     // 로그인 처리 함수
     const login = async (tokenValue) => {
@@ -30,7 +40,11 @@ export const AuthProvider = ({ children }) => {
 
             // 로그인 후 사용자 정보 가져오기
             const response = await authAPI.getUserInfo();
-            setUserInfo(response.data.data);
+            const userData = response.data.data;
+            
+            // 사용자 정보를 state와 localStorage 모두에 저장
+            localStorage.setItem('userInfo', JSON.stringify(userData));
+            setUserInfo(userData);
         } catch (error) {
             console.error('사용자 정보 요청 실패:', error);
             logout();
@@ -41,6 +55,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userInfo');
         setIsLoggedIn(false);
         setToken(null);
         setUserInfo(null);
