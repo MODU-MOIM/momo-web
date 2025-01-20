@@ -16,9 +16,33 @@ const MyPage = ({ closeModal }) => {
     const [showAgeSelect, setShowAgeSelect] = useState(false); // 나이 선택
     const [age, setAge] = useState(''); // 나이 입력값
     const [showAgeInput, setShowAgeInput] = useState(false); // 나이 입력
-    const [updatedUserInfo, setUpdatedUserInfo] = useState(null); // 업데이트된 사용자 정보
+    const [loading, setLoading] = useState(true);
 
-    // 사용자 정보가 변경될 때마다 닉네임과 프로필 이미지 업데이트
+    // 컴포넌트 마운트 시 사용자 정보 가져오기
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const response = await authAPI.getUserInfo();
+                const userData = response.data.data;
+                setUserInfo(userData);
+                localStorage.setItem('userInfo', JSON.stringify(userData));
+                setNickname(userData.nickname || '');
+                setProfileImage(userData.profileImage || '');
+            } catch (error) {
+                console.error('사용자 정보 가져오기 실패:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (!userInfo) {
+            fetchUserInfo();
+        } else {
+            setLoading(false);
+        }
+    }, [setUserInfo]);
+
+    // 사용자 정보가 변경될 때마다 상태 업데이트
     useEffect(() => {
         if (userInfo) {
             setNickname(userInfo.nickname || '');
@@ -30,7 +54,6 @@ const MyPage = ({ closeModal }) => {
     const handleProfileImageUpload = async (file) => {
         if (!file) return;
     
-        // 이미지 파일 타입 체크
         if (!file.type.startsWith('image/')) {
             alert('이미지 파일만 업로드 가능합니다.');
             return;
@@ -38,24 +61,24 @@ const MyPage = ({ closeModal }) => {
     
         const formData = new FormData();
         formData.append('profileImage', file);
-
+    
         try {
             const response = await authAPI.uploadProfileImage(formData);
             const imageUrl = response.data.data;
-
+    
             setProfileImage(imageUrl);
             
             // 전역 유저 정보 업데이트
             if (userInfo) {
-                setUserInfo({
+                const updatedUserInfo = {
                     ...userInfo,
                     profileImage: imageUrl
-                });
+                };
                 setUserInfo(updatedUserInfo);
-
+                // localStorage 업데이트
                 localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
             }
-
+    
             alert('프로필 이미지가 업데이트되었습니다.');
         } catch (error) {
             console.error('프로필 이미지 업로드 실패:', error);

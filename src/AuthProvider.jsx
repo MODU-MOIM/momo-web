@@ -1,5 +1,5 @@
 // AuthProvider.jsx
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { authAPI } from './api';
 
 // 인증 관련 전역 상태를 관리할 Context 생성
@@ -20,15 +20,27 @@ export const AuthProvider = ({ children }) => {
     // 사용자 정보 상태 관리
     const [userInfo, setUserInfo] = useState(() => {
         const savedUserInfo = localStorage.getItem('userInfo');
-        if(savedUserInfo) {
-            try {
-                return JSON.parse(savedUserInfo);
-            } catch {
-                return null;
-            }
-        }
-        return null;
+        return savedUserInfo ? JSON.parse(savedUserInfo) : null;
     });
+
+    // 페이지 로드 시 사용자 정보 가져오기
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            if (isLoggedIn && token) {
+                try {
+                    const response = await authAPI.getUserInfo();
+                    const userData = response.data.data;
+                    localStorage.setItem('userInfo', JSON.stringify(userData));
+                    setUserInfo(userData);
+                } catch (error) {
+                    console.error('사용자 정보 가져오기 실패:', error);
+                    logout();
+                }
+            }
+        };
+
+        fetchUserInfo();
+    }, [isLoggedIn, token]);
 
     // 로그인 처리 함수
     const login = async (tokenValue) => {
@@ -38,11 +50,8 @@ export const AuthProvider = ({ children }) => {
             setIsLoggedIn(true);
             setToken(tokenValue);
 
-            // 로그인 후 사용자 정보 가져오기
             const response = await authAPI.getUserInfo();
             const userData = response.data.data;
-            
-            // 사용자 정보를 state와 localStorage 모두에 저장
             localStorage.setItem('userInfo', JSON.stringify(userData));
             setUserInfo(userData);
         } catch (error) {
