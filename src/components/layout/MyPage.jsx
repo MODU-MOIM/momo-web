@@ -16,6 +16,7 @@ const MyPage = ({ closeModal }) => {
     const [showAgeSelect, setShowAgeSelect] = useState(false); // 나이 선택
     const [age, setAge] = useState(''); // 나이 입력값
     const [showAgeInput, setShowAgeInput] = useState(false); // 나이 입력
+    const [updatedUserInfo, setUpdatedUserInfo] = useState(null); // 업데이트된 사용자 정보
 
     // 사용자 정보가 변경될 때마다 닉네임과 프로필 이미지 업데이트
     useEffect(() => {
@@ -50,6 +51,9 @@ const MyPage = ({ closeModal }) => {
                     ...userInfo,
                     profileImage: imageUrl
                 });
+                setUserInfo(updatedUserInfo);
+
+                localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
             }
 
             alert('프로필 이미지가 업데이트되었습니다.');
@@ -81,7 +85,10 @@ const MyPage = ({ closeModal }) => {
             });
     
             if (response.data.data) {
-                setUserInfo(prev => ({...prev, ...response.data.data}));
+                const updatedUserInfo = {...userInfo, ...response.data.data};
+                setUserInfo(updatedUserInfo);
+                // localStorage도 함께 업데이트
+                localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
                 setShowGenderSelect(false);  // 성공 시에만 UI 닫기
             }
         } catch (error) {
@@ -89,6 +96,7 @@ const MyPage = ({ closeModal }) => {
             alert('성별 업데이트에 실패했습니다.');
         }
     };
+    
 
     // 성별 표시 텍스트 변환
     const displayGender = (gender) => {
@@ -110,9 +118,12 @@ const MyPage = ({ closeModal }) => {
                 cp: userInfo.cp,
                 gender: userInfo.gender
             });
-
+    
             if (response.data.data) {
-                setUserInfo(prev => ({...prev, ...response.data.data}));
+                const updatedUserInfo = {...userInfo, ...response.data.data};
+                setUserInfo(updatedUserInfo);
+                // localStorage도 함께 업데이트
+                localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
                 setShowAgeInput(false);
                 setAge('');
             }
