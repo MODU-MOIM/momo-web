@@ -11,9 +11,9 @@ import UpdateNotice from "../pages/CrewNotice/Components/UpdateNotice";
 import CrewNotice from "../pages/CrewNotice/CrewNotice";
 import Setting from "../pages/CrewSetting/CrewSetting";
 import Home from "../pages/home/Home";
+import CrewSchedule from "../pages/CrewSchedule/CrewSchedule";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
-
 
 const Router = () => {
     return(
@@ -33,6 +33,7 @@ const Router = () => {
                     <Route path="crewCommunity" element={<Community />} />
                     <Route path="crewSetting" element={<Setting />} />
                 </Route>
+                <Route path="/crew/crewSchedule" element={<CrewSchedule />} />
             </Route>
         </Routes>
     )
