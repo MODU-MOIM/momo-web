@@ -1,17 +1,26 @@
 import React, { useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
+import { useAuth } from "../../AuthProvider";
 import Mypage from "./MyPage";
-
-
 import * as S from "./Styles/Header.styles";
 
 const Header = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const { isLoggedIn, logout } = useAuth();
 
     const togglePopup = () => {
         setIsPopupOpen(!isPopupOpen);
     };
 
+    const handleLogout = async () => {
+        try {
+            await logout();
+            closeModal();
+        } catch (error) {
+            console.error('로그아웃 실패:', error);
+        }
+    };
+    
     const closeModal = () => {
         setIsPopupOpen(false);
     }
@@ -26,13 +35,19 @@ const Header = () => {
                     <S.StyledNavLink>핫 플레이스</S.StyledNavLink>
                 </S.Nav>
                 <S.AuthButtons>
-                    {/* 로그인 기능 구현 후 uid를 통해 uid가 있으면 userbutton출력 */}
-                    <S.UserButton onClick={togglePopup}>
-                        <AiOutlineUser size={21} />
-                    </S.UserButton>
-                    {/* uid가 없으면 로그인 회원가입 버튼 출력 */}
-                    <S.StyledLoginLink to="/login">로그인</S.StyledLoginLink>
-                    <S.StyledLoginLink to="/signup">회원가입</S.StyledLoginLink>
+                    {isLoggedIn ? (
+                        <>
+                            <S.UserButton onClick={togglePopup}>
+                                <AiOutlineUser size={21} />
+                            </S.UserButton>
+                            <S.StyledLoginLink onClick={handleLogout}>로그아웃</S.StyledLoginLink>
+                        </>
+                    ) : (
+                        <>
+                            <S.StyledLoginLink to="/login">로그인</S.StyledLoginLink>
+                            <S.StyledLoginLink to="/signup">회원가입</S.StyledLoginLink>
+                        </>
+                    )}
                 </S.AuthButtons>
             </S.Container>
             {isPopupOpen && <Mypage closeModal={closeModal}/>}

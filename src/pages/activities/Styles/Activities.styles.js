@@ -105,7 +105,7 @@ export const CrewMember = styled.div`
 `;
 
 export const Setting = styled.div`
-    width:100%;
+    width: 100%;
     height:50px;
 
     & > * {
@@ -115,3 +115,7 @@ export const Setting = styled.div`
         cursor: pointer;
     }
 `
+
+export const Link = styled(RouterNavLink)`
+    border:1px solid red;
+`;

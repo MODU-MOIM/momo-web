@@ -172,7 +172,7 @@ export const ButtonWrapper = styled.div`
 
 // Login.jsx
 
-export const LoginForm = styled.div`
+export const LoginForm = styled.form`
     width: 300px;
     margin: 0 auto;
 `;
@@ -216,4 +216,11 @@ export const SocialButton = styled.button`
 
 export const Social = styled.img`
     width: 22px;
+`;
+
+export const ErrorMessage = styled.p`
+    color: #ff0000;
+    font-size: 14px;
+    margin: 10px 0;
+    text-align: center;
 `;
