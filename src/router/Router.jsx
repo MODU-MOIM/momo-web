@@ -3,15 +3,16 @@ import Layout from "../components/layout/Layout";
 import Activities from "../pages/activities/Activities";
 import Details from "../pages/activities/components/Details";
 import Community from "../pages/community/Community";
+import WriteCommunity from "../pages/community/components/WriteCommunity";
 import CrewCreate from "../pages/CrewCreate/CrewCreate";
 import CrewHome from "../pages/CrewHome/CrewHome";
 import CrewMain from "../pages/CrewMain/CrewMain";
 import AddNotice from "../pages/CrewNotice/Components/AddNotice";
 import UpdateNotice from "../pages/CrewNotice/Components/UpdateNotice";
 import CrewNotice from "../pages/CrewNotice/CrewNotice";
+import CrewSchedule from "../pages/CrewSchedule/CrewSchedule";
 import Setting from "../pages/CrewSetting/CrewSetting";
 import Home from "../pages/home/Home";
-import CrewSchedule from "../pages/CrewSchedule/CrewSchedule";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
 
