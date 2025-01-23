@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import FloatingMenu from "./components/FloatingMenu";
 import { Outlet } from "react-router-dom";
+import styled from "styled-components";
 import Banner from "../activities/components/Banner";
+import FloatingMenu from "./components/FloatingMenu";
 
 export default function CrewMain() {
     return(

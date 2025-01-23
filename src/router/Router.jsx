@@ -34,6 +34,7 @@ const Router = () => {
                     <Route path="crewSetting" element={<Setting />} />
                 </Route>
                 <Route path="/crew/crewSchedule" element={<CrewSchedule />} />
+                <Route path="/crew/crewCommunity/write" element={<WriteCommunity />} />
             </Route>
         </Routes>
     )
