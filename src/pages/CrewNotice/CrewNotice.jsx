@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function CrewNotice() {
     const navigate = useNavigate();
+    const accessToken = localStorage.getItem('token');
     const [notices, setNotices] = useState([]);
     const initialNotices = [
         { id: 1, content: "첫 번째 공지사항 내용입니다.\ndd", date: "2024.12.10 (화)", time: "12:00", isPinned: false, isOpenedMenu: false },
@@ -35,8 +36,12 @@ export default function CrewNotice() {
         setNotices(currentNotices => sortNotices([...currentNotices]));
     }, []);
     
-    // 경로 추가하기 
-    const linktoAddNotice = () => navigate('/crew/addNotice');
+    // crewId 전달하기
+    const linktoAddNotice = () => {
+        if(accessToken){
+            navigate('/crew/addNotice');
+        }
+    }
     
     const togglePin = (id) => {
         setNotices(sortNotices(notices.map(notice => 

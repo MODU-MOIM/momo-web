@@ -39,7 +39,8 @@ export const VoteBox = styled.div`
     border-radius: 5px;
     display: ${props => props.shouldHide ? 'none' : 'inline-block'};
 `;
-export const VoteTitle = styled.ul`
+export const VoteTitle = styled.input`
+    margin: 10px 0px 0px 10px;
 `;
 export const SelectBox = styled.div`
 `;
@@ -61,7 +62,7 @@ export const VoteButton = styled.button`
     border-radius: 10px;
     background-color: #F0F0F0;
     display: ${props => props.shouldHide ? 'none' : 'inline-block'};
-    color: ${props => props.isDeleted ? "black" : "red"};
+    color: ${props => props.isEnabled ? "red" : "black"};
     &:hover{
         background-color: #D8D8D8;
         cursor: pointer;

@@ -62,4 +62,8 @@ export const authAPI = {
     
 };
 
+export const noticeAPI = {
+   createNotice: (crewId, data) => api.post(`/crews/${crewId}/notices`, data),
+};
+
 export default api;
