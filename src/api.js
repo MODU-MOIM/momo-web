@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: 'http://13.124.54.225:8080/',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -62,8 +62,14 @@ export const authAPI = {
     
 };
 
+const token = localStorage.getItem('token');
 export const noticeAPI = {
-   createNotice: (crewId, data) => api.post(`/crews/${crewId}/notices`, data),
+   createNotice (crewId, noticeData){
+    return api.post(`http://13.124.54.225:8080/crews/${crewId}/notices`, noticeData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+    })}
 };
 
 export default api;

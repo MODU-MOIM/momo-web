@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 export default function FloatingMenu() {
+    const crewId = "1";
     const navigate = useNavigate();
     const [selectedMenu, setSelectedMenu] = useState();
     
@@ -17,7 +18,7 @@ export default function FloatingMenu() {
     
     const handleNavigate = (path) => {
         setSelectedMenu(path);
-        navigate(`/crew/${path}`);
+        navigate(`/crew/${crewId}/${path}`);
     }
     
     return(

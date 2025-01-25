@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import * as S from "../Styles/Notice.styles";
 import { noticeAPI } from "../../../api";
+import { useParams } from "react-router-dom";
 
-export default function AddNotice({crewId}) {
+export default function AddNotice() {
+    const { crewId } = useParams(); //crewId 받기
     const [isEnabled, setIsEnabled] = useState(true);
     const [voteInfo, setVoteInfo] = useState({});
     const [notice, setNotice] = useState("");

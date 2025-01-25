@@ -30,7 +30,7 @@ const Header = () => {
             <S.Logo to="/">Logo</S.Logo>
             <S.Container>
                 <S.Nav>
-                    <S.StyledNavLink to="/crew">크루</S.StyledNavLink>
+                    <S.StyledNavLink to="/crew/1/crewHome">크루</S.StyledNavLink>
                     <S.StyledNavLink to="">피드</S.StyledNavLink>
                     <S.StyledNavLink>핫 플레이스</S.StyledNavLink>
                 </S.Nav>

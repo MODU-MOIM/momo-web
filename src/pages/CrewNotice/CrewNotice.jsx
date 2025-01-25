@@ -38,8 +38,9 @@ export default function CrewNotice() {
     
     // crewId 전달하기
     const linktoAddNotice = () => {
+        const crewId = "1";
         if(accessToken){
-            navigate('/crew/addNotice');
+            navigate(`/crew/${crewId}/addNotice`);
         }
     }
     
