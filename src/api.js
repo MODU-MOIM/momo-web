@@ -36,4 +36,13 @@ export const authAPI = {
     updateUserInfo: (data) => api.put('/users', data),
 };
 
+export const crewAPI = {
+    uploadImage: (formData) => api.post('/crews/images', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }),
+    createIntro: (data) => api.post('/crews', data)
+}
+
 export default api;
