@@ -42,16 +42,23 @@ export const VoteBox = styled.div`
 export const VoteTitle = styled.input`
     margin: 10px 0px 0px 10px;
 `;
+export const VoteTitleText = styled.div`
+    margin: 10px 0px 0px 10px;
+`;
 export const SelectBox = styled.div`
 `;
 export const SelectList = styled.li`
     margin: 10px;
     padding: 5px;
     padding-left: 10px;
-    font-size: 15px;
+    font-size: small;
     list-style-type: none;
-    border: 1px solid #D4E3FB;
+    border: ${props => props.userVote ? 'none' : '1px solid #D4E3FB'};
     border-radius: 10px;
+    &:hover{
+        cursor: pointer;
+        background-color: ${props => props.userVote ? '#D4E3FB' : 'transparent'};
+    }
 `;
 export const ButtonContainer = styled.div`
 `;

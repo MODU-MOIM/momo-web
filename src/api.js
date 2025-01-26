@@ -13,7 +13,7 @@ api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
         if (token) {
-            config.headers.Authorization = token;
+            config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     },
@@ -62,14 +62,10 @@ export const authAPI = {
     
 };
 
-const token = localStorage.getItem('token');
 export const noticeAPI = {
    createNotice (crewId, noticeData){
-    return api.post(`http://13.124.54.225:8080/crews/${crewId}/notices`, noticeData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-    })}
+    return api.post(`crews/${crewId}/notices`, noticeData)
+   }
 };
 
 export default api;

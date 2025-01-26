@@ -3,9 +3,10 @@ import { BsPinAngleFill } from "react-icons/bs";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as S from "../Styles/Notice.styles";
 
 // user정보도 받아오기 (이름, 포지션)
-export default function NoticeList({notices, togglePin, toggleMenu, setNotices}) {
+export default function NoticeList({noticeList, togglePin, toggleMenu, setNoticeList}) {
     const navigate = useNavigate();
     const [isManager, setIsManager] = useState(true);
     const menuRefs = useRef([]);
@@ -24,26 +25,26 @@ export default function NoticeList({notices, togglePin, toggleMenu, setNotices})
         // 삭제페이지 이동(notice.id에 맞는) => 경고창 띄워야함
         if (window.confirm("정말로 삭제하시겠습니까?")) {
             // 공지 삭제 후 상태 업데이트
-            setNotices(currentNotices => currentNotices.filter(notice => notice.id !== id));
+            setNoticeList(currentnoticeList => currentnoticeList.filter(notice => notice.id !== id));
         }
         // console.log("삭제: ", id);
     }
     // 메뉴 열린 상태에서 외부영역 클릭 시 닫힘
     useEffect(() => {
         function handleClickOutside(e) {
-            if (notices.some((notice, index) => notice.isOpenedMenu && menuRefs.current[index] && !menuRefs.current[index].contains(e.target))) {
-                setNotices(notices.map(notice => ({...notice, isOpenedMenu: false})));
+            if (noticeList.some((notice, index) => notice.isOpenedMenu && menuRefs.current[index] && !menuRefs.current[index].contains(e.target))) {
+                setNoticeList(noticeList.map(notice => ({...notice, isOpenedMenu: false})));
             }   
         }
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [notices]);
+    }, [noticeList]);
 
     return(
         <Wrapper>
-            {notices.map((notice, index)=>(
+            {noticeList.map((notice, index)=>(
                 <>
                     <SubContainer key={notice.id}>
                         {notice.isOpenedMenu && 
@@ -82,9 +83,29 @@ export default function NoticeList({notices, togglePin, toggleMenu, setNotices})
                             </SettingContainer>
                         </TopContainer>
                         <NoticeContainer>
-                            {notice.content.split('\n').map((item)=>(
-                                <div>{item}<br/></div>
-                            ))}
+                            <Notice>
+                                {notice.content.split('\n').map((item)=>(
+                                    <div>{item}<br/></div>
+                                ))}
+                            </Notice>
+                        {notice.isEnabled ? 
+                            <Vote>
+                                <S.VoteContainer style={{margin: "0"}}>
+                                    <S.VoteBox style={{fontSize: "small"}}>
+                                        <S.VoteTitleText>정모 참여 투표</S.VoteTitleText>
+                                        <S.SelectBox>
+                                                <S.SelectList 
+                                                    userVote
+                                                >참여</S.SelectList>
+                                                <S.SelectList 
+                                                    userVote
+                                                >미참여</S.SelectList>
+                                        </S.SelectBox>
+                                    </S.VoteBox>
+                                </S.VoteContainer>
+                            </Vote>
+                        : null
+                        }
                         </NoticeContainer>
                     </Container>
                 </>
@@ -173,9 +194,13 @@ const StyledBsThreeDotsVertical = styled(BsThreeDotsVertical)`
 `;
 
 const NoticeContainer = styled.div`
-    margin: 10px 70px 40px 70px;
+    margin: 10px 30px 0px 70px;
+    display: flex;
 `;
-// const NoticeListItem = styled.div``;
+const Notice = styled.div`
+    margin-bottom: 40px;
+    width: 70%;
+`;
 const SubContainer = styled.div`
     position: absolute;
     padding-left: 760px;
@@ -192,4 +217,12 @@ const MenuItem = styled.div`
     &:hover {
         background-color: #f0f0f0;
     }
+`;
+
+const Vote = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    /* height: 200px; */
+    margin-right: 20px;
 `;

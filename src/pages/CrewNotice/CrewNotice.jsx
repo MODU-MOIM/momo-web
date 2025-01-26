@@ -2,24 +2,16 @@ import styled from "styled-components";
 import NoticeList from "./Components/NoticeList";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useNotices } from "./NoticeProvider";
 
 export default function CrewNotice() {
     const navigate = useNavigate();
     const accessToken = localStorage.getItem('token');
-    const [notices, setNotices] = useState([]);
-    const initialNotices = [
-        { id: 1, content: "첫 번째 공지사항 내용입니다.\ndd", date: "2024.12.10 (화)", time: "12:00", isPinned: false, isOpenedMenu: false },
-        { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.10 (화)", time: "13:00", isPinned: false, isOpenedMenu: false },
-        { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12 (목)", time: "03:00", isPinned: false, isOpenedMenu: false }
-    ];
-    
-    useEffect(()=>{
-        setNotices(initialNotices);
-    },[]);
+    const { noticeList, setNoticeList } = useNotices();
     
     // 공지들 정렬
-    const sortNotices = (notices) => {
-        return [...notices].sort((a, b) => {
+    const sortNoticeList = (noticeList) => {
+        return [...noticeList].sort((a, b) => {
             if (b.isPinned !== a.isPinned) {
                 // isPinned == true인 notice를 상단에 배치
                 return b.isPinned - a.isPinned;
@@ -33,7 +25,7 @@ export default function CrewNotice() {
         });
     };
     useEffect(() => {
-        setNotices(currentNotices => sortNotices([...currentNotices]));
+        setNoticeList(currentNoticeList => sortNoticeList([...currentNoticeList]));
     }, []);
     
     // crewId 전달하기
@@ -45,13 +37,13 @@ export default function CrewNotice() {
     }
     
     const togglePin = (id) => {
-        setNotices(sortNotices(notices.map(notice => 
+        setNoticeList(sortNoticeList(noticeList.map(notice => 
             notice.id === id ? {...notice, isPinned: !notice.isPinned} : notice)
         ));
-        console.log(notices);
+        console.log(noticeList);
     };
     const toggleMenu = (id)=>{
-        setNotices(notices.map(notice=>
+        setNoticeList(noticeList.map(notice=>
             notice.id === id ? {...notice, isOpenedMenu: !notice.isOpenedMenu} : notice
         ));
     };
@@ -62,10 +54,10 @@ export default function CrewNotice() {
             {/* 무한스크롤 적용해야 함 */}
             <NoticeContainer>
                 <NoticeList 
-                    notices={notices}
+                    noticeList={noticeList}
                     togglePin={togglePin}
                     toggleMenu={toggleMenu}
-                    setNotices={setNotices}
+                    setNoticeList={setNoticeList}
                 />
             </NoticeContainer>
         </Wrapper>

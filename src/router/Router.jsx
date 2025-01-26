@@ -14,6 +14,7 @@ import Home from "../pages/home/Home";
 import CrewSchedule from "../pages/CrewSchedule/CrewSchedule";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
+import { NoticeProvider } from "../pages/CrewNotice/NoticeProvider";
 
 const Router = () => {
     return(
@@ -25,8 +26,8 @@ const Router = () => {
                 <Route path="/crewcreate" element={<CrewCreate />} />
                 <Route path="/crew/:crewId" element={<CrewMain />}>
                     <Route path="crewHome" element={<CrewHome />} />
-                    <Route path="crewNotice" element={<CrewNotice />} />
-                    <Route path="addNotice" element={<AddNotice />} />
+                    <Route path="crewNotice" element={<NoticeProvider><CrewNotice /></NoticeProvider>} />
+                    <Route path="addNotice" element={<NoticeProvider><AddNotice /></NoticeProvider>} />
                     <Route path="updateNotice/:noticeId" element={<UpdateNotice />} />
                     <Route path="crewActivity" element={<Activities />} />
                     <Route path="crewActivity/:index" element={<Details />} />

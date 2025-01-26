@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import * as S from "../Styles/Notice.styles";
 import { noticeAPI } from "../../../api";
 import { useParams } from "react-router-dom";
+import { useNotices } from "../NoticeProvider";
 
 export default function AddNotice() {
     const { crewId } = useParams(); //crewId 받기
+    const { noticeList, setNoticeList } = useNotices();
     const [isEnabled, setIsEnabled] = useState(true);
     const [voteInfo, setVoteInfo] = useState({});
     const [notice, setNotice] = useState("");
@@ -23,19 +25,19 @@ export default function AddNotice() {
 
     const handleSubmit = async ()=>{
         try{
-            // const now = new Date();
-            // const year = now.getFullYear();  // 현재 년도
-            // const month = now.getMonth() + 1;  // 월 (0부터 시작하므로 +1)
-            // const day = now.getDate();  // 일
-            // const hours = now.getHours();  // 시
-            // const minutes = now.getMinutes();  // 분
-            // const dayOfWeek = now.getDay();  // 요일 번호 (0-6)
-            // // 요일 배열, 인덱스 0부터 일요일, 월요일, ..., 토요일
-            // const days = ["일", "월", "화", "수", "목", "금", "토"];
-            // // // 2024.12.14 (토) 같은 형식
-            // const formatDate = `${year}.${month.toString().padStart(2, '0')}.${day.toString().padStart(2, '0')} (${days[dayOfWeek]})`;
-            // // // 17:03 같은 형식
-            // const formatTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            const now = new Date();
+            const year = now.getFullYear();  // 현재 년도
+            const month = now.getMonth() + 1;  // 월 (0부터 시작하므로 +1)
+            const day = now.getDate();  // 일
+            const hours = now.getHours();  // 시
+            const minutes = now.getMinutes();  // 분
+            const dayOfWeek = now.getDay();  // 요일 번호 (0-6)
+            // 요일 배열, 인덱스 0부터 일요일, 월요일, ..., 토요일
+            const days = ["일", "월", "화", "수", "목", "금", "토"];
+            // // 2024.12.14 (토) 같은 형식
+            const formatDate = `${year}.${month.toString().padStart(2, '0')}.${day.toString().padStart(2, '0')} (${days[dayOfWeek]})`;
+            // // 17:03 같은 형식
+            const formatTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
            
             const noticeData = isEnabled ? {
                 content: notice,
@@ -52,6 +54,20 @@ export default function AddNotice() {
     
             // console.log("날짜: ",formatDate);
             // console.log("시간: ",formatTime);
+            const token = localStorage.getItem('token');
+            console.log('Loaded token:', token);
+            console.log("Notice data being sent:", noticeData);
+            const newNoticeInfo = {
+                id: noticeList.length + 1,
+                content: notice,
+                date: formatDate,
+                time: formatTime,
+                isPinned: false,
+                isOpenedMenu: false,
+                isEnabled: isEnabled,
+            }
+            console.log(newNoticeInfo);
+            setNoticeList(prev=>[...prev, newNoticeInfo]);
             await noticeAPI.createNotice(crewId, noticeData);
             alert("공지가 생성되었습니다");
         } catch (error) {
