@@ -3,6 +3,7 @@ import styled from "styled-components";
 import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
 import { AgeSelect, GenderSelect } from "./Components/SelectBox";
+import CrewIntroEditor from "./Components/CrewIntroEditor";
 
 export default function CrewCreate() {
     const [crewName, setCrewName] = useState("");
@@ -106,11 +107,12 @@ export default function CrewCreate() {
                 </CrewSettings>
         
                 {/* <ItemTitle>크루 설명</ItemTitle> */}
-                <CrewIntro
+                {/* <CrewIntro
                     value={crewIntro}
                     onChange={handleCrewIntro}
                     placeholder="크루 설명을 입력해주세요"
-                />
+                /> */}
+                <CrewIntroEditor/>
                 <SubmitContainer>
                     <CreateButton onClick={handleSubmit}>완료</CreateButton>
                 </SubmitContainer>
