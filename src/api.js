@@ -12,7 +12,9 @@ const api = axios.create({
 api.interceptors.request.use(
     config => {
         const token = localStorage.getItem('token');
-        if (token && config.url !== '/auth/reissue') {
+
+        // 토큰이 있고 재발급 요청이 아닌 경우 헤더에 토큰 추가
+        if (token && !config.url.includes('reissue')) {
             config.headers['Authorization'] = token;
         }
         // 파일 업로드 요청인 경우 Content-Type 헤더 제거
