@@ -25,13 +25,16 @@ export default function CrewIntroEditor() {
     }
     const [content, setContent] = useState('')   
 
+    const srcArray =[];
+    const urlArray =[];
+    // const [srcArray, setSrcArray] = useState([]); // src만 추출
+    // const [urlArray, setUrlArray] = useState([]); // 최종 url
+    const gainSource = useMemo(() => /(<img[^>]*src\s*=\s*[\"']?([^>\"']+)[\"']?[^>]*>)/g, []);
+    
     const onChagecontent = (e) => {
         console.log(e);
         setContent(e);
     }
-    const [srcArray, setSrcArray] = useState([]);
-    const [urlArray, setUrlArray] = useState([]);
-    const gainSource = useMemo(() => /(<img[^>]*src\s*=\s*[\"']?([^>\"']+)[\"']?[^>]*>)/g, []);
     // base64파일 Blop으로 바꾸기
     const convertBase64ToFile = (base64String) => {
         const byteString = atob(base64String.split(",")[1]);
@@ -40,51 +43,62 @@ export default function CrewIntroEditor() {
         for (let i = 0; i < byteString.length; i++) {
             ia[i] = byteString.charCodeAt(i);
         }
-        const blob = new Blob([ia], { type: "image/png" });
-        return new File([blob], "testimg.png");
+        const blob = new Blob([ia], { type: "image/jpeg" }); // 이 부분이 이해가 잘 안되는구먼유
+        return new File([blob], "image.jpg");
     };
 
     async function Save(){
         try{
             let match;
             while ((match = gainSource.exec(content)) !== null) {
-                const file = convertBase64ToFile(match[2]);
+                let result = match[2];
+                srcArray.push(result);
+                console.log('srcArray 추가: ',srcArray);
+
+                const file = convertBase64ToFile(result);
                 const formData = new FormData();
                 formData.append("crewImage", file);
 
-                console.log('formData: ',formData)
-                // const config = {
-                //     headers : {
-                //         'content-type': 'multipart/form-data',
-                //         'Authorization': localStorage.getItem('token')
-                //     }
-                
-                    for (let pair of formData.entries()) {
-                        console.log(pair[0], pair[1]);
-                    }
-                    // console.log('Request URL:', '/crews/images');
-                    // console.log('Headers:', config.headers);
-                    
-                    const response = await crewAPI.uploadImage(formData);
-                    if(response.status === 200 && response.data.data.crewImageUrl){
-                        setSrcArray(prev => [...prev, response.data.data.crewImageUrl]);
-                        console.log("scrArray : ", srcArray)
-                        console.log("이미지 서버에 업로드 성공", response);
-                    }else{
-                        console.log("fail:", response);
-                        alert("이미지 업로드 실패");
-                    }
-                    // let updatedContent = content;
-                    // updatedContent = updatedContent.replace(match[2], response.data.data.crewImageUrl);
-                    // setContent(updatedContent);
+                console.log('formData:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(key, value);
                 }
-                const postData = {
-                    content: content
-                    // 필요한 다른 데이터도 추가
-                };
-                console.log("postData: ",postData)
-                console.log("Test:", srcArray)
-            
+                
+                const config = {
+                    headers : {
+                        'content-type': 'multipart/form-data',
+                        'Authorization': localStorage.getItem('token')
+                    }
+                }
+                await crewAPI.uploadImage(formData, config)
+                .then(response => {
+                    if(response.data.status == 200){
+                        console.log("이미지 서버에 업로드 성공", response);
+                        urlArray.push(response.data.data.crewImageUrl);
+                        console.log("urlArray 추가", urlArray);
+                    } else{
+                        console.log("이미지 서버에 업로드 실패: ", response);
+                        console.log("formData.keys : ", formData.keys());
+                        console.log("formData.values : ", formData.values());
+                    }
+                })
+                
+            }
+            let updateContent = content;
+            if(srcArray.length > 0) {   
+                console.log('실행은 됐음..')             
+                for(let i = 0; i<srcArray.length; i++) {
+                    console.log('실행중.. '+i+' 번째임');
+                    console.log('srcArray[i]: ',srcArray[i],'urlArray[i]: ',urlArray[i]);
+                    let replace = updateContent.replace(srcArray[i],urlArray[i]);
+                    updateContent = replace;
+                    console.log('바뀌었는지 테스트',updateContent);
+                } 
+            }
+            console.log('updateContent:', updateContent);
+            console.log('최종 urlArray', urlArray);
+            console.log('최종 srcArray: ',srcArray);
+
         } catch (error) {
             console.error('Error details:', {
                 message: error.message,
@@ -95,20 +109,6 @@ export default function CrewIntroEditor() {
             console.error('처리 중 오류:', error);
             throw error;
         }
-
-        if(srcArray.length > 0) {   
-            console.log('실행은 됐음..')             
-            for(let i = 0; i<srcArray.length; i++) {
-                console.log('실행중.. '+i+' 번째임')
-                console.log('srcArray[i]: ',srcArray[i],'urlArray[i]: ',urlArray[i])
-                let replace = content.replace(srcArray[i],urlArray[i])
-                setContent(replace);
-                console.log('바뀌었는지 테스트',content)
-            } 
-        } // 없다면 content=content
-
-
-
 
     }
     return(

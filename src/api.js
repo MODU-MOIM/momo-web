@@ -37,11 +37,7 @@ export const authAPI = {
 };
 
 export const crewAPI = {
-    uploadImage: (formData) => api.post('/crews/images', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    }),
+    uploadImage: (formData, config) => api.post('/crews/images', formData, config),
     createIntro: (data) => api.post('/crews', data)
 }
 
