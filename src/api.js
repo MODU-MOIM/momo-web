@@ -56,7 +56,7 @@ api.interceptors.response.use(
                 // 토큰 재발급 실패 시 로그인 페이지로 이동
                 console.error('토큰 재발급 실패:', error);
                 localStorage.removeItem('token');
-                window.location.href = '/signin';
+                window.location.href = '/login';
             }
         }
         // 그 외 에러는 그대로 반환
