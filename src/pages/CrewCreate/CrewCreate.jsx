@@ -11,10 +11,10 @@ export default function CrewCreate() {
     const [region, setRegion] = useState([]);
     const [minNumber, setMinNumber] = useState();
     const [maxNumber, setMaxNumber] = useState();
-    const [crewIntro, setCrewIntro] = useState("");
     const [gender, setGender] = useState('noLimit');
     const [minAge, setMinAge] = useState('noLimit');
     const [maxAge, setMaxAge] = useState('noLimit');
+    const [infoContent, setInfoContent] = useState();
     
     const handleCrewName = (e) => setCrewName(e.target.value);
     const handleCategory = (selectedCategory) => setCategory(selectedCategory);
@@ -24,18 +24,27 @@ export default function CrewCreate() {
     const handleGender = (slectedGender) => setGender(slectedGender);
     const handleMinAge = (selectedMinAge) => setMinAge(selectedMinAge);
     const handleMaxAge = (selectedMaxAge) => setMaxAge(selectedMaxAge);
-    const handleCrewIntro = (e) => setCrewIntro(e.target.value);
 
     const handleSubmit = () => {
-        console.log(crewName);
-        console.log(category);
-        console.log(region);
-        console.log(minNumber);
-        console.log(maxNumber);
-        console.log(gender);
-        console.log(minAge);
-        console.log(maxAge);
-        console.log(crewIntro);
+        const submitData = {
+            name: crewName,
+            category: category.title,
+            decription: infoContent, //api
+            minMembers: minNumber,
+            maxMembers: maxNumber,
+            regions: region,    // ...
+        }
+        // 제한없음 상태이면 해당 필드 제외
+        if (minAge !== 'noLimit') {
+            submitData.minAge = minAge;
+        }
+        if (maxAge !== 'noLimit') {
+            submitData.maxAge = maxAge;
+        }
+        if (gender !== 'noLimit') {
+            submitData.genderRestriction = gender;
+        }
+        console.log(submitData);
     }
     
     return(
@@ -106,12 +115,7 @@ export default function CrewCreate() {
                     
                 </CrewSettings>
         
-                {/* <ItemTitle>크루 설명</ItemTitle> */}
-                {/* <CrewIntro
-                    value={crewIntro}
-                    onChange={handleCrewIntro}
-                    placeholder="크루 설명을 입력해주세요"
-                /> */}
+                {/* 크루 설명 컴포넌트 */}
                 <CrewIntroEditor/>
                 <SubmitContainer>
                     <CreateButton onClick={handleSubmit}>완료</CreateButton>
@@ -185,14 +189,6 @@ const SetNumber = styled.input`
     text-align: center;
     border: 1px solid #DEDFE7;
     border-radius: 3px;
-`;
-const CrewIntro = styled.textarea`
-    padding: 50px;
-    width: 60%;
-    height: 400px;
-    border: 1px solid #DEDFE7;
-    border-radius: 10px;
-    resize: none;
 `;
 const SubmitContainer = styled.div`
     display: flex;

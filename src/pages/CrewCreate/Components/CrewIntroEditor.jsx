@@ -8,7 +8,7 @@ import { crewAPI } from '../../../api';
  
 Quill.register('modules/ImageResize', ImageResize);
 
-export default function CrewIntroEditor() {
+export default function CrewIntroEditor({setInfoContent}) {
     const modules = {
         toolbar: [
             [{ 'font': [] }],
@@ -98,6 +98,7 @@ export default function CrewIntroEditor() {
             console.log('updateContent:', updateContent);
             console.log('최종 urlArray', urlArray);
             console.log('최종 srcArray: ',srcArray);
+            // setInfoContent(updateContent);
 
         } catch (error) {
             console.error('Error details:', {
