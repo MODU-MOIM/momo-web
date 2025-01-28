@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import NoticeList from "./Components/NoticeList";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useNotices } from "./NoticeProvider";
 
 export default function CrewNotice() {
+    const {crewId} = useParams();
     const navigate = useNavigate();
     const accessToken = localStorage.getItem('token');
     const { noticeList, setNoticeList } = useNotices();
@@ -58,6 +59,7 @@ export default function CrewNotice() {
                     togglePin={togglePin}
                     toggleMenu={toggleMenu}
                     setNoticeList={setNoticeList}
+                    crewId={crewId}
                 />
             </NoticeContainer>
         </Wrapper>

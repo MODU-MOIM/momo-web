@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://13.124.54.225:8080/',
+    baseURL: 'https://modumoim.site',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -64,8 +64,9 @@ export const authAPI = {
 
 export const noticeAPI = {
    createNotice (crewId, noticeData){
-    return api.post(`crews/${crewId}/notices`, noticeData)
-   }
+    return api.post(`/crews/${crewId}/notices`, noticeData)
+   },
+   deleteNotice: (crewId, noticeId) => api.delete(`/crews/${crewId}/notices/${noticeId}`)
 };
 
 export default api;

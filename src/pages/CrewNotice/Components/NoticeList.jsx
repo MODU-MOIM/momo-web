@@ -4,10 +4,12 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as S from "../Styles/Notice.styles";
+import { noticeAPI } from "../../../api";
 
 // user정보도 받아오기 (이름, 포지션)
-export default function NoticeList({noticeList, togglePin, toggleMenu, setNoticeList}) {
+export default function NoticeList({noticeList, togglePin, toggleMenu, setNoticeList, crewId}) {
     const navigate = useNavigate();
+    const [showVote, setShowVote] = useState(false);
     const [isManager, setIsManager] = useState(true);
     const menuRefs = useRef([]);
 
@@ -21,13 +23,21 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
         });
         // console.log("수정: ", notice.id);
     }
-    const handleDelete = (id)=>{
-        // 삭제페이지 이동(notice.id에 맞는) => 경고창 띄워야함
-        if (window.confirm("정말로 삭제하시겠습니까?")) {
-            // 공지 삭제 후 상태 업데이트
-            setNoticeList(currentnoticeList => currentnoticeList.filter(notice => notice.id !== id));
+    const handleDelete = async (noticeId)=>{
+        try {
+            // 삭제페이지 이동(notice.id에 맞는) => 경고창 띄워야함
+            if (window.confirm("정말로 삭제하시겠습니까?")) {
+                const token = localStorage.getItem('token');
+                console.log('Loaded token:', token);
+                await noticeAPI.deleteNotice(crewId, noticeId);
+                // 공지 삭제 후 상태 업데이트
+                setNoticeList(currentnoticeList => currentnoticeList.filter(notice => notice.id !== noticeId));
+                alert("공지가 삭제되었습니다");
+            }
+            
+        } catch (error) {
+            console.log("공지 삭제 실패: ", error);
         }
-        // console.log("삭제: ", id);
     }
     // 메뉴 열린 상태에서 외부영역 클릭 시 닫힘
     useEffect(() => {
@@ -41,6 +51,10 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [noticeList]);
+
+    const handleShowVote = (id) => {
+        setShowVote(!showVote);
+    }
 
     return(
         <Wrapper>
@@ -82,13 +96,14 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                                 />}
                             </SettingContainer>
                         </TopContainer>
-                        <NoticeContainer>
+                        <NoticeContainer  onClick={(id)=>handleShowVote(id)}>
                             <Notice>
                                 {notice.content.split('\n').map((item)=>(
                                     <div>{item}<br/></div>
                                 ))}
                             </Notice>
-                        {notice.isEnabled ? 
+                            {/* 투표 */}
+                        {notice.isEnabled && showVote ? 
                             <Vote>
                                 <S.VoteContainer style={{margin: "0"}}>
                                     <S.VoteBox style={{fontSize: "small"}}>
