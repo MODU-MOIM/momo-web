@@ -8,6 +8,18 @@ import Kakao from "../../assets/social/Kakao.png";
 import Naver from "../../assets/social/Naver.png";
 import * as S from "./Styles/Login.styles";
 
+const handleGoogleLogin = () => {
+    window.location.href = `${process.env.REACT_APP_BASE_URL}/oauth2/authorization/google`;
+}
+
+const handleKakaoLogin = () => {
+    window.location.href = `${process.env.REACT_APP_BASE_URL}/oauth2/authorization/kakao`;
+}
+
+function handleNaverLogin() {
+    window.location.href = `${process.env.REACT_APP_BASE_URL}/oauth2/authorization/naver`;
+}
+
 const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
@@ -19,9 +31,9 @@ const Login = () => {
     const [error, setError] = useState("");
 
     const social = [
-        { image: Naver, name: "Naver" },
-        { image: Google, name: "Google" },
-        { image: Kakao, name: "Kakao" },
+        { image: Naver, name: "Naver", onClick: handleNaverLogin },
+        { image: Google, name: "Google", onClick: handleGoogleLogin },
+        { image: Kakao, name: "Kakao", onClick: handleKakaoLogin },
     ];
 
     const handleChange = (e) => {
@@ -95,7 +107,7 @@ const Login = () => {
                 </S.FindPassword>
                 <S.SocialLogin>
                     {social.map((item, index) => (
-                        <S.SocialButton key={index}>
+                        <S.SocialButton key={index} onClick={item.onClick}>
                             <S.Social src={item.image} alt={item.name} />
                         </S.SocialButton>
                     ))}
