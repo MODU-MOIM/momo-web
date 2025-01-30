@@ -66,6 +66,7 @@ export const noticeAPI = {
    createNotice (crewId, noticeData){
     return api.post(`/crews/${crewId}/notices`, noticeData)
    },
+   updateNotice: (crewId, noticeId,noticeData)=> api.put(`/crews/${crewId}/notices/${noticeId}`, noticeData),
    deleteNotice: (crewId, noticeId) => api.delete(`/crews/${crewId}/notices/${noticeId}`)
 };
 

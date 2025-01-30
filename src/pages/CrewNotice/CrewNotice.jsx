@@ -33,7 +33,7 @@ export default function CrewNotice() {
     const linktoAddNotice = () => {
         const crewId = "1";
         if(accessToken){
-            navigate(`/crew/${crewId}/addNotice`);
+            navigate(`/crews/${crewId}/addNotice`);
         }
     }
     

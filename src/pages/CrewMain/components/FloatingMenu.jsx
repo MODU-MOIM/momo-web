@@ -18,7 +18,7 @@ export default function FloatingMenu() {
     
     const handleNavigate = (path) => {
         setSelectedMenu(path);
-        navigate(`/crew/${crewId}/${path}`);
+        navigate(`/crews/${crewId}/${path}`);
     }
     
     return(

@@ -18,8 +18,8 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
 
     const handleUpdate = ({notice})=>{
         // 수정페이지 이동(notice.id에 맞는)
-        navigate(`/crew/updateNotice/${notice.id}`, {
-            state: {noticeData: notice}
+        navigate(`/crews/1/updateNotice/${notice.id}`, {
+            state: {noticeData: notice,  mode: "update"}
         });
         // console.log("수정: ", notice.id);
     }

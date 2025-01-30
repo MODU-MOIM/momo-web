@@ -56,7 +56,7 @@ export const SelectList = styled.li`
     border: ${props => props.userVote ? 'none' : '1px solid #D4E3FB'};
     border-radius: 10px;
     &:hover{
-        cursor: pointer;
+        cursor: ${props => props.userVote ? 'pointer' : 'initial'};
         background-color: ${props => props.userVote ? '#D4E3FB' : 'transparent'};
     }
 `;
