@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useMemo, useState } from "react";
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -85,20 +84,18 @@ export default function CrewIntroEditor({setInfoContent}) {
                 
             }
             let updateContent = content;
-            if(srcArray.length > 0) {   
-                console.log('실행은 됐음..')             
+            if(srcArray.length > 0) {            
                 for(let i = 0; i<srcArray.length; i++) {
-                    console.log('실행중.. '+i+' 번째임');
                     console.log('srcArray[i]: ',srcArray[i],'urlArray[i]: ',urlArray[i]);
                     let replace = updateContent.replace(srcArray[i],urlArray[i]);
                     updateContent = replace;
-                    console.log('바뀌었는지 테스트',updateContent);
+                    console.log('테스트',updateContent);
                 } 
             }
             console.log('updateContent:', updateContent);
-            console.log('최종 urlArray', urlArray);
             console.log('최종 srcArray: ',srcArray);
-            // setInfoContent(updateContent);
+            console.log('최종 urlArray', urlArray);
+            setInfoContent(updateContent);
 
         } catch (error) {
             console.error('Error details:', {

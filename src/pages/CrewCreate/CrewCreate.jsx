@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
@@ -15,6 +15,7 @@ export default function CrewCreate() {
     const [minAge, setMinAge] = useState('noLimit');
     const [maxAge, setMaxAge] = useState('noLimit');
     const [infoContent, setInfoContent] = useState();
+    const [allow, setAllow] = useState(false);
     
     const handleCrewName = (e) => setCrewName(e.target.value);
     const handleCategory = (selectedCategory) => setCategory(selectedCategory);
@@ -24,6 +25,15 @@ export default function CrewCreate() {
     const handleGender = (slectedGender) => setGender(slectedGender);
     const handleMinAge = (selectedMinAge) => setMinAge(selectedMinAge);
     const handleMaxAge = (selectedMaxAge) => setMaxAge(selectedMaxAge);
+
+    // 버튼 활성화
+    useEffect(()=>{
+        if(crewName && region && minNumber && maxNumber && infoContent.length>20){
+            setAllow(true);
+        }else{
+            setAllow(false);
+        }
+    },[crewName, region, minNumber, maxNumber, infoContent]);
 
     const handleSubmit = () => {
         let regionData = [];
@@ -35,7 +45,7 @@ export default function CrewCreate() {
         const submitData = {
             name: crewName,
             category: category.title,
-            decription: infoContent, //api
+            decription: infoContent,
             minMembers: minNumber,
             maxMembers: maxNumber,
             regions: regionData,
@@ -122,9 +132,12 @@ export default function CrewCreate() {
                 </CrewSettings>
         
                 {/* 크루 설명 컴포넌트 */}
-                <CrewIntroEditor/>
+                <CrewIntroEditor setInfoContent={setInfoContent}/>
                 <SubmitContainer>
-                    <CreateButton onClick={handleSubmit}>완료</CreateButton>
+                    <CreateButton 
+                        onClick={handleSubmit}
+                        allow={allow}
+                    >완료</CreateButton>
                 </SubmitContainer>
             </Container>
         </Wrapper>
@@ -210,7 +223,7 @@ const CreateButton = styled.button`
     color: white;
     border-radius: 10px;
     &:hover{
-        background-color: #352EAE;
-        cursor: pointer;
+        background-color: ${props => props.allow ?'#352EAE' :'gray'};
+        cursor: ${props => props.allow ? 'pointer':'not-allowed'};
     }
 `;
