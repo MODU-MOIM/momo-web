@@ -1,10 +1,11 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import * as S from "../Styles/Notice.styles";
 import { useEffect, useState } from "react";
 import { noticeAPI } from "../../../api";
 
 export default function UpdateNotice() {
     const location = useLocation();
+    const navigate = useNavigate();
     const { crewId } = useParams();
 
     // const [isDeleted, setIsDeleted] = useState(false);
@@ -52,7 +53,8 @@ export default function UpdateNotice() {
             console.log("noticeId",noticeId);
             console.log("noticeData",noticeData);
             await noticeAPI.updateNotice(crewId, noticeId, noticeData);
-            alert("수정되었습니다");
+            alert("공지가 수정되었습니다");
+            navigate(`/crews/${crewId}/crewNotice`);
         } catch (error) {
             console.error('공지 수정 실패:', error);
             alert("공지 수정 실패");

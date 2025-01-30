@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import * as S from "../Styles/Notice.styles";
 import { noticeAPI } from "../../../api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useNotices } from "../NoticeProvider";
 
 export default function AddNotice() {
     const { crewId } = useParams(); //crewId 받기
+    const navigate = useNavigate();
     const { noticeList, setNoticeList } = useNotices();
     const [isEnabled, setIsEnabled] = useState(true);
     const [voteInfo, setVoteInfo] = useState({});
@@ -67,9 +68,10 @@ export default function AddNotice() {
                 isEnabled: isEnabled,
             }
             console.log(newNoticeInfo);
-            setNoticeList(prev=>[...prev, newNoticeInfo]);
             await noticeAPI.createNotice(crewId, noticeData);
             alert("공지가 생성되었습니다");
+            setNoticeList(prev=>[...prev, newNoticeInfo]);
+            navigate(`/crews/${crewId}/crewNotice`);
         } catch (error) {
             console.error('공지생성실패:', error);
             alert("공지 생성 실패");
