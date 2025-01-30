@@ -4,63 +4,87 @@ import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
 import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 import CrewIntroEditor from "./Components/CrewIntroEditor";
+import api from "../../api";
 
 export default function CrewCreate() {
     const [crewName, setCrewName] = useState("");
     const [category, setCategory] = useState({});
     const [region, setRegion] = useState([]);
+    const [regionData, setRegionData] = useState([]);
     const [minNumber, setMinNumber] = useState();
     const [maxNumber, setMaxNumber] = useState();
     const [gender, setGender] = useState('noLimit');
     const [minAge, setMinAge] = useState('noLimit');
     const [maxAge, setMaxAge] = useState('noLimit');
-    const [infoContent, setInfoContent] = useState();
+    const [infoContent, setInfoContent] = useState('');
     const [allow, setAllow] = useState(false);
     
     const handleCrewName = (e) => setCrewName(e.target.value);
     const handleCategory = (selectedCategory) => setCategory(selectedCategory);
-    const handleRegion = (selectedRegion) => setRegion(selectedRegion);
     const handleMinNumber = (e) => setMinNumber(e.target.value);
     const handleMaxNumber = (e) => setMaxNumber(e.target.value);
     const handleGender = (slectedGender) => setGender(slectedGender);
     const handleMinAge = (selectedMinAge) => setMinAge(selectedMinAge);
     const handleMaxAge = (selectedMaxAge) => setMaxAge(selectedMaxAge);
-
+    const handleRegion = (selectedRegion) => {
+        setRegion(selectedRegion);
+        let newRegionData = [];
+        for (let key in selectedRegion) {
+            for(let i=0; i<selectedRegion[key].length; i++){
+                newRegionData.push({regionDepth1: key, regionDepth2: selectedRegion[key][i]});
+            }
+        }
+        setRegionData(newRegionData);
+    }
     // 버튼 활성화
     useEffect(()=>{
-        if(crewName && region && minNumber && maxNumber && infoContent.length>20){
+        if(crewName && regionData.length>0 && minNumber && maxNumber && infoContent.length>=20 && category){
             setAllow(true);
         }else{
             setAllow(false);
         }
-    },[crewName, region, minNumber, maxNumber, infoContent]);
+    },[crewName, regionData, minNumber, maxNumber, infoContent, category]);
 
-    const handleSubmit = () => {
-        let regionData = [];
-        for (let key in region) {
-            for(let i=0; i<region[key].length; i++){
-                regionData.push({regionDepth1: key, regionDepth2: region[key][i]});
-            }
-        }
-        const submitData = {
+    const handleSubmit = async() => {
+        const crewReqDto = {
             name: crewName,
             category: category.title,
-            decription: infoContent,
-            minMembers: minNumber,
-            maxMembers: maxNumber,
+            description: infoContent,
+            minMembers: Number(minNumber),
+            maxMembers: Number(maxNumber),
             regions: regionData,
-        }
+        };
         // 제한없음 상태이면 해당 필드 제외
         if (minAge !== 'noLimit') {
-            submitData.minAge = minAge;
+            crewReqDto.minAge = Number(minAge);
         }
         if (maxAge !== 'noLimit') {
-            submitData.maxAge = maxAge;
+            crewReqDto.maxAge = Number(maxAge);
         }
         if (gender !== 'noLimit') {
-            submitData.genderRestriction = gender;
+            crewReqDto.genderRestriction = gender;
         }
-        console.log(submitData);
+        
+        const formData = new FormData();
+        formData.append("crewReqDto", JSON.stringify(crewReqDto));
+        console.log("crewReqDto: ",crewReqDto);
+        console.log("FormData contents:");
+        for (let [key, value] of formData.entries()) {
+            console.log("Key:", key);
+            console.log("Value:", value);
+        }
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.post('/crews', formData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            console.log('Response:', response);
+        } catch (error) {
+            console.log("크루 생성 실패: ",error.response ? error.response.data : error);
+            alert("크루 생성 실패");
+        }
     }
     
     return(
@@ -136,7 +160,7 @@ export default function CrewCreate() {
                 <SubmitContainer>
                     <CreateButton 
                         onClick={handleSubmit}
-                        allow={allow}
+                        disabled={!allow}
                     >완료</CreateButton>
                 </SubmitContainer>
             </Container>
@@ -223,7 +247,7 @@ const CreateButton = styled.button`
     color: white;
     border-radius: 10px;
     &:hover{
-        background-color: ${props => props.allow ?'#352EAE' :'gray'};
-        cursor: ${props => props.allow ? 'pointer':'not-allowed'};
+        background-color: ${props => props.disabled ?'gray' :'#352EAE'};
+        cursor: ${props => props.disabled ? 'not-allowed':'pointer'};
     }
 `;

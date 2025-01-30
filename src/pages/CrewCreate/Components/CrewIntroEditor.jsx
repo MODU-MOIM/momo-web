@@ -114,7 +114,7 @@ export default function CrewIntroEditor({setInfoContent}) {
             <EditContainer>
                 <QuillStyled                     
                         modules={modules} 
-                        placeholder='크루 설명을 입력해 주세요'
+                        placeholder='크루 설명을 입력해 주세요 (20자 이상)'
                         onChange={onChagecontent}
                 />
             </EditContainer>
