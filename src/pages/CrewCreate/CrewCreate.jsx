@@ -26,13 +26,19 @@ export default function CrewCreate() {
     const handleMaxAge = (selectedMaxAge) => setMaxAge(selectedMaxAge);
 
     const handleSubmit = () => {
+        let regionData = [];
+        for (let key in region) {
+            for(let i=0; i<region[key].length; i++){
+                regionData.push({regionDepth1: key, regionDepth2: region[key][i]});
+            }
+        }
         const submitData = {
             name: crewName,
             category: category.title,
             decription: infoContent, //api
             minMembers: minNumber,
             maxMembers: maxNumber,
-            regions: region,    // ...
+            regions: regionData,
         }
         // 제한없음 상태이면 해당 필드 제외
         if (minAge !== 'noLimit') {
