@@ -25,6 +25,17 @@ export default function CrewSchedule() {
     useEffect(()=>{ setShowSchedules(schedules)},[schedules]);
     useEffect(()=>{setIsPast(moment().isAfter(moment(date), 'day'))},[date]);
 
+    // 외부 클릭 시 일정 추가 모드 나가기
+    // const handlePanelClick = (e) => {
+    //     console.log('Event Target:', e.target);
+    //     console.log('Current Target:', e.currentTarget);
+    //     console.log('isClickedAddButton:', isClickedAddButton);
+        
+    //     if(e.target !== e.currentTarget){
+    //         setIsClickedAddButton(false);
+    //     }
+    // }
+
     const handleClickAddButton = () => { 
         setIsClickedAddButton(!isClickedAddButton);
     };
@@ -66,7 +77,9 @@ export default function CrewSchedule() {
     return(
         <Wrapper>
             <FloatingMenu/>
-            <CalendarContainer>
+            <CalendarContainer 
+                // onClick={handlePanelClick}
+            >
                 <ScheduleContainer>
                     {/* 해당 월/날 일정 보여주기 */}
                     <DetailScheduleContainer>

@@ -78,12 +78,12 @@ export const CrewInfoBox = styled.button`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0px 10px 20px 10px;
+    margin: 20px 10px 20px 10px;
     background-color: transparent;
     border: none;
     color: white;
     &:hover{
-        cursor: pointer;
+        /* cursor: pointer; */
         /* background-color: #8681CE; */
     }
 `;
