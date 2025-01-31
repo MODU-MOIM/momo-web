@@ -5,6 +5,7 @@ import SetRegion from "./Components/SetRegion";
 import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 import CrewIntroEditor from "./Components/CrewIntroEditor";
 import api from "../../api";
+import BannerImageInput from "./Components/BannerImageInput";
 
 export default function CrewCreate() {
     const [crewName, setCrewName] = useState("");
@@ -102,6 +103,10 @@ export default function CrewCreate() {
                         onChange={handleCrewName}
                     />
                 </CrewName>
+                <Banner>
+                    <ItemTitle>배너 이미지를 선택해주세요</ItemTitle>
+                    {/* <BannerImageInput/> */}
+                </Banner>
                 
                 {/* 모임활동 선택 */}
                 <ItemTitle>어떤 모임 활동을 하실건가요?</ItemTitle>
@@ -205,7 +210,8 @@ const NameInput = styled.input`
         color: #929292;
     }
 `;
-
+const Banner = styled.div`
+`;
 
 const CrewSettings = styled.div`
 `;

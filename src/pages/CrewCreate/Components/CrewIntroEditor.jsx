@@ -26,12 +26,10 @@ export default function CrewIntroEditor({setInfoContent}) {
 
     const srcArray =[];
     const urlArray =[];
-    // const [srcArray, setSrcArray] = useState([]); // src만 추출
-    // const [urlArray, setUrlArray] = useState([]); // 최종 url
     const gainSource = useMemo(() => /(<img[^>]*src\s*=\s*[\"']?([^>\"']+)[\"']?[^>]*>)/g, []);
     
     const onChagecontent = (e) => {
-        console.log(e);
+        // console.log(e);
         setContent(e);
     }
     // base64파일 Blop으로 바꾸기
@@ -42,7 +40,7 @@ export default function CrewIntroEditor({setInfoContent}) {
         for (let i = 0; i < byteString.length; i++) {
             ia[i] = byteString.charCodeAt(i);
         }
-        const blob = new Blob([ia], { type: "image/jpeg" }); // 이 부분이 이해가 잘 안되는구먼유
+        const blob = new Blob([ia], { type: "image/jpeg" });
         return new File([blob], "image.jpg");
     };
 
@@ -92,9 +90,9 @@ export default function CrewIntroEditor({setInfoContent}) {
                     console.log('테스트',updateContent);
                 } 
             }
-            console.log('updateContent:', updateContent);
-            console.log('최종 srcArray: ',srcArray);
-            console.log('최종 urlArray', urlArray);
+            // console.log('updateContent:', updateContent);
+            // console.log('최종 srcArray: ',srcArray);
+            // console.log('최종 urlArray', urlArray);
             setInfoContent(updateContent);
 
         } catch (error) {
