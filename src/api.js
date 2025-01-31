@@ -90,4 +90,9 @@ export const crewAPI = {
     getCrewList: () => api.get('/crews'),
 };
 
+export const crewAPI = {
+    uploadImage: (formData, config) => api.post('/crews/images', formData, config),
+    createIntro: (data) => api.post('/crews', data)
+}
+
 export default api;

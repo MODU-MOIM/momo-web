@@ -1,40 +1,91 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
 import { AgeSelect, GenderSelect } from "./Components/SelectBox";
+import CrewIntroEditor from "./Components/CrewIntroEditor";
+import api from "../../api";
+import BannerImageInput from "./Components/BannerImageInput";
 
 export default function CrewCreate() {
     const [crewName, setCrewName] = useState("");
     const [category, setCategory] = useState({});
     const [region, setRegion] = useState([]);
+    const [regionData, setRegionData] = useState([]);
     const [minNumber, setMinNumber] = useState();
     const [maxNumber, setMaxNumber] = useState();
-    const [crewIntro, setCrewIntro] = useState("");
     const [gender, setGender] = useState('noLimit');
     const [minAge, setMinAge] = useState('noLimit');
     const [maxAge, setMaxAge] = useState('noLimit');
+    const [infoContent, setInfoContent] = useState('');
+    const [allow, setAllow] = useState(false);
     
     const handleCrewName = (e) => setCrewName(e.target.value);
     const handleCategory = (selectedCategory) => setCategory(selectedCategory);
-    const handleRegion = (selectedRegion) => setRegion(selectedRegion);
     const handleMinNumber = (e) => setMinNumber(e.target.value);
     const handleMaxNumber = (e) => setMaxNumber(e.target.value);
     const handleGender = (slectedGender) => setGender(slectedGender);
     const handleMinAge = (selectedMinAge) => setMinAge(selectedMinAge);
     const handleMaxAge = (selectedMaxAge) => setMaxAge(selectedMaxAge);
-    const handleCrewIntro = (e) => setCrewIntro(e.target.value);
+    const handleRegion = (selectedRegion) => {
+        setRegion(selectedRegion);
+        let newRegionData = [];
+        for (let key in selectedRegion) {
+            for(let i=0; i<selectedRegion[key].length; i++){
+                newRegionData.push({regionDepth1: key, regionDepth2: selectedRegion[key][i]});
+            }
+        }
+        setRegionData(newRegionData);
+    }
+    // 버튼 활성화
+    useEffect(()=>{
+        if(crewName && regionData.length>0 && minNumber && maxNumber && infoContent.length>=20 && category){
+            setAllow(true);
+        }else{
+            setAllow(false);
+        }
+    },[crewName, regionData, minNumber, maxNumber, infoContent, category]);
 
-    const handleSubmit = () => {
-        console.log(crewName);
-        console.log(category);
-        console.log(region);
-        console.log(minNumber);
-        console.log(maxNumber);
-        console.log(gender);
-        console.log(minAge);
-        console.log(maxAge);
-        console.log(crewIntro);
+    const handleSubmit = async() => {
+        const crewReqDto = {
+            name: crewName,
+            category: category.title,
+            description: infoContent,
+            minMembers: Number(minNumber),
+            maxMembers: Number(maxNumber),
+            regions: regionData,
+        };
+        // 제한없음 상태이면 해당 필드 제외
+        if (minAge !== 'noLimit') {
+            crewReqDto.minAge = Number(minAge);
+        }
+        if (maxAge !== 'noLimit') {
+            crewReqDto.maxAge = Number(maxAge);
+        }
+        if (gender !== 'noLimit') {
+            crewReqDto.genderRestriction = gender;
+        }
+        
+        const formData = new FormData();
+        formData.append("crewReqDto", JSON.stringify(crewReqDto));
+        console.log("crewReqDto: ",crewReqDto);
+        console.log("FormData contents:");
+        for (let [key, value] of formData.entries()) {
+            console.log("Key:", key);
+            console.log("Value:", value);
+        }
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.post('/crews', formData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            console.log('Response:', response);
+        } catch (error) {
+            console.log("크루 생성 실패: ",error.response ? error.response.data : error);
+            alert("크루 생성 실패");
+        }
     }
     
     return(
@@ -52,6 +103,10 @@ export default function CrewCreate() {
                         onChange={handleCrewName}
                     />
                 </CrewName>
+                <Banner>
+                    <ItemTitle>배너 이미지를 선택해주세요</ItemTitle>
+                    {/* <BannerImageInput/> */}
+                </Banner>
                 
                 {/* 모임활동 선택 */}
                 <ItemTitle>어떤 모임 활동을 하실건가요?</ItemTitle>
@@ -105,14 +160,13 @@ export default function CrewCreate() {
                     
                 </CrewSettings>
         
-                {/* <ItemTitle>크루 설명</ItemTitle> */}
-                <CrewIntro
-                    value={crewIntro}
-                    onChange={handleCrewIntro}
-                    placeholder="크루 설명을 입력해주세요"
-                />
+                {/* 크루 설명 컴포넌트 */}
+                <CrewIntroEditor setInfoContent={setInfoContent}/>
                 <SubmitContainer>
-                    <CreateButton onClick={handleSubmit}>완료</CreateButton>
+                    <CreateButton 
+                        onClick={handleSubmit}
+                        disabled={!allow}
+                    >완료</CreateButton>
                 </SubmitContainer>
             </Container>
         </Wrapper>
@@ -156,7 +210,8 @@ const NameInput = styled.input`
         color: #929292;
     }
 `;
-
+const Banner = styled.div`
+`;
 
 const CrewSettings = styled.div`
 `;
@@ -184,14 +239,6 @@ const SetNumber = styled.input`
     border: 1px solid #DEDFE7;
     border-radius: 3px;
 `;
-const CrewIntro = styled.textarea`
-    padding: 50px;
-    width: 60%;
-    height: 400px;
-    border: 1px solid #DEDFE7;
-    border-radius: 10px;
-    resize: none;
-`;
 const SubmitContainer = styled.div`
     display: flex;
     justify-content: center;
@@ -206,7 +253,7 @@ const CreateButton = styled.button`
     color: white;
     border-radius: 10px;
     &:hover{
-        background-color: #352EAE;
-        cursor: pointer;
+        background-color: ${props => props.disabled ?'gray' :'#352EAE'};
+        cursor: ${props => props.disabled ? 'not-allowed':'pointer'};
     }
 `;
