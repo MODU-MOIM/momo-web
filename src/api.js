@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://modumoim.site';
 
 const api = axios.create({
-    baseURL: BASE_URL,
+    baseURL: process.env.REACT_APP_BASE_URL,
     headers: { 'Content-Type': 'application/json' },
     withCredentials: true,
 });
