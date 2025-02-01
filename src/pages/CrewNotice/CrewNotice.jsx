@@ -16,14 +16,21 @@ export default function CrewNotice() {
             const response = await noticeAPI.readNoticeList(crewId);
             // console.log(response.data.data)
             if(response.data.data && Array.isArray(response.data.data)){
-                const sortedNotices = sortNoticeList(response.data.data);
+                const fetchNoticeList = response.data.data.map(notice => ({
+                    ...notice,
+                    id: notice.noticeId,
+                    isPinned: false,
+                    isOpenedMenu: false,
+                    showVote: false,
+                }))
+                const sortedNotices = sortNoticeList(fetchNoticeList);
                 setNoticeList(sortedNotices);
             }else{
                 console.log("공지가 없습니다.", response.data);
                 // alert("공지가 없습니다.");
             }
         } catch (error) {
-            console.error('공지 목록을 불러오는데 실패했습니다.', error);
+            console.error('공지 목록을 불러오는데 실패했습니다.', error.response.data);
         }
     }
 
@@ -84,7 +91,6 @@ export default function CrewNotice() {
                     togglePin={togglePin}
                     toggleMenu={toggleMenu}
                     setNoticeList={setNoticeList}
-                    crewId={crewId}
                 />
             </NoticeContainer>
         </Wrapper>

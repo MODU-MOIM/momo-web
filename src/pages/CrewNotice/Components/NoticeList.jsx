@@ -2,14 +2,14 @@ import styled from "styled-components";
 import { BsPinAngleFill } from "react-icons/bs";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as S from "../Styles/Notice.styles";
 import { noticeAPI } from "../../../api";
 
 // user정보도 받아오기 (이름, 포지션)
-export default function NoticeList({noticeList, togglePin, toggleMenu, setNoticeList, crewId}) {
+export default function NoticeList({noticeList, togglePin, toggleMenu, setNoticeList}) {
+    const { crewId } = useParams();
     const navigate = useNavigate();
-    const [showVote, setShowVote] = useState(false);
     const [isManager, setIsManager] = useState(true);
     const [isDetailVisible, setIsDetailVisible] = useState(false);
     const menuRefs = useRef([]);
@@ -19,7 +19,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
 
     const handleUpdate = ({notice})=>{
         // 수정페이지 이동(notice.id에 맞는)
-        navigate(`/crews/1/updateNotice/${notice.id}`, {
+        navigate(`/crews/${crewId}/updateNotice/${notice.id}`, {
             state: {noticeData: notice,  mode: "update"}
         });
         // console.log("수정: ", notice.id);
@@ -29,7 +29,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
             // 삭제페이지 이동(notice.id에 맞는) => 경고창 띄워야함
             if (window.confirm("정말로 삭제하시겠습니까?")) {
                 const token = localStorage.getItem('token');
-                console.log('Loaded token:', token);
+                // console.log('Loaded token:', token);
                 await noticeAPI.deleteNotice(crewId, noticeId);
                 // 공지 삭제 후 상태 업데이트
                 setNoticeList(currentnoticeList => currentnoticeList.filter(notice => notice.id !== noticeId));
@@ -42,6 +42,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     }
     // 메뉴 열린 상태에서 외부영역 클릭 시 닫힘
     useEffect(() => {
+        console.log(noticeList)
         function handleClickOutside(e) {
             if (noticeList.some((notice, index) => notice.isOpenedMenu && menuRefs.current[index] && !menuRefs.current[index].contains(e.target))) {
                 setNoticeList(noticeList.map(notice => ({...notice, isOpenedMenu: false})));
@@ -62,8 +63,14 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     //     );
     // };
     const handleShowVote = async (noticeId) => {
-        await noticeAPI.readNotice(crewId,noticeId)
-        setShowVote(!showVote);
+        try {
+            const response = await noticeAPI.readNotice(crewId,noticeId);
+            console.log("통신 성공 : ", response);
+            setNoticeList(noticeList.map(notice => 
+                notice.id === noticeId ? ({...notice, showVote: !notice.showVote}) : notice));
+        } catch (error) {
+            console.log("통신 실패 : ", error);
+        }
     }
 
     return(
@@ -82,10 +89,10 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                         <TopContainer>
                             <UserInfoContainer>
                                 <Profile>
-                                    <ProfileImage/>
+                                    <ProfileImage src={notice.profileImage}/>
                                     <ProfileText>
-                                        <UserPosition>관리자</UserPosition>
-                                        <UserName>러닝초보123</UserName>
+                                        <UserPosition>{notice.writerRole}</UserPosition>
+                                        <UserName>{notice.writer}</UserName>
                                     </ProfileText>
                                     <Date>{notice.date}<br/>{notice.time}</Date>
                                 </Profile>
@@ -107,18 +114,21 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                             </SettingContainer>
                         </TopContainer>
                         <NoticeContainer
-                            onClick={(id)=>{
-                                handleShowVote(id)
+                            onClick={()=>{
+                                handleShowVote(notice.id)
                                 // toggleDetailVisibility(id)
                             }}
                         >
                             <Notice>
-                                {notice.content.split('\n').map((item)=>(
-                                    <div>{item}<br/></div>
-                                ))}
+                                {notice.content.includes('\n') ?
+                                    notice.content.split('\n').map((item)=>(
+                                        <div>{item}<br/></div>
+                                    )) :
+                                    <div>{notice.content}<br/></div>
+                                }
                             </Notice>
                             {/* 투표 */}
-                        {notice.isEnabled && showVote ? 
+                        {notice.isEnabled && notice.showVote ? 
                             <Vote>
                                 <S.VoteContainer style={{margin: "0"}}>
                                     <S.VoteBox style={{fontSize: "small"}}>

@@ -57,22 +57,18 @@ export default function AddNotice() {
             const response = await noticeAPI.createNotice(crewId, noticeData);
             if(response.status === 200){
                 alert("공지가 생성되었습니다");
-                const resData = response.data.data;
-                const newNoticeInfo = {
-                    writer: resData.writer,
-                    writerRole: resData.writerRole,
-                    profileImage: resData.profileImage,
-                    id: resData.noticeId,
-                    content: resData.content,
-                    // resData.createAt 사용해서 형식 바꾸기
-                    date: formatDate,
-                    time: formatTime,
-                    isPinned: false,
-                    isOpenedMenu: false,
-                    isEnabled: isEnabled,
-                }
-                console.log(newNoticeInfo);
-                setNoticeList(prev=>[...prev, newNoticeInfo]);
+                const noticeId = response.data.data;
+                setNoticeList(noticeList.map(notice=>
+                    notice.id === noticeId ? ({ 
+                        ...notice, 
+                        date: formatDate,
+                        time: formatTime,
+                        isPinned: false,
+                        isOpenedMenu: false,
+                        isEnabled: isEnabled,
+                        showVote: false,
+                    }) : notice));
+                // setNoticeList(prev=>[...prev, newNoticeInfo]);
                 navigate(`/crews/${crewId}/crewNotice`);
             }else{
                 console.log("공지 생성 요청 실패",response.data);
