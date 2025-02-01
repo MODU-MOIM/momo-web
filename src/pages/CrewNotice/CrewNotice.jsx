@@ -5,24 +5,44 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useNotices } from "./NoticeProvider";
 import { noticeAPI } from "../../api";
 
+// user role 받아서 isManager 확인
 export default function CrewNotice() {
     const {crewId} = useParams();
     const navigate = useNavigate();
     const accessToken = localStorage.getItem('token');
     const { noticeList, setNoticeList } = useNotices([]);
+    const [isManager, setIsManager] = useState(true);
     
     const loadNoticeList = async() => {
         try {
             const response = await noticeAPI.readNoticeList(crewId);
             // console.log(response.data.data)
-            if(response.data.data && Array.isArray(response.data.data)){
-                const fetchNoticeList = response.data.data.map(notice => ({
-                    ...notice,
-                    id: notice.noticeId,
-                    isPinned: false,
-                    isOpenedMenu: false,
-                    showVote: false,
-                }))
+            const noticeListData = response.data.data;
+            if(noticeListData && Array.isArray(noticeListData)){
+                const fetchNoticeList = noticeListData.map(notice => {
+                    // 날짜 및 시간 데이터 포맷
+                    const now = new Date(notice.createdAt);
+                    const year = now.getFullYear();  // 현재 년도
+                    const month = now.getMonth() + 1;  // 월 (0부터 시작하므로 +1)
+                    const day = now.getDate();  // 일
+                    const hours = now.getHours();  // 시
+                    const minutes = now.getMinutes();  // 분
+                    const dayOfWeek = now.getDay();  // 요일 번호 (0-6), 0부터 일요일, 월요일, ..., 토요일
+                    const days = ["일", "월", "화", "수", "목", "금", "토"];
+                    // // 2024.12.14 (토) 형식
+                    const formatDate = `${year}.${month.toString().padStart(2, '0')}.${day.toString().padStart(2, '0')} (${days[dayOfWeek]})`;
+                    // // 17:03 형식
+                    const formatTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                    return{
+                        ...notice,
+                        id: notice.noticeId,
+                        date: formatDate,
+                        time: formatTime,
+                        isPinned: false,
+                        isOpenedMenu: false,
+                        showVote: false,
+                    }
+                })
                 const sortedNotices = sortNoticeList(fetchNoticeList);
                 setNoticeList(sortedNotices);
             }else{
@@ -76,10 +96,13 @@ export default function CrewNotice() {
         console.log(noticeList);
     };
     const toggleMenu = (id)=>{
-        setNoticeList(noticeList.map(notice=>
-            notice.id === id ? {...notice, isOpenedMenu: !notice.isOpenedMenu} : notice
+        setNoticeList(currentNotices => 
+            currentNotices.map(notice=>
+                notice.id === id ? {...notice, isOpenedMenu: !notice.isOpenedMenu} : notice
         ));
+        // console.log(noticeList);
     };
+    console.log(noticeList);
     return(
         <Wrapper>
             {/* userid 받아서 관리자만 보이도록 수정해야 함 */}
@@ -91,6 +114,7 @@ export default function CrewNotice() {
                     togglePin={togglePin}
                     toggleMenu={toggleMenu}
                     setNoticeList={setNoticeList}
+                    isManager={isManager}
                 />
             </NoticeContainer>
         </Wrapper>

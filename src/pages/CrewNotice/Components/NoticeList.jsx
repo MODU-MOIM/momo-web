@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from "styled-components";
 import { BsPinAngleFill } from "react-icons/bs";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -6,12 +7,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as S from "../Styles/Notice.styles";
 import { noticeAPI } from "../../../api";
 
-// user정보도 받아오기 (이름, 포지션)
-export default function NoticeList({noticeList, togglePin, toggleMenu, setNoticeList}) {
+export default function NoticeList({noticeList, togglePin, toggleMenu, setNoticeList, isManager}) {
     const { crewId } = useParams();
     const navigate = useNavigate();
-    const [isManager, setIsManager] = useState(true);
-    const [isDetailVisible, setIsDetailVisible] = useState(false);
+    // const [isDetailVisible, setIsDetailVisible] = useState(false);
     const menuRefs = useRef([]);
 
     const handlePin = (id)=> togglePin(id);
@@ -26,7 +25,6 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     }
     const handleDelete = async (noticeId)=>{
         try {
-            // 삭제페이지 이동(notice.id에 맞는) => 경고창 띄워야함
             if (window.confirm("정말로 삭제하시겠습니까?")) {
                 const token = localStorage.getItem('token');
                 // console.log('Loaded token:', token);
@@ -42,7 +40,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     }
     // 메뉴 열린 상태에서 외부영역 클릭 시 닫힘
     useEffect(() => {
-        console.log(noticeList)
+        // console.log(noticeList)
         function handleClickOutside(e) {
             if (noticeList.some((notice, index) => notice.isOpenedMenu && menuRefs.current[index] && !menuRefs.current[index].contains(e.target))) {
                 setNoticeList(noticeList.map(notice => ({...notice, isOpenedMenu: false})));
@@ -55,6 +53,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     }, [noticeList]);
 
     //readNoticeApi 
+    // 공지 3줄 초과 시 ... 처리, toggle로 볼 수 있도록
     // const toggleDetailVisibility = (id) => {
     //     setNoticeList(currentList =>
     //         currentList.map(notice =>
@@ -101,11 +100,13 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                             {/* 관리자만 보이도록 */}
                             {/* 버튼 기능 추가하기 */}
                             <SettingContainer>
+                                {isManager &&
                                 <StyledBsPinAngleFill 
                                     size={20}
                                     isPinned={notice.isPinned}
                                     onClick={()=>handlePin(notice.id)}
                                 />
+                                }
                                 {isManager && 
                                 <StyledBsThreeDotsVertical
                                 size={20}

@@ -25,19 +25,6 @@ export default function AddNotice() {
     const handleNotice = (e) => setNotice(e.target.value);
 
     const handleSubmit = async ()=>{
-        const now = new Date();
-        const year = now.getFullYear();  // 현재 년도
-        const month = now.getMonth() + 1;  // 월 (0부터 시작하므로 +1)
-        const day = now.getDate();  // 일
-        const hours = now.getHours();  // 시
-        const minutes = now.getMinutes();  // 분
-        const dayOfWeek = now.getDay();  // 요일 번호 (0-6)
-        // 요일 배열, 인덱스 0부터 일요일, 월요일, ..., 토요일
-        const days = ["일", "월", "화", "수", "목", "금", "토"];
-        // // 2024.12.14 (토) 같은 형식
-        const formatDate = `${year}.${month.toString().padStart(2, '0')}.${day.toString().padStart(2, '0')} (${days[dayOfWeek]})`;
-        // // 17:03 같은 형식
-        const formatTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
         try{
             const noticeData = isEnabled ? {
                 content: notice,
@@ -57,18 +44,6 @@ export default function AddNotice() {
             const response = await noticeAPI.createNotice(crewId, noticeData);
             if(response.status === 200){
                 alert("공지가 생성되었습니다");
-                const noticeId = response.data.data;
-                setNoticeList(noticeList.map(notice=>
-                    notice.id === noticeId ? ({ 
-                        ...notice, 
-                        date: formatDate,
-                        time: formatTime,
-                        isPinned: false,
-                        isOpenedMenu: false,
-                        isEnabled: isEnabled,
-                        showVote: false,
-                    }) : notice));
-                // setNoticeList(prev=>[...prev, newNoticeInfo]);
                 navigate(`/crews/${crewId}/crewNotice`);
             }else{
                 console.log("공지 생성 요청 실패",response.data);
