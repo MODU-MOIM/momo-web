@@ -69,7 +69,8 @@ export const noticeAPI = {
    readNoticeList: (crewId) => api.get(`/crews/${crewId}/notices`),
    readNotice: (crewId, noticeId) => api.get(`/crews/${crewId}/notices/${noticeId}`),
    updateNotice: (crewId, noticeId,noticeData)=> api.put(`/crews/${crewId}/notices/${noticeId}`, noticeData),
-   deleteNotice: (crewId, noticeId) => api.delete(`/crews/${crewId}/notices/${noticeId}`)
+   deleteNotice: (crewId, noticeId) => api.delete(`/crews/${crewId}/notices/${noticeId}`),
+   noticePinToggle: (crewId, noticeId) => api.patch(`/crews/${crewId}/notices/${noticeId}/pin-toggle`),
 };
 
 export default api;

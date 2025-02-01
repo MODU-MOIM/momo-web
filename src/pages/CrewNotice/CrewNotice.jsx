@@ -81,7 +81,43 @@ export default function CrewNotice() {
     useEffect(() => {
         setNoticeList(currentNoticeList => sortNoticeList([...currentNoticeList]));
     }, []);
-    
+
+
+    const updatePinState = async(noticeList)=>{
+        const isPinnedNotices = noticeList.filter(notice=>notice.isPinned);
+        // try {
+        //     for(let i=0; i<isPinnedNotices.length; i++){
+        //         const noticeId = isPinnedNotices[i].id;
+        //         const response = await noticeAPI.noticePinToggle(crewId, noticeId);
+        //         if(response.data){
+        //             console.log("통신성공 : ", response.data);
+        //         }else{
+        //             console.log("음 뭐지 : ", response);
+        //         }
+        //     }
+        // } catch (error) {
+        //     console.log("통신 실패 : ", error)
+        // }
+        try {
+            await Promise.all(isPinnedNotices.map(notice => {
+                const response =  noticeAPI.noticePinToggle(crewId, notice.id);
+                console.log("1111response", response);
+                return response;
+            }))
+            .then((results) => {
+                console.log("results : ",results); // 모든 프로미스의 결과가 담긴 배열
+            });
+            console.log("모든 핀 상태 업데이트 완료");
+        } catch (error) {
+            console.error("통신 실패 : ", error);
+        }
+    }
+    useEffect(()=>{
+        if (noticeList.some(notice => notice.isPinned)) {
+            updatePinState(noticeList);
+        }
+    },[noticeList])
+
     // crewId 전달하기
     const linktoAddNotice = () => {
         if(accessToken){
@@ -102,7 +138,6 @@ export default function CrewNotice() {
         ));
         // console.log(noticeList);
     };
-    console.log(noticeList);
     return(
         <Wrapper>
             {/* userid 받아서 관리자만 보이도록 수정해야 함 */}
