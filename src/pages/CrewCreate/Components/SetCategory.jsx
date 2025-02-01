@@ -15,14 +15,14 @@ export default function SetCategory({onCategoryChange}) {
 
     // 활동 카테고리
     const activityCategories = [
-        { image: Activity, alt: "액티비티", title: "액티비티", subtitle: "다양한 활동을 즐겨보세요" },
-        { image: Easel, alt: "문화·예술", title: "문화·예술", subtitle: "다양한 문화를 즐겨보세요" },
-        { image: SausageBarbeque, alt: "푸드·드링크", title: "푸드·드링크", subtitle: "맛있는 음식을 즐겨보세요" },
-        { image: Star, alt: "취미", title: "취미", subtitle: "다양한 취미를 즐겨보세요" },
-        { image: Camper, alt: "여행", title: "여행", subtitle: "다양한 여행을 즐겨보세요" },
-        { image: SelfDev, alt: "자기계발", title: "자기계발", subtitle: "자기계발을 즐겨보세요" },
-        { image: Coin, alt: "재태크", title: "재태크", subtitle: "재태크를 즐겨보세요" },
-        { image: GameController, alt: "게임", title: "게임", subtitle: "게임을 즐겨보세요" },
+        { image: Activity, alt: "액티비티", title: "ACTIVITY", subtitle: "다양한 활동을 즐겨보세요" },
+        { image: Easel, alt: "문화·예술", title: "CULTURE_ART", subtitle: "다양한 문화를 즐겨보세요" },
+        { image: SausageBarbeque, alt: "푸드·드링크", title: "FOOD", subtitle: "맛있는 음식을 즐겨보세요" },
+        { image: Star, alt: "취미", title: "HOBBY", subtitle: "다양한 취미를 즐겨보세요" },
+        { image: Camper, alt: "여행", title: "TRAVEL", subtitle: "다양한 여행을 즐겨보세요" },
+        { image: SelfDev, alt: "자기계발", title: "SELF_IMPROVEMENT", subtitle: "자기계발을 즐겨보세요" },
+        { image: Coin, alt: "재태크", title: "FINANCE", subtitle: "재태크를 즐겨보세요" },
+        { image: GameController, alt: "게임", title: "GAMING", subtitle: "게임을 즐겨보세요" },
     ];
 
     const handleCategoryClick = (index) => {
@@ -47,7 +47,7 @@ export default function SetCategory({onCategoryChange}) {
                     >
                         <CategoryImage src={category.image} alt={category.alt} />
                         <CategoryTextContainer>
-                            <CategoryTitle>{category.title}</CategoryTitle>
+                            <CategoryTitle>{category.alt}</CategoryTitle>
                             <CategorySubtitle>{category.subtitle}</CategorySubtitle>
                         </CategoryTextContainer>
                         <CategoryGrid>
