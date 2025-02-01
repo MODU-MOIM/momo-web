@@ -14,11 +14,12 @@ export default function CrewNotice() {
     const loadNoticeList = async() => {
         try {
             const response = await noticeAPI.readNoticeList(crewId);
-            if(response.data&&Array.isArray(response.data)){
-                const sortedNotices = sortNoticeList(response.data);
+            // console.log(response.data.data)
+            if(response.data.data && Array.isArray(response.data.data)){
+                const sortedNotices = sortNoticeList(response.data.data);
                 setNoticeList(sortedNotices);
             }else{
-                console.log("공지가 없습니다.");
+                console.log("공지가 없습니다.", response.data);
                 // alert("공지가 없습니다.");
             }
         } catch (error) {
@@ -56,7 +57,6 @@ export default function CrewNotice() {
     
     // crewId 전달하기
     const linktoAddNotice = () => {
-        const crewId = "1";
         if(accessToken){
             navigate(`/crews/${crewId}/addNotice`);
         }
