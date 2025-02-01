@@ -3,15 +3,40 @@ import NoticeList from "./Components/NoticeList";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNotices } from "./NoticeProvider";
+import { noticeAPI } from "../../api";
 
 export default function CrewNotice() {
     const {crewId} = useParams();
     const navigate = useNavigate();
     const accessToken = localStorage.getItem('token');
-    const { noticeList, setNoticeList } = useNotices();
+    const { noticeList, setNoticeList } = useNotices([]);
     
+    const loadNoticeList = async() => {
+        try {
+            const response = await noticeAPI.readNoticeList(crewId);
+            if(response.data&&Array.isArray(response.data)){
+                const sortedNotices = sortNoticeList(response.data);
+                setNoticeList(sortedNotices);
+            }else{
+                console.log("공지가 없습니다.");
+                // alert("공지가 없습니다.");
+            }
+        } catch (error) {
+            console.error('공지 목록을 불러오는데 실패했습니다.', error);
+        }
+    }
+
+    // crewId가 변경될 때마다 공지 목록 다시 부름
+    // 다른 크루로 네비게이션 시 자동으로 해당 크루의 공지사항으로 업데이트
+    useEffect(() => {
+        loadNoticeList();
+    }, [crewId]);
+
     // 공지들 정렬
     const sortNoticeList = (noticeList) => {
+        if(!Array.isArray(noticeList)){
+            return [];
+        }
         return [...noticeList].sort((a, b) => {
             if (b.isPinned !== a.isPinned) {
                 // isPinned == true인 notice를 상단에 배치

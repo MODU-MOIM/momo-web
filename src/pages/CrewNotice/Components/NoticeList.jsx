@@ -11,6 +11,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     const navigate = useNavigate();
     const [showVote, setShowVote] = useState(false);
     const [isManager, setIsManager] = useState(true);
+    const [isDetailVisible, setIsDetailVisible] = useState(false);
     const menuRefs = useRef([]);
 
     const handlePin = (id)=> togglePin(id);
@@ -52,7 +53,16 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
         };
     }, [noticeList]);
 
-    const handleShowVote = (id) => {
+    //readNoticeApi 
+    // const toggleDetailVisibility = (id) => {
+    //     setNoticeList(currentList =>
+    //         currentList.map(notice =>
+    //             notice.id === id ? { ...notice, isDetailVisible: !notice.isDetailVisible } : {...notice, isDetailVisible: false}
+    //         )
+    //     );
+    // };
+    const handleShowVote = async (noticeId) => {
+        await noticeAPI.readNotice(crewId,noticeId)
         setShowVote(!showVote);
     }
 
@@ -96,7 +106,12 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                                 />}
                             </SettingContainer>
                         </TopContainer>
-                        <NoticeContainer  onClick={(id)=>handleShowVote(id)}>
+                        <NoticeContainer
+                            onClick={(id)=>{
+                                handleShowVote(id)
+                                // toggleDetailVisibility(id)
+                            }}
+                        >
                             <Notice>
                                 {notice.content.split('\n').map((item)=>(
                                     <div>{item}<br/></div>
