@@ -4,9 +4,12 @@ import FloatingMenu from "../CrewMain/components/FloatingMenu";
 import Calendar from "./components/ScheduleCalendar";
 import moment from "moment";
 import ViewScheduleBox from "./components/ViewScheduleBox";
+import { scheduleAPI } from "../../api";
+import { useParams } from "react-router-dom";
 
 
 export default function CrewSchedule() {
+    const { crewId } = useParams();
     const [date, setDate] = useState(new Date());
     const [isPast, setIsPast] = useState(moment().isAfter(moment(date), 'day'));
     const [schedules, setSchedules] = useState([]);
@@ -65,8 +68,14 @@ export default function CrewSchedule() {
         setShowSchedules(filteredSchedules);
         setDate(activeStartDate);
     };
-    const handleDeleteSchedule = (id) => {
-        setSchedules((prevSchedules) => prevSchedules.filter(schedule => schedule.id !== id));
+    const handleDeleteSchedule = async (id) => {
+        try {
+            const response = await scheduleAPI.deleteSchedule(crewId, id);
+            console.log("일정 삭제 성공 : ", response);
+            setSchedules((prevSchedules) => prevSchedules.filter(schedule => schedule.id !== id));
+        } catch (error) {
+            console.log("일정 삭제 실패 : ", error);
+        }
     };
     const handleUpdateSchedule = (updatedSchedule) => {
         setSchedules(prevSchedules => prevSchedules.map(sch =>

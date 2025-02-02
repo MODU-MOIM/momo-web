@@ -29,12 +29,13 @@ export default function AddSchedule({date, AddSchedule}) {
         };
         const submitSchedule={
             date: moment(date, "YYYY년 MM월 DD일").format("YYYY-MM-DD"),
-            time: time,
+            time: moment(time, "HH:mm").format("HH:mm:00"),
             title: "",
             description: "",
             detailAddress: spot,
             isOnline: false,
         }
+        console.log("submitSchedule : ", submitSchedule);
         try {
             const response = await scheduleAPI.createSchedule(crewId, submitSchedule)
             console.log("일정 추가 성공 : ",response);

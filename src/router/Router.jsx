@@ -25,7 +25,7 @@ const Router = () => {
                 <Route path="/signup" element={<AddInfo />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/crewcreate" element={<CrewCreate />} />
-                <Route path="/crew" element={<CrewMain />}>
+                <Route path="/crew/:crewId" element={<CrewMain />}>
                     <Route path="crewHome" element={<CrewHome />} />
                     <Route path="crewNotice" element={<CrewNotice />} />
                     <Route path="addNotice" element={<AddNotice />} />
@@ -35,7 +35,7 @@ const Router = () => {
                     <Route path="crewCommunity" element={<Community />} />
                     <Route path="crewSetting" element={<Setting />} />
                 </Route>
-                <Route path="/crew/crewSchedule" element={<CrewSchedule />} />
+                <Route path="/crew/:crewId/crewSchedule" element={<CrewSchedule />} />
                 <Route path="/crew/crewCommunity/write" element={<WriteCommunity />} />
                 <Route path="/crewList" element={<CrewList />} />
             </Route>
