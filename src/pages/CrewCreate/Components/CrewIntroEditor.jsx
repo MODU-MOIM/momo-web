@@ -50,7 +50,7 @@ export default function CrewIntroEditor({setInfoContent}) {
             while ((match = gainSource.exec(content)) !== null) {
                 let result = match[2];
                 srcArray.push(result);
-                console.log('srcArray 추가: ',srcArray);
+                // console.log('srcArray 추가: ',srcArray);
 
                 const file = convertBase64ToFile(result);
                 const formData = new FormData();
@@ -84,7 +84,7 @@ export default function CrewIntroEditor({setInfoContent}) {
             let updateContent = content;
             if(srcArray.length > 0) {            
                 for(let i = 0; i<srcArray.length; i++) {
-                    console.log('srcArray[i]: ',srcArray[i],'urlArray[i]: ',urlArray[i]);
+                    // console.log('srcArray[i]: ',srcArray[i],'urlArray[i]: ',urlArray[i]);
                     let replace = updateContent.replace(srcArray[i],urlArray[i]);
                     updateContent = replace;
                     console.log('테스트',updateContent);
