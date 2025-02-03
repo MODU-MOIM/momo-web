@@ -107,13 +107,26 @@ export const CloseButton = styled.div`
     cursor: pointer;
 `;
 
-export const ProfileImage = styled.img`
+export const ProfileImage = styled.div`
     width: 90px;
     height: 90px;
     border-radius: 50%;
-    border: 1px solid #fff;
-    display: flex;
+    background-color: #ddd;
+    position: relative;
     margin-left:30px;
+
+    &:hover::after {
+        content: '이미지 변경';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
 `;
 
 export const UserInfo = styled.div`
@@ -146,11 +159,11 @@ export const Manners = styled.p`
         content: '';
         position: absolute;
         height:100%;
-        width: ${props => props.score || 0}%;
+        width: ${props => props.$score || 0}%;
 
         background: ${props => {
-            if (props.score < 30) return '#FF666F'; //빨간색
-            if (props.score < 60) return '#FF9F3E'; //주황색
+            if (props.$score < 30) return '#FF666F'; //빨간색
+            if (props.$score < 60) return '#FF9F3E'; //주황색
             return '#75C1A7'; //초록색
         }};
         border-radius: 4px;
@@ -158,13 +171,13 @@ export const Manners = styled.p`
     }
 
     &::after {
-        content: '${props => props.score || 0}℃';
+        content: '${props => props.$score || 0}℃';
         position: absolute;
         top:-20px;
         right: 0;
         color:${props => {
-            if (props.score < 30) return '#FF666F';
-            if (props.score < 60) return '#FF9F3E';
+            if (props.$score < 30) return '#FF666F';
+            if (props.$score < 60) return '#FF9F3E';
             return '#75C1A7';
         }};
         font-size:13px;
@@ -189,7 +202,8 @@ export const ContentContainer = styled.div`
 `;
 
 export const MyPageContent = styled.div`
-    height:250px;
+    padding: 20px 0;
+    min-height:250px;
 `;
 
 export const CrewContent = styled.div`
@@ -242,3 +256,91 @@ export const CrewMember = styled.p`
     bottom: 15px;
     right: 30px;
 `
+
+export const UserInfoContainer = styled.div`
+    font-size: 14px;
+    width: 100%;
+    margin: 10px 40px;
+    margin-bottom: 5px;
+    float: left;
+    
+`;
+
+export const infoTitle = styled.p`
+    width: 60px;
+    font-weight: 600;
+    margin-right: 10px;
+    display: inline;
+    float: left;
+`;
+
+export const GenderSelectContainer = styled.div`
+    display: flex;
+    gap: 10px;
+`;
+
+export const GenderButton = styled.button`
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: #f0f0f0;
+    }
+`;
+
+export const EditButton = styled.button`
+    margin-left: 10px;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 12px;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: #f0f0f0;
+    }
+`;
+
+
+export const AgeInputContainer = styled.div`
+    display: flex;
+    gap: 8px;
+    align-items: center;
+`;
+
+export const AgeInput = styled.input`
+    width: 60px;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+`;
+
+export const SubmitButton = styled.button`
+    padding: 4px 8px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: #45a049;
+    }
+`;
+
+export const CancelButton = styled.button`
+    padding: 4px 8px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: #da190b;
+    }
+`;

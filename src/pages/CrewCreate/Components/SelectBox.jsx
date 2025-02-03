@@ -9,8 +9,8 @@ export const GenderSelect = ({onGenderChange}) => {
   return (
     <Wrapper>
       <StyledSelect name="genderSelect" defaultValue="noLimit" onChange={handleSelectedGender}>
-        <option value="onlyFemale">여성만</option>
-        <option value="onlyMale">남성만</option>
+        <option value="F">여성만</option>
+        <option value="M">남성만</option>
         <option value="noLimit">제한없음</option>
       </StyledSelect>
     </Wrapper>
@@ -33,11 +33,11 @@ export const AgeSelect = ({onMinAgeChange, onMaxAgeChange}) => {
 
     const handleMinAgeSelect = (e) => {
         setMaxYear(e.target.value);
-        onMinAgeChange(e.target.value);
+        onMinAgeChange(currentYear - e.target.value + 1);
     }
     const handleMaxAgeSelect = (e) => {
         setMinYear(e.target.value);
-        onMaxAgeChange(e.target.value);
+        onMaxAgeChange(currentYear - e.target.value + 1);
     }
 
     return (
