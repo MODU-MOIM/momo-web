@@ -7,8 +7,10 @@ import CrewIntroEditor from "./Components/CrewIntroEditor";
 import BannerImageInput from "./Components/BannerImageInput";
 import initialBannerImage from "../../assets/initialBannerImage.jpg"
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function CrewCreate() {
+    const navigate = useNavigate();
     const [crewName, setCrewName] = useState("");
     const [category, setCategory] = useState({});
     const [region, setRegion] = useState([]);
@@ -122,6 +124,7 @@ export default function CrewCreate() {
             }
             console.log('크루 생성 성공 :', response);
             alert('크루 생성 성공');
+            navigate('/crewList');
         } catch (error) {
             console.log("크루 생성 실패", error);
             alert("크루 생성 실패");
