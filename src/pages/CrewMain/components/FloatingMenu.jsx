@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 export default function FloatingMenu() {
+    const { crewId } = useParams();
     const navigate = useNavigate();
     const [selectedMenu, setSelectedMenu] = useState();
     
@@ -17,7 +18,7 @@ export default function FloatingMenu() {
     
     const handleNavigate = (path) => {
         setSelectedMenu(path);
-        navigate(`/crew/${path}`);
+        navigate(`/crews/${crewId}/${path}`);
     }
     
     return(

@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-
 const api = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
     headers: { 'Content-Type': 'application/json' },
@@ -84,6 +83,17 @@ export const authAPI = {
             }
         }
     ),
+};
+
+export const noticeAPI = {
+   createNotice (crewId, noticeData){
+    return api.post(`/crews/${crewId}/notices`, noticeData)
+   },
+   readNoticeList: (crewId) => api.get(`/crews/${crewId}/notices`),
+   readNotice: (crewId, noticeId) => api.get(`/crews/${crewId}/notices/${noticeId}`),
+   updateNotice: (crewId, noticeId,noticeData)=> api.put(`/crews/${crewId}/notices/${noticeId}`, noticeData),
+   deleteNotice: (crewId, noticeId) => api.delete(`/crews/${crewId}/notices/${noticeId}`),
+   noticePinToggle: (crewId, noticeId) => api.patch(`/crews/${crewId}/notices/${noticeId}/pin-toggle`),
 };
 
 export const crewAPI = {
