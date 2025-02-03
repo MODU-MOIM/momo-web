@@ -102,6 +102,8 @@ export default function CrewCreate() {
         }
         
         try {
+            console.log("get하여 배너이미지 확인 :");
+            console.log(formData.get("bannerImage"));
             const token = localStorage.getItem('token');
             const response = await axios.post('/crews', formData, {
                 headers: {
