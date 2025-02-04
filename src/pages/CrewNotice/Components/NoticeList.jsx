@@ -57,12 +57,14 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
             const response = await noticeAPI.readNotice(crewId,noticeId);
             console.log("통신 성공 : ", response);
             setNoticeList(noticeList.map(notice => 
-                notice.id === noticeId ? ({...notice, showDetail: !notice.showDetail}) : notice
+                notice.id === noticeId ? ({...notice, showDetail: !notice.showDetail}) : notice,
             ));
+            for(let i=0; i < noticeList.length; i++){
+                console.log("vote : ",noticeList[i].vote.isEnabled)
+            }
         } catch (error) {
             console.log("통신 실패 : ", error);
         }
-        // console.log(noticeList);
     }
 
     return(
@@ -122,7 +124,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                                 }
                             </Notice>
                             {/* 투표 */}
-                        {notice.showDetail ? 
+                        {notice.vote.isEnabled && notice.showDetail ? 
                             <Vote>
                                 <S.VoteContainer style={{margin: "0"}}>
                                     <S.VoteBox style={{fontSize: "small"}}>
