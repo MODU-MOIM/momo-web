@@ -59,9 +59,6 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
             setNoticeList(noticeList.map(notice => 
                 notice.id === noticeId ? ({...notice, showDetail: !notice.showDetail}) : notice,
             ));
-            for(let i=0; i < noticeList.length; i++){
-                console.log("vote : ",noticeList[i].vote.isEnabled)
-            }
         } catch (error) {
             console.log("통신 실패 : ", error);
         }
@@ -124,7 +121,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                                 }
                             </Notice>
                             {/* 투표 */}
-                        {notice.vote.isEnabled && notice.showDetail ? 
+                        {notice.vote?.isEnabled && notice.showDetail ? 
                             <Vote>
                                 <S.VoteContainer style={{margin: "0"}}>
                                     <S.VoteBox style={{fontSize: "small"}}>
