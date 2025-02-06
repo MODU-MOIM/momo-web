@@ -38,7 +38,9 @@ const CrewList = () => {
             </S.FilterSection>
             {crews.map((crew) => (
                 <S.CrewCard key={crew.crewId}>
-                    <S.CrewImage />
+                    <S.CrewImageWrapper>
+                        <S.CrewImage src={crew.bannerImage} />
+                    </S.CrewImageWrapper>
                     <S.CrewInfo>
                         <S.CrewName>{crew.name}</S.CrewName>
                         <S.CrewCategory>{crew.category}</S.CrewCategory>
