@@ -1,7 +1,7 @@
 // 필요한 라이브러리와 컴포넌트 import
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { authAPI } from "../../api";
+import { authAPI, crewAPI } from "../../api";
 import { useAuth } from "../../AuthProvider";
 import * as S from "./Styles/Header.styles";
 
@@ -17,6 +17,15 @@ const MyPage = ({ closeModal }) => {
     const [age, setAge] = useState(''); // 나이 입력값
     const [showAgeInput, setShowAgeInput] = useState(false); // 나이 입력
     const [loading, setLoading] = useState(true);
+    const [myCrewList, setMyCrewList] = useState([]);
+
+    useEffect(() => {
+        const fetchMyCrewList = async () => {
+            const response = await crewAPI.getMyCrewList();
+            setMyCrewList(response.data.data);
+        }
+        fetchMyCrewList();
+    }, []);
 
     // 컴포넌트 마운트 시 사용자 정보 가져오기
     useEffect(() => {
@@ -119,7 +128,6 @@ const MyPage = ({ closeModal }) => {
             alert('성별 업데이트에 실패했습니다.');
         }
     };
-    
 
     // 성별 표시 텍스트 변환
     const displayGender = (gender) => {
@@ -285,20 +293,18 @@ const MyPage = ({ closeModal }) => {
                     {selectedMenu === 'crew' && (
                         <S.CrewContent>
                             <S.CrewList>
-                                {/* 크루 목록 (최대 5개) */}
-                                {[...Array(2)].map((_, index) => (
-                                    <S.CrewItem key={index}>
-                                        <S.CrewImage/>
+                                {myCrewList.map((crew) => (
+                                    <S.CrewItem key={crew.id}>
+                                        <S.CrewImage src={crew.bannerImage}/>
                                         <S.CrewName>
-                                            크루명
+                                            {crew.name}
                                         </S.CrewName>
                                         <S.CrewMember>
-                                            11/20
+                                            {crew.minMembers} / {crew.maxMembers}
                                         </S.CrewMember>
                                     </S.CrewItem>
                                 ))}
                             </S.CrewList>
-                            {/* 크루 생성 버튼 */}
                             <S.CreateCrewButton to="/crewcreate" onClick={closeModal}>
                                 크루 생성
                             </S.CreateCrewButton>
