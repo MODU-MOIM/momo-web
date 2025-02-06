@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import api from "../../api";
+import CrewIntroEditor from "./Components/CrewIntroEditor";
+import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
-import { AgeSelect, GenderSelect } from "./Components/SelectBox";
-import CrewIntroEditor from "./Components/CrewIntroEditor";
-import api from "../../api";
-import BannerImageInput from "./Components/BannerImageInput";
 
 export default function CrewCreate() {
     const [crewName, setCrewName] = useState("");
