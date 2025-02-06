@@ -13,83 +13,6 @@ export default function CrewNotice() {
     const { noticeList, setNoticeList } = useNotices([]);
     const [isManager, setIsManager] = useState(true);
     
-    const loadNoticeList = async() => {
-        try {
-            const response = await noticeAPI.readNoticeList(crewId);
-            const noticeListData = response.data.data;
-            if(noticeListData && Array.isArray(noticeListData)){
-                const fetchNoticeList = noticeListData.map(notice => {
-                    // 날짜 및 시간 데이터 포맷
-                    const now = new Date(notice.createdAt);
-                    const year = now.getFullYear();  // 현재 년도
-                    const month = now.getMonth() + 1;  // 월 (0부터 시작하므로 +1)
-                    const day = now.getDate();  // 일
-                    const hours = now.getHours();  // 시
-                    const minutes = now.getMinutes();  // 분
-                    const dayOfWeek = now.getDay();  // 요일 번호 (0-6), 0부터 일요일, 월요일, ..., 토요일
-                    const days = ["일", "월", "화", "수", "목", "금", "토"];
-                    // // 2024.12.14 (토) 형식
-                    const formatDate = `${year}.${month.toString().padStart(2, '0')}.${day.toString().padStart(2, '0')} (${days[dayOfWeek]})`;
-                    // // 17:03 형식
-                    const formatTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                    return{
-                        ...notice,
-                        id: notice.noticeId,
-                        date: formatDate,
-                        time: formatTime,
-                        isPinned: notice.isPinned,
-                        isOpenedMenu: false,
-                        showVote: false,
-                    }
-                })
-                const sortedNotices = sortNoticeList(fetchNoticeList);
-                setNoticeList(sortedNotices);
-                console.log("loadNoticeList",noticeList);
-            }else{
-                console.log("공지가 없습니다.", response.data);
-                // alert("공지가 없습니다.");
-            }
-        } catch (error) {
-            console.error('공지 목록을 불러오는데 실패했습니다.', error.response.data);
-        }
-    }
-
-    // crewId가 변경될 때마다 공지 목록 다시 부름
-    // 다른 크루로 네비게이션 시 자동으로 해당 크루의 공지사항으로 업데이트
-    useEffect(() => {
-        loadNoticeList();
-    }, [crewId]);
-
-    const updatePinState = async(noticeList)=>{
-        // const isPinnedNotices = noticeList.filter(notice=>notice.isPinned);
-        // try {
-        //     await Promise.all(isPinnedNotices.map(async notice => {
-        //         const response =  await noticeAPI.noticePinToggle(crewId, notice.id);
-        //         console.log("핀 토글 response", response);
-        //         return response;
-        //     }))
-        //     .then((results) => {
-        //         console.log("All Promis results : ",results); // 모든 프로미스의 결과가 담긴 배열
-        //     });
-        //     // await loadNoticeList();
-        //     console.log("모든 핀 상태 업데이트 완료");
-        try {
-            await Promise.all(
-                noticeList
-                    .filter(notice => notice.isPinned)
-                    .map(async (notice) => {
-                        const response = await noticeAPI.noticePinToggle(crewId, notice.id);
-                        console.log("핀 토글 응답", response.data);
-                        return response;
-                    })
-            );
-            await loadNoticeList(); // 핀 상태 업데이트 후 데이터 재조회
-            console.log("모든 핀 상태 업데이트 완료");
-        } catch (error) {
-            console.error("통신 실패 : ", error);
-        }
-    }
-
     // 공지들 정렬
     const sortNoticeList = (noticeList) => {
         if(!Array.isArray(noticeList)){
@@ -108,30 +31,63 @@ export default function CrewNotice() {
             return a.date > b.date ? -1 : 1;
         });
     };
-    useEffect(() => {
-        setNoticeList(currentNoticeList => sortNoticeList([...currentNoticeList]));
-    }, []);
-
-
-    useEffect(()=>{
-        if (noticeList.some(notice => notice.isPinned)) {
-            updatePinState(noticeList);
-        }
-    },[noticeList])
-
-    // crewId 전달하기
-    const linktoAddNotice = () => {
-        if(accessToken){
-            navigate(`/crews/${crewId}/addNotice`);
+    
+    const formatNoticeDate = (date) => {
+        // 날짜 및 시간 데이터 포맷
+        const now = new Date(date);
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0'); 
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const dayOfWeek = now.getDay();  // 요일 번호 (0-6), 0부터 일요일, 월요일, ..., 토요일
+        const days = ["일", "월", "화", "수", "목", "금", "토"];
+        return {
+            // // 2024.12.14 (토) 형식
+            date : `${year}.${month}.${day} (${days[dayOfWeek]})`,
+            // // 17:03 형식
+            time : `${hours}:${minutes}`
         }
     }
     
-    const togglePin = (id) => {
-        setNoticeList(sortNoticeList(noticeList.map(notice => 
-            notice.id === id ? {...notice, isPinned: !notice.isPinned} : notice)
-        ));
-        // console.log(noticeList);
-        updatePinState(noticeList);
+    const loadNoticeList = async() => {
+        try {
+            const response = await noticeAPI.readNoticeList(crewId);
+            const noticeListData = response.data.data;
+            if(noticeListData && Array.isArray(noticeListData)){
+                const formattedNotices = noticeListData.map(notice => {
+                    const { date, time } = formatNoticeDate(notice.createdAt);
+                    return {
+                        ...notice,
+                        id: notice.noticeId,
+                        date,
+                        time,
+                        isPinned: notice.isPinned,
+                        isOpenedMenu: false,
+                        showVote: false,
+                    };
+                });
+                setNoticeList(sortNoticeList(formattedNotices));
+                console.log("loadNoticeList",noticeList);
+            }else{
+                console.log("공지가 없습니다.", response.data);
+                // alert("공지가 없습니다.");
+            }
+        } catch (error) {
+            console.error('공지 목록을 불러오는데 실패했습니다.', error.response.data);
+        }
+    }
+    
+    const togglePin = async (id) => {
+        try {
+            await noticeAPI.noticePinToggle(crewId, id);
+            setNoticeList(sortNoticeList(noticeList.map(notice => 
+                notice.id === id ? {...notice, isPinned: !notice.isPinned} : notice)
+            ));
+            // console.log(noticeList);
+        } catch (error) {
+            console.error("공지 고정 실패", error);
+        }
     };
     const toggleMenu = (id)=>{
         setNoticeList(currentNotices => 
@@ -140,6 +96,20 @@ export default function CrewNotice() {
         ));
         // console.log(noticeList);
     };
+
+    // crewId가 변경될 때마다 공지 목록 다시 부름
+    // 다른 크루로 네비게이션 시 자동으로 해당 크루의 공지사항으로 업데이트
+    useEffect(() => {
+        loadNoticeList();
+    }, [crewId]);
+
+    // crewId 전달하기
+    const linktoAddNotice = () => {
+        if(accessToken){
+            navigate(`/crews/${crewId}/addNotice`);
+        }
+    }
+
     return(
         <Wrapper>
             {/* userid 받아서 관리자만 보이도록 수정해야 함 */}
