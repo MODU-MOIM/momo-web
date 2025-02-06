@@ -16,6 +16,7 @@ import Setting from "../pages/CrewSetting/CrewSetting";
 import Home from "../pages/home/Home";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
+import { NoticeProvider } from "../pages/CrewNotice/NoticeProvider";
 
 const Router = () => {
     return(
@@ -25,17 +26,17 @@ const Router = () => {
                 <Route path="/signup" element={<AddInfo />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/crewcreate" element={<CrewCreate />} />
-                <Route path="/crew" element={<CrewMain />}>
+                <Route path="/crews/:crewId" element={<CrewMain />}>
                     <Route path="crewHome" element={<CrewHome />} />
-                    <Route path="crewNotice" element={<CrewNotice />} />
-                    <Route path="addNotice" element={<AddNotice />} />
+                    <Route path="crewNotice" element={<NoticeProvider><CrewNotice /></NoticeProvider>} />
+                    <Route path="addNotice" element={<NoticeProvider><AddNotice /></NoticeProvider>} />
                     <Route path="updateNotice/:noticeId" element={<UpdateNotice />} />
                     <Route path="crewActivity" element={<Activities />} />
                     <Route path="crewActivity/:index" element={<Details />} />
                     <Route path="crewCommunity" element={<Community />} />
                     <Route path="crewSetting" element={<Setting />} />
                 </Route>
-                <Route path="/crew/crewSchedule" element={<CrewSchedule />} />
+                <Route path="/crews/:crewId/crewSchedule" element={<CrewSchedule />} />
                 <Route path="/crew/crewCommunity/write" element={<WriteCommunity />} />
                 <Route path="/crewList" element={<CrewList />} />
             </Route>
