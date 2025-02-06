@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import api from "../../api";
+import BannerImageInput from "./Components/BannerImageInput";
 import CrewIntroEditor from "./Components/CrewIntroEditor";
 import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
 
 export default function CrewCreate() {
+    const navigate = useNavigate();
     const [crewName, setCrewName] = useState("");
     const [category, setCategory] = useState({});
     const [region, setRegion] = useState([]);
     const [regionData, setRegionData] = useState([]);
-    const [minNumber, setMinNumber] = useState();
-    const [maxNumber, setMaxNumber] = useState();
+    const [minNumber, setMinNumber] = useState(2);
+    const [maxNumber, setMaxNumber] = useState(2);
     const [gender, setGender] = useState('noLimit');
     const [minAge, setMinAge] = useState('noLimit');
     const [maxAge, setMaxAge] = useState('noLimit');
     const [infoContent, setInfoContent] = useState('');
     const [allow, setAllow] = useState(false);
+    const [bannerImage, setBannerImage] = useState(initialBannerImage);
+    const [bannerImageFile, setBannerImageFile] = useState(null);
     
     const handleCrewName = (e) => setCrewName(e.target.value);
     const handleCategory = (selectedCategory) => setCategory(selectedCategory);
@@ -45,6 +48,24 @@ export default function CrewCreate() {
         }
     },[crewName, regionData, minNumber, maxNumber, infoContent, category]);
 
+    // 이미지 파일을 URL로 변환하는 로직을 추가
+    useEffect(() => {
+        if (bannerImageFile) {
+            const objectUrl = URL.createObjectURL(bannerImageFile);
+            setBannerImage(objectUrl);
+            return () => URL.revokeObjectURL(objectUrl);
+        }
+    }, [bannerImageFile]);
+
+    const handleImageUpload = async(file)=>{
+        if (!file) return;
+        if (!file.type.startsWith('image/')){
+            alert('이미지 파일만 업로드 가능합니다.');
+            return;
+        }
+        setBannerImageFile(file);
+    }
+
     const handleSubmit = async() => {
         const crewReqDto = {
             name: crewName,
@@ -66,23 +87,45 @@ export default function CrewCreate() {
         }
         
         const formData = new FormData();
-        formData.append("crewReqDto", JSON.stringify(crewReqDto));
+        formData.append("crewReqDto", new Blob([JSON.stringify(crewReqDto)], { type: "application/json" }));
+
         console.log("crewReqDto: ",crewReqDto);
-        console.log("FormData contents:");
-        for (let [key, value] of formData.entries()) {
-            console.log("Key:", key);
-            console.log("Value:", value);
+        console.log("File to be uploaded:", bannerImageFile);
+
+        if (bannerImageFile) {
+            formData.append("bannerImage", bannerImageFile);
+        }else {
+            console.log("No file selected");
         }
+        
         try {
+            console.log("get하여 배너이미지 확인 :");
+            console.log(formData.get("bannerImage"));
             const token = localStorage.getItem('token');
-            const response = await api.post('/crews', formData, {
+            const response = await axios.post('/crews', formData, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': token,
                 }
             });
-            console.log('Response:', response);
+            // if (response.status === 200 && !response.data.error) {
+            //     console.log('크루 생성 성공 :', response);
+            //     alert('크루 생성 성공');
+            // } else {
+            //     throw new Error(response.data.message || '알 수 없는 에러가 발생했습니다.');
+            // }
+            if (response.data.status === 200 && response.status === 200) {
+                alert('요청이 성공적으로 처리되었습니다.');
+            } else if (response.data.status === 500 || response.status === 500) {
+                console.error('서버 오류 발생:', response.data);
+                alert('서버 오류가 발생했습니다.');
+            } else {
+                alert('알 수 없는 응답 상태입니다.');
+            }
+            console.log('크루 생성 성공 :', response);
+            alert('크루 생성 성공');
+            navigate('/crewList');
         } catch (error) {
-            console.log("크루 생성 실패: ",error.response ? error.response.data : error);
+            console.log("크루 생성 실패", error);
             alert("크루 생성 실패");
         }
     }
@@ -104,7 +147,11 @@ export default function CrewCreate() {
                 </CrewName>
                 <Banner>
                     <ItemTitle>배너 이미지를 선택해주세요</ItemTitle>
-                    {/* <BannerImageInput/> */}
+                    <BannerImageInput
+                        bannerImage={bannerImage}
+                        setBannerImage={setBannerImage}
+                        handleImageUpload={handleImageUpload}
+                    />
                 </Banner>
                 
                 {/* 모임활동 선택 */}

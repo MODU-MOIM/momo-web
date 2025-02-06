@@ -1,24 +1,24 @@
 import styled from "styled-components";
 import NoticeList from "./Components/NoticeList";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useNotices } from "./NoticeProvider";
+import { noticeAPI } from "../../api";
 
+// user role 받아서 isManager 확인
 export default function CrewNotice() {
+    const {crewId} = useParams();
     const navigate = useNavigate();
-    const [notices, setNotices] = useState([]);
-    const initialNotices = [
-        { id: 1, content: "첫 번째 공지사항 내용입니다.\ndd", date: "2024.12.10 (화)", time: "12:00", isPinned: false, isOpenedMenu: false },
-        { id: 2, content: "두 번째 공지사항 내용입니다.", date: "2024.12.10 (화)", time: "13:00", isPinned: false, isOpenedMenu: false },
-        { id: 3, content: "세 번째 공지사항 내용입니다.", date: "2024.12.12 (목)", time: "03:00", isPinned: false, isOpenedMenu: false }
-    ];
-    
-    useEffect(()=>{
-        setNotices(initialNotices);
-    },[]);
+    const accessToken = localStorage.getItem('token');
+    const { noticeList, setNoticeList } = useNotices([]);
+    const [isManager, setIsManager] = useState(true);
     
     // 공지들 정렬
-    const sortNotices = (notices) => {
-        return [...notices].sort((a, b) => {
+    const sortNoticeList = (noticeList) => {
+        if(!Array.isArray(noticeList)){
+            return [];
+        }
+        return [...noticeList].sort((a, b) => {
             if (b.isPinned !== a.isPinned) {
                 // isPinned == true인 notice를 상단에 배치
                 return b.isPinned - a.isPinned;
@@ -31,24 +31,85 @@ export default function CrewNotice() {
             return a.date > b.date ? -1 : 1;
         });
     };
-    useEffect(() => {
-        setNotices(currentNotices => sortNotices([...currentNotices]));
-    }, []);
     
-    // 경로 추가하기 
-    const linktoAddNotice = () => navigate('/crew/addNotice');
+    const formatNoticeDate = (date) => {
+        // 날짜 및 시간 데이터 포맷
+        const now = new Date(date);
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0'); 
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const dayOfWeek = now.getDay();  // 요일 번호 (0-6), 0부터 일요일, 월요일, ..., 토요일
+        const days = ["일", "월", "화", "수", "목", "금", "토"];
+        return {
+            // // 2024.12.14 (토) 형식
+            date : `${year}.${month}.${day} (${days[dayOfWeek]})`,
+            // // 17:03 형식
+            time : `${hours}:${minutes}`
+        }
+    }
     
-    const togglePin = (id) => {
-        setNotices(sortNotices(notices.map(notice => 
-            notice.id === id ? {...notice, isPinned: !notice.isPinned} : notice)
-        ));
-        console.log(notices);
+    const loadNoticeList = async() => {
+        try {
+            const response = await noticeAPI.readNoticeList(crewId);
+            const noticeListData = response.data.data;
+            if(noticeListData && Array.isArray(noticeListData)){
+                const formattedNotices = noticeListData.map(notice => {
+                    const { date, time } = formatNoticeDate(notice.createdAt);
+                    return {
+                        ...notice,
+                        id: notice.noticeId,
+                        date,
+                        time,
+                        isPinned: notice.isPinned,
+                        isOpenedMenu: false,
+                        showVote: false,
+                    };
+                });
+                setNoticeList(sortNoticeList(formattedNotices));
+                console.log("loadNoticeList",noticeList);
+            }else{
+                console.log("공지가 없습니다.", response.data);
+                // alert("공지가 없습니다.");
+            }
+        } catch (error) {
+            console.error('공지 목록을 불러오는데 실패했습니다.', error.response.data);
+        }
+    }
+    
+    const togglePin = async (id) => {
+        try {
+            await noticeAPI.noticePinToggle(crewId, id);
+            setNoticeList(sortNoticeList(noticeList.map(notice => 
+                notice.id === id ? {...notice, isPinned: !notice.isPinned} : notice)
+            ));
+            // console.log(noticeList);
+        } catch (error) {
+            console.error("공지 고정 실패", error);
+        }
     };
     const toggleMenu = (id)=>{
-        setNotices(notices.map(notice=>
-            notice.id === id ? {...notice, isOpenedMenu: !notice.isOpenedMenu} : notice
+        setNoticeList(currentNotices => 
+            currentNotices.map(notice=>
+                notice.id === id ? {...notice, isOpenedMenu: !notice.isOpenedMenu} : notice
         ));
+        // console.log(noticeList);
     };
+
+    // crewId가 변경될 때마다 공지 목록 다시 부름
+    // 다른 크루로 네비게이션 시 자동으로 해당 크루의 공지사항으로 업데이트
+    useEffect(() => {
+        loadNoticeList();
+    }, [crewId]);
+
+    // crewId 전달하기
+    const linktoAddNotice = () => {
+        if(accessToken){
+            navigate(`/crews/${crewId}/addNotice`);
+        }
+    }
+
     return(
         <Wrapper>
             {/* userid 받아서 관리자만 보이도록 수정해야 함 */}
@@ -56,10 +117,11 @@ export default function CrewNotice() {
             {/* 무한스크롤 적용해야 함 */}
             <NoticeContainer>
                 <NoticeList 
-                    notices={notices}
+                    noticeList={noticeList}
                     togglePin={togglePin}
                     toggleMenu={toggleMenu}
-                    setNotices={setNotices}
+                    setNoticeList={setNoticeList}
+                    isManager={isManager}
                 />
             </NoticeContainer>
         </Wrapper>

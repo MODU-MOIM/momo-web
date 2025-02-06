@@ -39,7 +39,11 @@ export const VoteBox = styled.div`
     border-radius: 5px;
     display: ${props => props.shouldHide ? 'none' : 'inline-block'};
 `;
-export const VoteTitle = styled.ul`
+export const VoteTitle = styled.input`
+    margin: 10px 0px 0px 10px;
+`;
+export const VoteTitleText = styled.div`
+    margin: 10px 0px 0px 10px;
 `;
 export const SelectBox = styled.div`
 `;
@@ -47,10 +51,14 @@ export const SelectList = styled.li`
     margin: 10px;
     padding: 5px;
     padding-left: 10px;
-    font-size: 15px;
+    font-size: small;
     list-style-type: none;
-    border: 1px solid #D4E3FB;
+    border: ${props => props.userVote ? 'none' : '1px solid #D4E3FB'};
     border-radius: 10px;
+    &:hover{
+        cursor: ${props => props.userVote ? 'pointer' : 'initial'};
+        background-color: ${props => props.userVote ? '#D4E3FB' : 'transparent'};
+    }
 `;
 export const ButtonContainer = styled.div`
 `;
@@ -61,7 +69,7 @@ export const VoteButton = styled.button`
     border-radius: 10px;
     background-color: #F0F0F0;
     display: ${props => props.shouldHide ? 'none' : 'inline-block'};
-    color: ${props => props.isDeleted ? "black" : "red"};
+    color: ${props => props.isEnabled ? "red" : "black"};
     &:hover{
         background-color: #D8D8D8;
         cursor: pointer;
