@@ -16,7 +16,6 @@ export default function CrewNotice() {
     const loadNoticeList = async() => {
         try {
             const response = await noticeAPI.readNoticeList(crewId);
-            // console.log(response.data.data)
             const noticeListData = response.data.data;
             if(noticeListData && Array.isArray(noticeListData)){
                 const fetchNoticeList = noticeListData.map(notice => {
@@ -38,13 +37,14 @@ export default function CrewNotice() {
                         id: notice.noticeId,
                         date: formatDate,
                         time: formatTime,
-                        isPinned: false,
+                        isPinned: notice.isPinned,
                         isOpenedMenu: false,
                         showVote: false,
                     }
                 })
                 const sortedNotices = sortNoticeList(fetchNoticeList);
                 setNoticeList(sortedNotices);
+                console.log("loadNoticeList",noticeList);
             }else{
                 console.log("공지가 없습니다.", response.data);
                 // alert("공지가 없습니다.");
@@ -59,6 +59,36 @@ export default function CrewNotice() {
     useEffect(() => {
         loadNoticeList();
     }, [crewId]);
+
+    const updatePinState = async(noticeList)=>{
+        // const isPinnedNotices = noticeList.filter(notice=>notice.isPinned);
+        // try {
+        //     await Promise.all(isPinnedNotices.map(async notice => {
+        //         const response =  await noticeAPI.noticePinToggle(crewId, notice.id);
+        //         console.log("핀 토글 response", response);
+        //         return response;
+        //     }))
+        //     .then((results) => {
+        //         console.log("All Promis results : ",results); // 모든 프로미스의 결과가 담긴 배열
+        //     });
+        //     // await loadNoticeList();
+        //     console.log("모든 핀 상태 업데이트 완료");
+        try {
+            await Promise.all(
+                noticeList
+                    .filter(notice => notice.isPinned)
+                    .map(async (notice) => {
+                        const response = await noticeAPI.noticePinToggle(crewId, notice.id);
+                        console.log("핀 토글 응답", response.data);
+                        return response;
+                    })
+            );
+            await loadNoticeList(); // 핀 상태 업데이트 후 데이터 재조회
+            console.log("모든 핀 상태 업데이트 완료");
+        } catch (error) {
+            console.error("통신 실패 : ", error);
+        }
+    }
 
     // 공지들 정렬
     const sortNoticeList = (noticeList) => {
@@ -83,35 +113,6 @@ export default function CrewNotice() {
     }, []);
 
 
-    const updatePinState = async(noticeList)=>{
-        const isPinnedNotices = noticeList.filter(notice=>notice.isPinned);
-        // try {
-        //     for(let i=0; i<isPinnedNotices.length; i++){
-        //         const noticeId = isPinnedNotices[i].id;
-        //         const response = await noticeAPI.noticePinToggle(crewId, noticeId);
-        //         if(response.data){
-        //             console.log("통신성공 : ", response.data);
-        //         }else{
-        //             console.log("음 뭐지 : ", response);
-        //         }
-        //     }
-        // } catch (error) {
-        //     console.log("통신 실패 : ", error)
-        // }
-        try {
-            await Promise.all(isPinnedNotices.map(notice => {
-                const response =  noticeAPI.noticePinToggle(crewId, notice.id);
-                console.log("1111response", response);
-                return response;
-            }))
-            .then((results) => {
-                console.log("results : ",results); // 모든 프로미스의 결과가 담긴 배열
-            });
-            console.log("모든 핀 상태 업데이트 완료");
-        } catch (error) {
-            console.error("통신 실패 : ", error);
-        }
-    }
     useEffect(()=>{
         if (noticeList.some(notice => notice.isPinned)) {
             updatePinState(noticeList);
@@ -129,7 +130,8 @@ export default function CrewNotice() {
         setNoticeList(sortNoticeList(noticeList.map(notice => 
             notice.id === id ? {...notice, isPinned: !notice.isPinned} : notice)
         ));
-        console.log(noticeList);
+        // console.log(noticeList);
+        updatePinState(noticeList);
     };
     const toggleMenu = (id)=>{
         setNoticeList(currentNotices => 
