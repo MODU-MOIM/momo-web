@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { theme } from "../../../theme";
 import Activity from '../../../assets/category/Running.png';
 import Easel from "../../../assets/category/Easel.png";
 import SausageBarbeque from '../../../assets/category/SausageBarbeque.png';
@@ -80,7 +79,7 @@ const CategoryItem = styled.div`
     width: 250px;
     height: 50px;
     margin: 10px;
-    border: 1px solid ${theme.colors.purple};
+    border: 1px solid #4B44B6;
     border-radius: 5px;
     float: left;
     display: flex;
@@ -112,7 +111,7 @@ const CategoryTitle = styled.p`
 
 const CategorySubtitle = styled.p`
     font-size: 13px;
-    color: ${theme.colors.subtextgray};
+    color: #929292;
     margin: -5px 0;
 `;
 const CategoryGrid = styled.div`
@@ -124,13 +123,13 @@ const SelectButton = styled.input`
     appearance: none;
     width: 20px;
     height: 20px;
-    border: 2px solid ${theme.colors.gray02};
+    border: 2px solid #D9D9D9;
     border-radius: 50%;
     cursor: pointer;
     /* margin-right: 10px; */
     &:checked {
-        background-color: ${theme.colors.purple};
-        border:2px solid ${theme.colors.purple};
+        background-color: #4B44B6;
+        border:2px solid #4B44B6;
         position: relative;
     }
 `;
