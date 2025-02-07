@@ -26,7 +26,7 @@ export default function CrewHome() {
                 const regions = resCrewData.regions.map(region => region.regionDepth2).join(', ');
                 setCrewData({
                     region: regions,
-                    currentNum: 7,
+                    currentNum: 2,
                     maxMembers: resCrewData.maxMembers,
                     crewIntro: resCrewData.description
                 });
@@ -54,7 +54,7 @@ export default function CrewHome() {
                         </UserInfoContainer>
                         <InfoItem>
                             <CrewRegion>
-                                <FaMapMarkerAlt />
+                                <FaMapMarkerAlt style={{marginRight: "10px"}}/>
                                 {crewData.region}
                             </CrewRegion>
                             <CrewNumber>
@@ -101,12 +101,11 @@ const CrewInfo = styled.div`
     justify-content: space-between;
     width: 90%;
     margin: 40px 0px;
-    /* background-color: #9a5555; */
 `;
 
 const UserInfoContainer = styled.div`
-    width: 100%;
-    `;
+    width: 60%;
+`;
 const Profile = styled.div`
     display: flex;
     align-items: center;
@@ -123,7 +122,6 @@ const ProfileText = styled.div`
     height:35px;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     margin:0;
     `;
 const UserPosition = styled.p`
@@ -133,28 +131,24 @@ const UserPosition = styled.p`
     margin: 0;
     `;
 const UserName = styled.p`
-    /* height:45px; */
-    /* display: flex; */
-    /* align-items: flex-end; */
     margin:0px;
     color:#000;
     font-size: 15px;
     font-weight: 600;
-    `;
+`;
 
 
 const InfoItem = styled.div`
-    flex: 1 1 25%;
-    /* min-width: 40%; */
+    /* flex: 1 0 25%; */
     display: flex;
     justify-content: space-between;
 `;
 const CrewRegion = styled.div`
-    /* min-width: 180px; */
-    max-width: 180px;
+    /* width: 20%; */
     display: flex;
     justify-content: space-around;
-    `;
+    margin-right: 10px;
+`;
 const CrewNumber = styled.div`
     width: 80px;
     display: flex;
