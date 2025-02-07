@@ -43,6 +43,10 @@ const CrewList = () => {
                 <S.FilterButton>생성일</S.FilterButton>
             </S.FilterSection>
             {crews.map((crew) => (
+                <S.CrewCard key={crew.crewId}>
+                    <S.CrewImageWrapper>
+                        <S.CrewImage src={crew.bannerImage} />
+                    </S.CrewImageWrapper>
                 <S.CrewCard 
                     key={crew.crewId}
                     onClick={()=>linktoCrewHome(crew.crewId)}

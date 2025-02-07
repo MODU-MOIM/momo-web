@@ -1,13 +1,15 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import BannerImageInput from "./Components/BannerImageInput";
+import CrewIntroEditor from "./Components/CrewIntroEditor";
+import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
-import { AgeSelect, GenderSelect } from "./Components/SelectBox";
-import CrewIntroEditor from "./Components/CrewIntroEditor";
-import BannerImageInput from "./Components/BannerImageInput";
-import initialBannerImage from "../../assets/initialBannerImage.jpg"
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
+const initialBannerImage = "";
+
 
 export default function CrewCreate() {
     const navigate = useNavigate();
@@ -24,6 +26,7 @@ export default function CrewCreate() {
     const [allow, setAllow] = useState(false);
     const [bannerImage, setBannerImage] = useState(initialBannerImage);
     const [bannerImageFile, setBannerImageFile] = useState(null);
+    
     
     const handleCrewName = (e) => setCrewName(e.target.value);
     const handleCategory = (selectedCategory) => setCategory(selectedCategory);

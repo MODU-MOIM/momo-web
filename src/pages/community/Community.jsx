@@ -46,6 +46,7 @@ const Community = () => {
                 <S.FloatingButton onClick={() => navigate('/crew/crewCommunity/write')}>
                     글작성
                 </S.FloatingButton>
+                {/* 게시물 목록 출력 */}
                 {posts.slice(0, visiblePosts).map((post, index) => (
                 <S.ActivityCard key={post.id}>
                     <S.UserInfoContainer>
