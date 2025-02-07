@@ -4,18 +4,32 @@ import FloatingMenu from "../CrewMain/components/FloatingMenu";
 import Calendar from "./components/ScheduleCalendar";
 import moment from "moment";
 import ViewScheduleBox from "./components/ViewScheduleBox";
-import { scheduleAPI } from "../../api";
+import { crewAPI, scheduleAPI } from "../../api";
 import { useParams } from "react-router-dom";
 
 
 export default function CrewSchedule() {
     const { crewId } = useParams();
+    const [crewData, setCrewData] = useState();
     const [date, setDate] = useState(new Date());
     const [isPast, setIsPast] = useState(moment().isAfter(moment(date), 'day'));
     const [schedules, setSchedules] = useState([]);
     const [showSchedules, setShowSchedules] = useState([]);
     const [isClickedAddButton, setIsClickedAddButton] = useState(false);
     const [editMode, setEditMode] = useState(null);
+
+    const fetchCrewInfo = async () => {
+        try {
+            const response = await crewAPI.getCrewData(crewId);
+            // console.log(response.data.data);
+            setCrewData(response.data.data);
+        } catch (error) {
+            console.error("크루 정보 불러오기 실패", error);
+        }
+    }
+    useEffect(() => {
+        fetchCrewInfo();
+    }, [crewId]);
 
     const initialSchedule = [
         {id: 1, crew: "초코러닝", spot:"꿈트리 움 갤러리", time: "18:00", date:"2025/01/04 (SAT)", isDetailVisible: false},
@@ -47,26 +61,40 @@ export default function CrewSchedule() {
         setSchedules(prevSchedules => [...prevSchedules, newSchedule]);
         setIsClickedAddButton(false); // 일정 추가 후 버튼 상태 초기화
     };
+    // 날짜 선택
     const handleDate = (date) => {
         const formattedDate = moment(date).format("YYYY/MM/DD (ddd)").toUpperCase();
         const filteredSchedules = schedules.filter((schedule)=>(schedule.date === formattedDate));
         setShowSchedules(filteredSchedules);
         setDate(date);
     }
+
+    const fetchMonthSchedule = async(acticeStartDate) => {
+        const yearMonth = moment(acticeStartDate).format('YYYY-MM');
+        try {
+            const response = await scheduleAPI.readMonthlySchedule(crewId, yearMonth);
+            console.log(response.data);
+            setShowSchedules(response.data.data);
+        } catch (error) {
+            console.error("이번 달 일정 조회 실패", error);
+        }
+    }
+
     // 월 클릭 시 해당 월의 일정들 보여주기
     const handleMonthChange = (activeStartDate) => {
-        // 해당 월의 시작과 끝 날짜
-        const startOfMonth = moment(activeStartDate).startOf('month').format('YYYY-MM-DD');
-        const endOfMonth = moment(activeStartDate).endOf('month').format('YYYY-MM-DD');
+        // // 해당 월의 시작과 끝 날짜
+        // const startOfMonth = moment(activeStartDate).startOf('month').format('YYYY-MM-DD');
+        // const endOfMonth = moment(activeStartDate).endOf('month').format('YYYY-MM-DD');
 
-        // 해당 월에 속하는 일정만 필터링
-        const filteredSchedules = schedules.filter(schedule => {
-            const DateSchedule = moment(schedule.date);
-            return DateSchedule.isSameOrAfter(startOfMonth) && DateSchedule.isSameOrBefore(endOfMonth);
-        });
+        // // 해당 월에 속하는 일정만 필터링
+        // const filteredSchedules = schedules.filter(schedule => {
+        //     const DateSchedule = moment(schedule.date);
+        //     return DateSchedule.isSameOrAfter(startOfMonth) && DateSchedule.isSameOrBefore(endOfMonth);
+        // });
 
-        setShowSchedules(filteredSchedules);
+        // setShowSchedules(filteredSchedules);
         setDate(activeStartDate);
+        fetchMonthSchedule(activeStartDate);
     };
     const handleDeleteSchedule = async (id) => {
         try {
@@ -94,6 +122,7 @@ export default function CrewSchedule() {
                     <DetailScheduleContainer>
                         <div>{SelectedDate}</div>
                         <ViewScheduleBox
+                            crewData={crewData}
                             showSchedules={showSchedules}
                             setShowSchedules={setShowSchedules}
                             isPast={isPast}

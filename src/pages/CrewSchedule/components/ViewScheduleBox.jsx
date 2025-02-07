@@ -5,7 +5,7 @@ import ScheduleDetail from "./ScheduleDetail";
 import AddSchedule from "./AddSchedule";
 import EditSchedule from "./EditSchedule";
 
-export default function ViewScheduleBox({showSchedules, setShowSchedules, isPast, isClickedAddButton, date, handleAddSchedule, editMode, setEditMode, handleUpdateSchedule, deleteSchedule}) {
+export default function ViewScheduleBox({crewData, showSchedules, setShowSchedules, isPast, isClickedAddButton, date, handleAddSchedule, editMode, setEditMode, handleUpdateSchedule, deleteSchedule}) {
     
     const handleScheduleButton = (id) => {
         // console.log(setShowSchedules);
@@ -36,23 +36,23 @@ export default function ViewScheduleBox({showSchedules, setShowSchedules, isPast
                             ) : null
                         )
                     ) : (
-                        showSchedules.map((e)=>(
+                        showSchedules.map((schedule)=>(
                         // schedule box
-                        <S.ViewScheduleButton key={e.id}  onClick={()=>handleScheduleButton(e.id)}>
-                            <S.CrewName>{e.crew}</S.CrewName>
+                        <S.ViewScheduleButton key={schedule.id}  onClick={()=>handleScheduleButton(schedule.id)}>
+                            <S.CrewName>{crewData?.name}</S.CrewName>
                             <S.ScheduleInfo>
-                                <S.CrewImage src={MainImage}/>
+                                <S.CrewImage src={crewData?.bannerImage}/>
                                 <div>
-                                    <S.DateSchedule>{moment(e.date, "YYYY/MM/DD (ddd)").format("MM/DD (ddd)").toUpperCase()}</S.DateSchedule>
-                                    <S.ScheduleTime>{e.time}</S.ScheduleTime>
+                                    <S.DateSchedule>{moment(schedule.scheduleDate, "YYYY-MM-DD").format("MM/DD (ddd)").toUpperCase()}</S.DateSchedule>
+                                    <S.ScheduleTime>{moment(schedule.scheduleTime, "HH:mm:00").format("HH:mm")}</S.ScheduleTime>
                                 </div>
                             </S.ScheduleInfo>
                             {/* shcedule 세부사항 */}
-                            {e.isDetailVisible ?
+                            {schedule.isDetailVisible ?
                                 <>
                                     <S.StyledIoIosArrowUp />
                                     <ScheduleDetail
-                                        schedule={e}
+                                        schedule={schedule}
                                         deleteSchedule={deleteSchedule}
                                         setEditMode={setEditMode}
                                     />
