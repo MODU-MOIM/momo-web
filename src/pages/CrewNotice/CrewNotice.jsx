@@ -11,6 +11,7 @@ export default function CrewNotice() {
     const navigate = useNavigate();
     const accessToken = localStorage.getItem('token');
     const { noticeList, setNoticeList } = useNotices([]);
+    const [loading, setLoading] = useState(true);
     const [isManager, setIsManager] = useState(true);
     
     // 공지들 정렬
@@ -71,10 +72,11 @@ export default function CrewNotice() {
                 console.log("loadNoticeList",noticeList);
             }else{
                 console.log("공지가 없습니다.", response.data);
-                // alert("공지가 없습니다.");
             }
         } catch (error) {
             console.error('공지 목록을 불러오는데 실패했습니다.', error.response.data);
+        } finally {
+            setLoading(false);
         }
     }
     
@@ -103,6 +105,8 @@ export default function CrewNotice() {
         loadNoticeList();
     }, [crewId]);
 
+    if (loading) return <NoticeContainer>로딩 중...</NoticeContainer>;
+
     // crewId 전달하기
     const linktoAddNotice = () => {
         if(accessToken){
@@ -116,13 +120,17 @@ export default function CrewNotice() {
             <AddNoticeButton onClick={linktoAddNotice} >+ 공지추가</AddNoticeButton>
             {/* 무한스크롤 적용해야 함 */}
             <NoticeContainer>
-                <NoticeList 
-                    noticeList={noticeList}
-                    togglePin={togglePin}
-                    toggleMenu={toggleMenu}
-                    setNoticeList={setNoticeList}
-                    isManager={isManager}
-                />
+                {noticeList.length > 0 ? (
+                    <NoticeList 
+                        noticeList={noticeList}
+                        togglePin={togglePin}
+                        toggleMenu={toggleMenu}
+                        setNoticeList={setNoticeList}
+                        isManager={isManager}
+                    />
+                ):(
+                    <p>공지가 없습니다.</p>
+                )}
             </NoticeContainer>
         </Wrapper>
     );
