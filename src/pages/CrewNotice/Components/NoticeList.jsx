@@ -52,21 +52,13 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
         };
     }, [noticeList]);
 
-    //readNoticeApi 
-    // 공지 3줄 초과 시 ... 처리, toggle로 볼 수 있도록
-    // const toggleDetailVisibility = (id) => {
-    //     setNoticeList(currentList =>
-    //         currentList.map(notice =>
-    //             notice.id === id ? { ...notice, isDetailVisible: !notice.isDetailVisible } : {...notice, isDetailVisible: false}
-    //         )
-    //     );
-    // };
-    const handleShowVote = async (noticeId) => {
+    const handleShowDetail = async (noticeId) => {
         try {
             const response = await noticeAPI.readNotice(crewId,noticeId);
             console.log("통신 성공 : ", response);
             setNoticeList(noticeList.map(notice => 
-                notice.id === noticeId ? ({...notice, showVote: !notice.showVote}) : notice));
+                notice.id === noticeId ? ({...notice, showDetail: !notice.showDetail}) : notice,
+            ));
         } catch (error) {
             console.log("통신 실패 : ", error);
         }
@@ -116,11 +108,11 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                         </TopContainer>
                         <NoticeContainer
                             onClick={()=>{
-                                handleShowVote(notice.id)
+                                handleShowDetail(notice.id)
                                 // toggleDetailVisibility(id)
                             }}
                         >
-                            <Notice>
+                            <Notice showDetail={notice.showDetail}>
                                 {notice.content.includes('\n') ?
                                     notice.content.split('\n').map((item)=>(
                                         <div>{item}<br/></div>
@@ -129,7 +121,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                                 }
                             </Notice>
                             {/* 투표 */}
-                        {notice.isEnabled && notice.showVote ? 
+                        {notice.vote?.isEnabled && notice.showDetail ? 
                             <Vote>
                                 <S.VoteContainer style={{margin: "0"}}>
                                     <S.VoteBox style={{fontSize: "small"}}>
@@ -241,6 +233,15 @@ const NoticeContainer = styled.div`
 const Notice = styled.div`
     margin-bottom: 40px;
     width: 70%;
+    height: auto;
+    /* 말줄임 처리 */
+    display: ${props=> props.showDetail ? 'block' : '-webkit-box' };
+    word-break: keep-all; 
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: ${props=> props.showDetail ? 'visible' : 'hidden' };
+    text-overflow: ellipsis;
+    white-space: pre-wrap;
 `;
 const SubContainer = styled.div`
     position: absolute;

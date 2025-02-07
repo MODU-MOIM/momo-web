@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { crewAPI } from "../../api";
 import * as S from "./Styles/CrewList.styles";
+import { useNavigate } from "react-router-dom";
 
 const CrewList = () => {
+    const navigate = useNavigate();
     const [crews, setCrews] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -24,6 +26,10 @@ const CrewList = () => {
 
     if (loading) return <S.Container>로딩 중...</S.Container>;
 
+    const linktoCrewHome = (crewId) => {
+        navigate(`/crews/${crewId}/crewHome`);
+    }
+
     return (
         <S.Container>
             <S.FilterSection>
@@ -37,7 +43,10 @@ const CrewList = () => {
                 <S.FilterButton>생성일</S.FilterButton>
             </S.FilterSection>
             {crews.map((crew) => (
-                <S.CrewCard key={crew.crewId}>
+                <S.CrewCard 
+                    key={crew.crewId}
+                    onClick={()=>linktoCrewHome(crew.crewId)}
+                >
                     <S.CrewImage />
                     <S.CrewInfo>
                         <S.CrewName>{crew.name}</S.CrewName>
