@@ -1,11 +1,13 @@
 // 필요한 라이브러리와 컴포넌트 import
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import { authAPI, crewAPI } from "../../api";
 import { useAuth } from "../../AuthProvider";
 import * as S from "./Styles/Header.styles";
 
 const MyPage = ({ closeModal }) => {
+    const navigate = useNavigate();
     // 상태 관리
     const [selectedMenu, setSelectedMenu] = useState('crew'); // 선택된 메뉴 (마이페이지/내크루)
     const { userInfo, setUserInfo } = useAuth(); // 전역 사용자 정보
@@ -176,6 +178,11 @@ const MyPage = ({ closeModal }) => {
         e.stopPropagation();
     }
 
+    // 크루 홈 이동
+    const linktoCrewHome = (crewId) => {
+        navigate(`/crews/${crewId}/crewHome`);
+    }
+
     return(
         <S.Panel onClick={handlePanelClick}>
             <S.MyPage onClick={(e) => e.stopPropagation()}>
@@ -294,7 +301,10 @@ const MyPage = ({ closeModal }) => {
                         <S.CrewContent>
                             <S.CrewList>
                                 {myCrewList.map((crew) => (
-                                    <S.CrewItem key={crew.id}>
+                                    <S.CrewItem
+                                        key={crew.crewId}
+                                        onClick={() => linktoCrewHome(crew.crewId)}
+                                    >
                                         <S.CrewImage src={crew.bannerImage}/>
                                         <S.CrewName>
                                             {crew.name}
