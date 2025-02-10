@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json'},
     withCredentials: true,
 });
 
@@ -15,6 +15,7 @@ api.interceptors.request.use(
         if (token && !config.url.includes('reissue')) {
             config.headers['Authorization'] = token;
         }
+
         // 파일 업로드 요청인 경우 Content-Type 헤더 제거
         if (config.url === '/users/upload-profile') {
             delete config.headers['Content-Type'];
@@ -50,17 +51,29 @@ api.interceptors.response.use(
                 if (newToken) {
                     localStorage.setItem('token', newToken);
                     originalRequest.headers['Authorization'] = newToken;
+
+                    // 토큰 재발급 후 원래 요청이 GET 메서드인 경우 페이지 새로고침
+                    if(originalRequest.method.toLowerCase() === 'get'){
+                        window.location.reload();
+                        return new Promise(() => {});
+                    }
+                    
+                    // 토큰 재발급 후 원래 요청이 GET 메서드가 아닌 경우 재시도
                     return api(originalRequest);
                 }
             } catch (error) {
                 // 토큰 재발급 실패 시 로그인 페이지로 이동
-                console.error('토큰 재발급 실패:', error);
                 localStorage.removeItem('token');
                 window.location.href = '/login';
+                return new Promise(() => {});
             }
         }
         // 그 외 에러는 그대로 반환
-        return Promise.reject(error);
+        if(error.response?.status !== 401){
+            return Promise.reject(error);
+        }
+
+        return new Promise(() => {});
     }
 );
 
@@ -86,14 +99,14 @@ export const authAPI = {
 };
 
 export const noticeAPI = {
-   createNotice (crewId, noticeData){
-    return api.post(`/crews/${crewId}/notices`, noticeData)
-   },
-   readNoticeList: (crewId) => api.get(`/crews/${crewId}/notices`),
-   readNotice: (crewId, noticeId) => api.get(`/crews/${crewId}/notices/${noticeId}`),
-   updateNotice: (crewId, noticeId,noticeData)=> api.put(`/crews/${crewId}/notices/${noticeId}`, noticeData),
-   deleteNotice: (crewId, noticeId) => api.delete(`/crews/${crewId}/notices/${noticeId}`),
-   noticePinToggle: (crewId, noticeId) => api.patch(`/crews/${crewId}/notices/${noticeId}/pin-toggle`),
+    createNotice (crewId, noticeData){
+        return api.post(`/crews/${crewId}/notices`, noticeData)
+    },
+    readNoticeList: (crewId) => api.get(`/crews/${crewId}/notices`),
+    readNotice: (crewId, noticeId) => api.get(`/crews/${crewId}/notices/${noticeId}`),
+    updateNotice: (crewId, noticeId,noticeData)=> api.put(`/crews/${crewId}/notices/${noticeId}`, noticeData),
+    deleteNotice: (crewId, noticeId) => api.delete(`/crews/${crewId}/notices/${noticeId}`),
+    noticePinToggle: (crewId, noticeId) => api.patch(`/crews/${crewId}/notices/${noticeId}/pin-toggle`),
 };
 
 export const crewAPI = {
@@ -103,5 +116,18 @@ export const crewAPI = {
     createIntro: (data) => api.post('/crews', data),
     getMyCrewList: () => api.get('/crews/me'),
 };
+
+export const communityAPI = {
+    createCommunity: (crewId, formData) => {
+        delete api.defaults.headers['Content-Type'];
+        return api.post(`/crews/${crewId}/feeds`, formData).finally(() => {
+            api.defaults.headers['Content-Type'] = 'multipart/form-data';
+        });
+    },
+    getCommunityList: (crewId) => api.get(`/crews/${crewId}/feeds`),
+    getCommunityDetail: (crewId, feedId) => api.get(`/crews/${crewId}/feeds/${feedId}`),
+};
+
+
 
 export default api;

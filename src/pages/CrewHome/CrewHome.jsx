@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+import styled from "styled-components";
 import { crewAPI } from "../../api";
 
 export default function CrewHome() {
@@ -22,7 +22,7 @@ export default function CrewHome() {
             try {
                 const response = await crewAPI.getCrewData(crewId);
                 const resCrewData = response.data.data;
-                console.log(response.data.data);
+                // console.log(response.data.data);
                 const regions = resCrewData.regions.map(region => region.regionDepth2).join(', ');
                 setCrewData({
                     region: regions,
