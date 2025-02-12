@@ -109,6 +109,7 @@ export const scheduleAPI = {
     updateSchedule: (crewId, scheduleId, scheduleData) => api.put(`/crews/${crewId}/schedules/${scheduleId}`, scheduleData),
     deleteSchedule: (crewId, scheduleId) => api.delete(`/crews/${crewId}/schedules/${scheduleId}`),
     readMonthlySchedule: (crewId, yearMonth) => api.get(`/crews/${crewId}/schedules/monthly?yearMonth=${yearMonth}`),
+    readDailySchedule: (crewId, date) => api.get(`/crews/${crewId}/schedules/daily?date=${date}`),
 };
 
 export default api;

@@ -15,15 +15,16 @@ export default function ScheduleCalendar({onChange, date, schedules, handleMonth
   const tileClassName = ({ date, view }) => {
       if (view === 'month') {
             const momentDate = moment(date);
-
             const isPast = momentDate.isBefore(moment(), 'day');
             // `2024/12/14 (SAT)`형식으로 포맷 후 날짜를 문자열로 변환
             const formattedDate = momentDate.format("YYYY/MM/DD (ddd)").toUpperCase();
             // schedules 배열에서 일치하는 날짜를 찾기
-            const scheduleExists = schedules.some(e => e.date === formattedDate);
+            const scheduleExists = schedules.some(e => e.scheduleDate === formattedDate);
+            console.log(scheduleExists);
 
             // className 지정
             if (scheduleExists) {
+                console.log("scheduel",scheduleExists);
                 return isPast ? 'event-day past-day' : 'event-day';
             } else {
                 return isPast ? 'past-day' : '';

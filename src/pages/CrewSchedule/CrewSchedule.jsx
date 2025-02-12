@@ -31,14 +31,14 @@ export default function CrewSchedule() {
         fetchCrewInfo();
     }, [crewId]);
 
-    const initialSchedule = [
-        {id: 1, crew: "초코러닝", spot:"꿈트리 움 갤러리", time: "18:00", date:"2025/01/04 (SAT)", isDetailVisible: false},
-        {id: 2, crew: "초코러닝", spot:"경상북도 남매지", time: "18:00", date:"2025/01/19 (SUN)", isDetailVisible: false},
-        {id: 3, crew: "초코러닝", spot:"경상북도 남매지", time: "19:00", date:"2024/12/20 (FRI)", isDetailVisible: false},
-    ];
+    // const initialSchedule = [
+    //     {id: 1, crew: "초코러닝", spot:"꿈트리 움 갤러리", time: "18:00", date:"2025/01/04 (SAT)", isDetailVisible: false},
+    //     {id: 2, crew: "초코러닝", spot:"경상북도 남매지", time: "18:00", date:"2025/01/19 (SUN)", isDetailVisible: false},
+    //     {id: 3, crew: "초코러닝", spot:"경상북도 남매지", time: "19:00", date:"2024/12/20 (FRI)", isDetailVisible: false},
+    // ];
     
     const SelectedDate = moment(date).format("YYYY년 MM월 DD일");
-    useEffect(()=>{ setSchedules(initialSchedule)},[]);
+    // useEffect(()=>{ setSchedules(initialSchedule)},[]);
     useEffect(()=>{ setShowSchedules(schedules)},[schedules]);
     useEffect(()=>{setIsPast(moment().isAfter(moment(date), 'day'))},[date]);
 
@@ -61,6 +61,32 @@ export default function CrewSchedule() {
         setSchedules(prevSchedules => [...prevSchedules, newSchedule]);
         setIsClickedAddButton(false); // 일정 추가 후 버튼 상태 초기화
     };
+
+    const fetchDailySchedule = async(date) => {
+        const selectedDate = moment(date).format('YYYY-MM-DD');
+        try {
+            const response = await scheduleAPI.readDailySchedule(crewId, selectedDate);
+            console.log(response);
+
+        } catch (error) {
+            console.error("해당 날짜 일정 조회 실패", error);
+        }
+    }
+    // useEffect((selectedDate)=>{
+    //     fetchDailySchedule(selectedDate);
+    // },[date]);
+    const fetchMonthSchedule = async(acticeStartDate) => {
+        const yearMonth = moment(acticeStartDate).format('YYYY-MM');
+        try {
+            const response = await scheduleAPI.readMonthlySchedule(crewId, yearMonth);
+            console.log(response.data);
+            setShowSchedules(response.data.data);
+            setSchedules(response.data.data);
+        } catch (error) {
+            console.error("이번 달 일정 조회 실패", error);
+        }
+    }
+
     // 날짜 선택
     const handleDate = (date) => {
         const formattedDate = moment(date).format("YYYY/MM/DD (ddd)").toUpperCase();
@@ -68,18 +94,6 @@ export default function CrewSchedule() {
         setShowSchedules(filteredSchedules);
         setDate(date);
     }
-
-    const fetchMonthSchedule = async(acticeStartDate) => {
-        const yearMonth = moment(acticeStartDate).format('YYYY-MM');
-        try {
-            const response = await scheduleAPI.readMonthlySchedule(crewId, yearMonth);
-            console.log(response.data);
-            setShowSchedules(response.data.data);
-        } catch (error) {
-            console.error("이번 달 일정 조회 실패", error);
-        }
-    }
-
     // 월 클릭 시 해당 월의 일정들 보여주기
     const handleMonthChange = (activeStartDate) => {
         // // 해당 월의 시작과 끝 날짜
