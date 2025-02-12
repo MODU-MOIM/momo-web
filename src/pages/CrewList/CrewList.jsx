@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { crewAPI } from "../../api";
 import * as S from "./Styles/CrewList.styles";
-import { useNavigate } from "react-router-dom";
 
 const CrewList = () => {
     const navigate = useNavigate();
@@ -47,7 +47,9 @@ const CrewList = () => {
                     key={crew.crewId}
                     onClick={()=>linktoCrewHome(crew.crewId)}
                 >
-                    <S.CrewImage />
+                    <S.CrewImageWrapper>
+                        <S.CrewImage src={crew.bannerImage} />
+                    </S.CrewImageWrapper>
                     <S.CrewInfo>
                         <S.CrewName>{crew.name}</S.CrewName>
                         <S.CrewCategory>{crew.category}</S.CrewCategory>

@@ -4,7 +4,6 @@ import styled from "styled-components";
 export const Container = styled.div`
     width:1024px;
     margin:0 auto;
-    border:1px solid red;
 `;
 
 export const List = styled.div`
@@ -23,12 +22,12 @@ export const ActivityCard = styled.div`
     flex-direction: column;
 `;
 
-export const ActivityImage = styled(RouterNavLink)`
-    width:100%;
-    height:468px;
+export const ActivityImage = styled.img`
+    width: 100%;
+    height: 468px;
     border-radius: 10px;
-    border:1px solid red;
-    display: flex;
+    object-fit: cover; // 이미지 비율 유지하면서 꽉 채우기
+    cursor: pointer;
 `;
 
 export const UserInfoContainer = styled.div`
@@ -44,7 +43,6 @@ export const ProfileImage = styled.img`
     width:45px;
     height:45px;
     border-radius:50%;
-    border:1px solid red;
 `;
 
 export const UserName = styled.p`
@@ -136,26 +134,72 @@ export const FloatingButton = styled.button`
 
 // WriteCommunity.jsx
 
-export const QuillContainer = styled.div`
-    margin: 100px 0;
-    background-color: #fff;
-    position: relative;
+export const EditorWrapper = styled.div`
+    width: 1024px;  // 컨테이너 너비 지정
+    min-height: 100vh;
+    margin: 0 auto;  // 중앙 정렬
+    padding: 20px;
+    background-color: #f5f5f5;
+`;
+
+export const EditorContainer = styled.div`
+    width: 100%;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;  // 내부 여백 추가
+`;
+
+export const QuillWrapper = styled.div`
+    .quill {
+        width: 100%;
+        height: 500px;  // 에디터 높이 고정
+    }
 
     .ql-container {
-        min-height: 500px;
-    }
-    
-    .ql-editor {
-        min-height: 500px;
-        padding: 20px;
+        height: calc(100% - 42px);
         font-size: 16px;
     }
 
+    .ql-editor {
+        height: 100%;
+        padding: 20px;
+        overflow-y: auto;
+
+        img {
+            max-width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+        }
+    }
+
     .ql-toolbar {
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        background-color: #fff;
-        border: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        padding: 8px;
+    }
+`;
+
+export const SubmitButton = styled.button`
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    background-color: #4B44B6;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+
+    &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+        background-color: #3d37a1;
     }
 `;

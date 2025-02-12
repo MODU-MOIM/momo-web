@@ -1,16 +1,16 @@
+import { useEffect, useState } from "react";
 import { FaCog } from "react-icons/fa";
-import Activity from '../../../assets/category/Running.png';
-import Easel from "../../../assets/category/Easel.png";
-import SausageBarbeque from '../../../assets/category/SausageBarbeque.png';
-import Star from "../../../assets/category/Star.png";
-import Camper from "../../../assets/category/Camper.png";
-import SelfDev from "../../../assets/category/SelfDev.png";
-import Coin from "../../../assets/category/Coin.png";
-import GameController from '../../../assets/category/GameController.png';
-import * as S from "../Styles/Banner.styles";
 import { useParams } from "react-router-dom";
 import { crewAPI } from "../../../api";
-import { useEffect, useState } from "react";
+import Camper from "../../../assets/category/Camper.png";
+import Coin from "../../../assets/category/Coin.png";
+import Easel from "../../../assets/category/Easel.png";
+import GameController from '../../../assets/category/GameController.png';
+import Activity from '../../../assets/category/Running.png';
+import SausageBarbeque from '../../../assets/category/SausageBarbeque.png';
+import SelfDev from "../../../assets/category/SelfDev.png";
+import Star from "../../../assets/category/Star.png";
+import * as S from "../Styles/Banner.styles";
 
 const activityCategories = [
     { image: Activity, alt: "액티비티", title: "ACTIVITY", subtitle: "다양한 활동을 즐겨보세요" },
@@ -33,7 +33,6 @@ const Banner = () => {
     const fetchCrewInfo = async () => {
         try {
             const response = await crewAPI.getCrewData(crewId);
-            console.log(response.data.data);
             const crewData = response.data.data;
             setCrewInfoData(crewData);
             // setCategory(crewData.category);
