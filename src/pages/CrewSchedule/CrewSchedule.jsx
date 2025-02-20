@@ -56,7 +56,7 @@ export default function CrewSchedule() {
         try {
             const response = await scheduleAPI.readDailySchedule(crewId, selectedDate);
             console.log(response);
-
+            setShowSchedules(response.data.data);
         } catch (error) {
             console.error("해당 날짜 일정 조회 실패", error);
         }
@@ -82,20 +82,10 @@ export default function CrewSchedule() {
         const filteredSchedules = schedules.filter((schedule)=>(schedule.date === formattedDate));
         setShowSchedules(filteredSchedules);
         setDate(date);
+        fetchDailySchedule(date);
     }
     // 월 클릭 시 해당 월의 일정들 보여주기
     const handleMonthChange = (activeStartDate) => {
-        // // 해당 월의 시작과 끝 날짜
-        // const startOfMonth = moment(activeStartDate).startOf('month').format('YYYY-MM-DD');
-        // const endOfMonth = moment(activeStartDate).endOf('month').format('YYYY-MM-DD');
-
-        // // 해당 월에 속하는 일정만 필터링
-        // const filteredSchedules = schedules.filter(schedule => {
-        //     const DateSchedule = moment(schedule.date);
-        //     return DateSchedule.isSameOrAfter(startOfMonth) && DateSchedule.isSameOrBefore(endOfMonth);
-        // });
-
-        // setShowSchedules(filteredSchedules);
         setDate(activeStartDate);
         fetchMonthSchedule(activeStartDate);
     };
@@ -114,6 +104,9 @@ export default function CrewSchedule() {
         ));
         setEditMode(null);  // 수정 모드 종료
     };
+    useEffect(()=>{
+        fetchDailySchedule();
+    },[isClickedAddButton]);
     return(
         <Wrapper>
             <FloatingMenu/>
