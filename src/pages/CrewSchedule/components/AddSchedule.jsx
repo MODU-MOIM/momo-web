@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { crewAPI, scheduleAPI } from "../../../api";
 import { useParams } from "react-router-dom";
 
-export default function AddSchedule({date, AddSchedule}) {
+export default function AddSchedule({date, setIsClickedAddButton}) {
     const { crewId } = useParams();
     const [crewData, setCrewData] = useState();
     const [spot, setSpot] = useState('꿈트리 움 갤러리');
@@ -21,7 +21,6 @@ export default function AddSchedule({date, AddSchedule}) {
     const fetchCrewInfo = async () => {
         try {
             const response = await crewAPI.getCrewData(crewId);
-            console.log(response.data.data);
             setCrewData(response.data.data);
         } catch (error) {
             console.error("크루 정보 불러오기 실패", error);
@@ -29,11 +28,12 @@ export default function AddSchedule({date, AddSchedule}) {
     }
 
     const handleSubmitSchedule = async() => {
-        const newSchedule = {
-            spot: spot,
-            time: time,
-            date: moment(date, "YYYY년 MM월 DD일").format("YYYY/MM/DD (ddd)").toUpperCase()
-        };
+        console.log("handleSumbitSchedule 작동, addSchedule");
+        // const newSchedule = {
+        //     spot: spot,
+        //     time: time,
+        //     date: moment(date, "YYYY년 MM월 DD일").format("YYYY/MM/DD (ddd)").toUpperCase()
+        // };
         const submitSchedule={
             date: moment(date, "YYYY년 MM월 DD일").format("YYYY-MM-DD"),
             time: moment(time, "HH:mm").format("HH:mm:00"),
@@ -46,7 +46,7 @@ export default function AddSchedule({date, AddSchedule}) {
         try {
             const response = await scheduleAPI.createSchedule(crewId, submitSchedule)
             console.log("일정 추가 성공 : ",response);
-            AddSchedule(newSchedule);
+            setIsClickedAddButton(false);
         } catch (error) {
             console.log("일정 추가 실패 : ", error);
         }

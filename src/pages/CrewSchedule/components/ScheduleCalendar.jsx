@@ -20,7 +20,7 @@ export default function ScheduleCalendar({onChange, date, schedules, handleMonth
             const formattedDate = momentDate.format("YYYY/MM/DD (ddd)").toUpperCase();
             // schedules 배열에서 일치하는 날짜를 찾기
             const scheduleExists = schedules.some(e => e.scheduleDate === formattedDate);
-            console.log(scheduleExists);
+            // console.log(scheduleExists);
 
             // className 지정
             if (scheduleExists) {

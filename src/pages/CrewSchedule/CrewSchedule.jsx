@@ -30,12 +30,6 @@ export default function CrewSchedule() {
     useEffect(() => {
         fetchCrewInfo();
     }, [crewId]);
-
-    // const initialSchedule = [
-    //     {id: 1, crew: "초코러닝", spot:"꿈트리 움 갤러리", time: "18:00", date:"2025/01/04 (SAT)", isDetailVisible: false},
-    //     {id: 2, crew: "초코러닝", spot:"경상북도 남매지", time: "18:00", date:"2025/01/19 (SUN)", isDetailVisible: false},
-    //     {id: 3, crew: "초코러닝", spot:"경상북도 남매지", time: "19:00", date:"2024/12/20 (FRI)", isDetailVisible: false},
-    // ];
     
     const SelectedDate = moment(date).format("YYYY년 MM월 DD일");
     // useEffect(()=>{ setSchedules(initialSchedule)},[]);
@@ -56,12 +50,7 @@ export default function CrewSchedule() {
     const handleClickAddButton = () => { 
         setIsClickedAddButton(!isClickedAddButton);
     };
-    const handleAddSchedule = (newSchedule) => {
-        // 유효성 검사 필요(크루선택&&장소선택&&시간선택했는지)
-        setSchedules(prevSchedules => [...prevSchedules, newSchedule]);
-        setIsClickedAddButton(false); // 일정 추가 후 버튼 상태 초기화
-    };
-
+    
     const fetchDailySchedule = async(date) => {
         const selectedDate = moment(date).format('YYYY-MM-DD');
         try {
@@ -141,8 +130,8 @@ export default function CrewSchedule() {
                             setShowSchedules={setShowSchedules}
                             isPast={isPast}
                             isClickedAddButton={isClickedAddButton}
+                            setIsClickedAddButton={setIsClickedAddButton}
                             date={SelectedDate}
-                            handleAddSchedule={handleAddSchedule}
                             editMode={editMode}
                             setEditMode={setEditMode}
                             handleUpdateSchedule={handleUpdateSchedule}

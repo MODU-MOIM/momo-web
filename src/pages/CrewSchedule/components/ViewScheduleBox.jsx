@@ -5,7 +5,7 @@ import ScheduleDetail from "./ScheduleDetail";
 import AddSchedule from "./AddSchedule";
 import EditSchedule from "./EditSchedule";
 
-export default function ViewScheduleBox({crewData, showSchedules, setShowSchedules, isPast, isClickedAddButton, date, handleAddSchedule, editMode, setEditMode, handleUpdateSchedule, deleteSchedule}) {
+export default function ViewScheduleBox({crewData, showSchedules, setShowSchedules, isPast, isClickedAddButton, date, setIsClickedAddButton, editMode, setEditMode, handleUpdateSchedule, deleteSchedule}) {
     
     const handleScheduleButton = (id) => {
         // console.log(setShowSchedules);
@@ -21,7 +21,7 @@ export default function ViewScheduleBox({crewData, showSchedules, setShowSchedul
                     // add schedule 
                     <AddSchedule
                         date={date}
-                        AddSchedule={handleAddSchedule}
+                        setIsClickedAddButton={setIsClickedAddButton}
                     />
                 ) : (
                     editMode !== null ? (
