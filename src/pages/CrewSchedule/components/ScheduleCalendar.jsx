@@ -1,18 +1,18 @@
 import styled from "styled-components";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Calendar from "react-calendar/dist/cjs/Calendar.js";
 import moment from "moment";
 
 export default function ScheduleCalendar({onChange, date, schedules, handleMonthChange}) {
     const formatMonthYear = (locale, date) => {
-        return date.toLocaleString(locale, { month: 'long' }).toUpperCase();  // "long" 옵션은 월 이름 전체를 반환합니다.
+        return date.toLocaleString(locale, { month: 'long' }).toUpperCase();
     };
     const formatShortWeekday = (locale, date) => {
-        return date.toLocaleString(locale, { weekday: 'short' }).toUpperCase();  // "long" 옵션은 월 이름 전체를 반환합니다.
+        return date.toLocaleString(locale, { weekday: 'short' }).toUpperCase();
     };
 
 
-  const tileClassName = ({ date, view }) => {
+    const tileClassName = ({ date, view }) => {
       if (view === 'month') {
             const momentDate = moment(date);
             const isPast = momentDate.isBefore(moment(), 'day');

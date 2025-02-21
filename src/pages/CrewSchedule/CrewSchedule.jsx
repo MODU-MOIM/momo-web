@@ -21,7 +21,6 @@ export default function CrewSchedule() {
     const fetchCrewInfo = async () => {
         try {
             const response = await crewAPI.getCrewData(crewId);
-            // console.log(response.data.data);
             setCrewData(response.data.data);
         } catch (error) {
             console.error("크루 정보 불러오기 실패", error);
@@ -29,7 +28,6 @@ export default function CrewSchedule() {
     }
     
     const SelectedDate = moment(date).format("YYYY년 MM월 DD일");
-    // useEffect(()=>{ setSchedules(initialSchedule)},[]);
     useEffect(()=>{ setShowSchedules(schedules)},[schedules]);
     useEffect(()=>{setIsPast(moment().isAfter(moment(date), 'day'))},[date]);
 
@@ -52,7 +50,7 @@ export default function CrewSchedule() {
         const selectedDate = moment(date).format('YYYY-MM-DD');
         try {
             const response = await scheduleAPI.readDailySchedule(crewId, selectedDate);
-            console.log(response);
+            // console.log(response);
             setShowSchedules(response.data.data);
         } catch (error) {
             console.error("해당 날짜 일정 조회 실패", error);
@@ -62,7 +60,6 @@ export default function CrewSchedule() {
         const yearMonth = moment(acticeStartDate).format('YYYY-MM');
         try {
             const response = await scheduleAPI.readMonthlySchedule(crewId, yearMonth);
-            // console.log(response.data);
             const sortSchedules = (schedule) => {
                 return[...schedule].sort((a,b)=>{
                     return a.scheduleDate > b.scheduleDate ? 1 : -1;
@@ -92,7 +89,6 @@ export default function CrewSchedule() {
     const handleDeleteSchedule = async (id) => {
         try {
             const response = await scheduleAPI.deleteSchedule(crewId, id);
-            console.log("일정 삭제 성공 : ", response);
             setSchedules((prevSchedules) => prevSchedules.filter(schedule => schedule.id !== id));
         } catch (error) {
             console.log("일정 삭제 실패 : ", error);

@@ -19,11 +19,10 @@ export const ScheduleContainer = styled.div`
     max-height: 500px;
     overflow: scroll;
     overflow-x: hidden;
-    /* padding-top: 300px; */
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 `;
 export const ViewScheduleButton = styled.div`
