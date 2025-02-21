@@ -27,9 +27,6 @@ export default function CrewSchedule() {
             console.error("크루 정보 불러오기 실패", error);
         }
     }
-    useEffect(() => {
-        fetchCrewInfo();
-    }, [crewId]);
     
     const SelectedDate = moment(date).format("YYYY년 MM월 DD일");
     // useEffect(()=>{ setSchedules(initialSchedule)},[]);
@@ -68,9 +65,15 @@ export default function CrewSchedule() {
         const yearMonth = moment(acticeStartDate).format('YYYY-MM');
         try {
             const response = await scheduleAPI.readMonthlySchedule(crewId, yearMonth);
-            console.log(response.data);
-            setShowSchedules(response.data.data);
-            setSchedules(response.data.data);
+            // console.log(response.data);
+            const sortSchedules = (schedule) => {
+                return[...schedule].sort((a,b)=>{
+                    return a.scheduleDate > b.scheduleDate ? 1 : -1;
+                })
+            }
+            const sortedSchedules = sortSchedules(response.data.data)
+            setShowSchedules(sortedSchedules);
+            setSchedules(sortedSchedules);
         } catch (error) {
             console.error("이번 달 일정 조회 실패", error);
         }
@@ -104,6 +107,12 @@ export default function CrewSchedule() {
         ));
         setEditMode(null);  // 수정 모드 종료
     };
+
+    useEffect(() => {
+        fetchCrewInfo();
+        fetchMonthSchedule();
+    }, [crewId]);
+
     useEffect(()=>{
         fetchDailySchedule();
     },[isClickedAddButton]);
