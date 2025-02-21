@@ -35,6 +35,9 @@ export const ViewScheduleButton = styled.div`
     padding: 10px;
     color: white;
     background-color: #8681CE;
+    
+    display: flex;
+    flex-direction: column;
     &:hover{
         cursor: pointer;
         /* background-color: ${(props) => props.isClickedAddButton ? '#8681CE' : '#786bcf'}; */
