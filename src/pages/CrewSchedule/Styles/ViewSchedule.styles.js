@@ -6,7 +6,7 @@ import { IoIosArrowDown } from "react-icons/io";
 export const Wrapper = styled.div`
     /* height: 100%; */
     /* overflow: scroll; */
-`
+`;
 export const ViewContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -55,7 +55,7 @@ export const ScheduleInfo = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-right: 10px;
-    `;
+`;
 export const CrewName = styled.div`
     display: flex;
     justify-content: flex-end;
@@ -113,7 +113,7 @@ export const ItemContainer = styled.div`
 `;
 export const SelectSpot = styled.input`
     margin-left: 10px;
-    `;
+`;
 export const SelectTime = styled.input`
     margin-left: 10px;
 `;

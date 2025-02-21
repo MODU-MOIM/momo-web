@@ -38,7 +38,8 @@ export default function ViewScheduleBox({crewData, showSchedules, setShowSchedul
                                 <EditSchedule
                                     key={schedule.id}
                                     schedule={schedule}
-                                    updateSchedule={handleUpdateSchedule}
+                                    crewData={crewData}
+                                    setEditMode={setEditMode}
                                 />
                             ) : null
                         )

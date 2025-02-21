@@ -58,9 +58,6 @@ export default function CrewSchedule() {
             console.error("해당 날짜 일정 조회 실패", error);
         }
     }
-    // useEffect((selectedDate)=>{
-    //     fetchDailySchedule(selectedDate);
-    // },[date]);
     const fetchMonthSchedule = async(acticeStartDate) => {
         const yearMonth = moment(acticeStartDate).format('YYYY-MM');
         try {
@@ -87,7 +84,7 @@ export default function CrewSchedule() {
         setDate(date);
         fetchDailySchedule(date);
     }
-    // 월 클릭 시 해당 월의 일정들 보여주기
+    // 월 이동 시 해당 월의 일정들 보여주기
     const handleMonthChange = (activeStartDate) => {
         setDate(activeStartDate);
         fetchMonthSchedule(activeStartDate);
