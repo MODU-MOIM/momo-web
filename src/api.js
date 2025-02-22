@@ -117,6 +117,15 @@ export const crewAPI = {
     getMyCrewList: () => api.get('/crews/me'),
 };
 
+export const scheduleAPI = {
+    createSchedule: (crewId, scheduleData) => api.post(`/crews/${crewId}/schedules`, scheduleData),
+    readSchedule: (crewId, scheduleId) => api.get(`/crews/${crewId}/schedules/${scheduleId}`),
+    updateSchedule: (crewId, scheduleId, scheduleData) => api.put(`/crews/${crewId}/schedules/${scheduleId}`, scheduleData),
+    deleteSchedule: (crewId, scheduleId) => api.delete(`/crews/${crewId}/schedules/${scheduleId}`),
+    readMonthlySchedule: (crewId, yearMonth) => api.get(`/crews/${crewId}/schedules/monthly?yearMonth=${yearMonth}`),
+    readDailySchedule: (crewId, date) => api.get(`/crews/${crewId}/schedules/daily?date=${date}`),
+};
+
 export const communityAPI = {
     createCommunity: (crewId, formData) => {
         delete api.defaults.headers['Content-Type'];
@@ -127,7 +136,6 @@ export const communityAPI = {
     getCommunityList: (crewId) => api.get(`/crews/${crewId}/feeds`),
     getCommunityDetail: (crewId, feedId) => api.get(`/crews/${crewId}/feeds/${feedId}`),
 };
-
 
 
 export default api;
