@@ -66,7 +66,7 @@ const Banner = () => {
             {/* Banner Image */}
             <S.BannerImage src={crewInfoData?.bannerImage}/>
             <S.Setting>
-                <S.Link to="/crew/crewSetting">
+                <S.Link to={`/crews/${crewId}/crewSetting`}>
                 {/* 관리자만 볼 수 있도록 */}
                     <FaCog size={20}/>
                 </S.Link>
