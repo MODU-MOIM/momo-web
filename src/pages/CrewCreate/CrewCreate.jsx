@@ -1,40 +1,139 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import BannerImageInput from "./Components/BannerImageInput";
+import CrewIntroEditor from "./Components/CrewIntroEditor";
+import { AgeSelect, GenderSelect } from "./Components/SelectBox";
 import SetCategory from "./Components/SetCategory";
 import SetRegion from "./Components/SetRegion";
-import { AgeSelect, GenderSelect } from "./Components/SelectBox";
+
+const initialBannerImage = "";
+
 
 export default function CrewCreate() {
+    const navigate = useNavigate();
     const [crewName, setCrewName] = useState("");
     const [category, setCategory] = useState({});
     const [region, setRegion] = useState([]);
-    const [minNumber, setMinNumber] = useState();
-    const [maxNumber, setMaxNumber] = useState();
-    const [crewIntro, setCrewIntro] = useState("");
+    const [regionData, setRegionData] = useState([]);
+    const [minNumber, setMinNumber] = useState(2);
+    const [maxNumber, setMaxNumber] = useState(2);
     const [gender, setGender] = useState('noLimit');
     const [minAge, setMinAge] = useState('noLimit');
     const [maxAge, setMaxAge] = useState('noLimit');
+    const [infoContent, setInfoContent] = useState('');
+    const [allow, setAllow] = useState(false);
+    const [bannerImage, setBannerImage] = useState(initialBannerImage);
+    const [bannerImageFile, setBannerImageFile] = useState(null);
+    
     
     const handleCrewName = (e) => setCrewName(e.target.value);
     const handleCategory = (selectedCategory) => setCategory(selectedCategory);
-    const handleRegion = (selectedRegion) => setRegion(selectedRegion);
     const handleMinNumber = (e) => setMinNumber(e.target.value);
     const handleMaxNumber = (e) => setMaxNumber(e.target.value);
     const handleGender = (slectedGender) => setGender(slectedGender);
     const handleMinAge = (selectedMinAge) => setMinAge(selectedMinAge);
     const handleMaxAge = (selectedMaxAge) => setMaxAge(selectedMaxAge);
-    const handleCrewIntro = (e) => setCrewIntro(e.target.value);
+    const handleRegion = (selectedRegion) => {
+        setRegion(selectedRegion);
+        let newRegionData = [];
+        for (let key in selectedRegion) {
+            for(let i=0; i<selectedRegion[key].length; i++){
+                newRegionData.push({regionDepth1: key, regionDepth2: selectedRegion[key][i]});
+            }
+        }
+        setRegionData(newRegionData);
+    }
+    // 버튼 활성화
+    useEffect(()=>{
+        if(crewName && regionData.length>0 && minNumber && maxNumber && infoContent.length>=20 && category){
+            setAllow(true);
+        }else{
+            setAllow(false);
+        }
+    },[crewName, regionData, minNumber, maxNumber, infoContent, category]);
 
-    const handleSubmit = () => {
-        console.log(crewName);
-        console.log(category);
-        console.log(region);
-        console.log(minNumber);
-        console.log(maxNumber);
-        console.log(gender);
-        console.log(minAge);
-        console.log(maxAge);
-        console.log(crewIntro);
+    // 이미지 파일을 URL로 변환하는 로직을 추가
+    useEffect(() => {
+        if (bannerImageFile) {
+            const objectUrl = URL.createObjectURL(bannerImageFile);
+            setBannerImage(objectUrl);
+            return () => URL.revokeObjectURL(objectUrl);
+        }
+    }, [bannerImageFile]);
+
+    const handleImageUpload = async(file)=>{
+        if (!file) return;
+        if (!file.type.startsWith('image/')){
+            alert('이미지 파일만 업로드 가능합니다.');
+            return;
+        }
+        setBannerImageFile(file);
+    }
+
+    const handleSubmit = async() => {
+        const crewReqDto = {
+            name: crewName,
+            category: category.title,
+            description: infoContent,
+            minMembers: Number(minNumber),
+            maxMembers: Number(maxNumber),
+            regions: regionData,
+        };
+        // 제한없음 상태이면 해당 필드 제외
+        if (minAge !== 'noLimit') {
+            crewReqDto.minAge = Number(minAge);
+        }
+        if (maxAge !== 'noLimit') {
+            crewReqDto.maxAge = Number(maxAge);
+        }
+        if (gender !== 'noLimit') {
+            crewReqDto.genderRestriction = gender;
+        }
+        
+        const formData = new FormData();
+        formData.append("crewReqDto", new Blob([JSON.stringify(crewReqDto)], { type: "application/json" }));
+
+        console.log("crewReqDto: ",crewReqDto);
+        console.log("File to be uploaded:", bannerImageFile);
+
+        if (bannerImageFile) {
+            formData.append("bannerImage", bannerImageFile);
+        }else {
+            console.log("No file selected");
+        }
+        
+        try {
+            console.log("get하여 배너이미지 확인 :");
+            console.log(formData.get("bannerImage"));
+            const token = localStorage.getItem('token');
+            const response = await axios.post('/crews', formData, {
+                headers: {
+                    'Authorization': token,
+                }
+            });
+            // if (response.status === 200 && !response.data.error) {
+            //     console.log('크루 생성 성공 :', response);
+            //     alert('크루 생성 성공');
+            // } else {
+            //     throw new Error(response.data.message || '알 수 없는 에러가 발생했습니다.');
+            // }
+            if (response.data.status === 200 && response.status === 200) {
+                alert('요청이 성공적으로 처리되었습니다.');
+            } else if (response.data.status === 500 || response.status === 500) {
+                console.error('서버 오류 발생:', response.data);
+                alert('서버 오류가 발생했습니다.');
+            } else {
+                alert('알 수 없는 응답 상태입니다.');
+            }
+            console.log('크루 생성 성공 :', response);
+            alert('크루 생성 성공');
+            navigate('/crewList');
+        } catch (error) {
+            console.log("크루 생성 실패", error);
+            alert("크루 생성 실패");
+        }
     }
     
     return(
@@ -52,6 +151,14 @@ export default function CrewCreate() {
                         onChange={handleCrewName}
                     />
                 </CrewName>
+                <Banner>
+                    <ItemTitle>배너 이미지를 선택해주세요</ItemTitle>
+                    <BannerImageInput
+                        bannerImage={bannerImage}
+                        setBannerImage={setBannerImage}
+                        handleImageUpload={handleImageUpload}
+                    />
+                </Banner>
                 
                 {/* 모임활동 선택 */}
                 <ItemTitle>어떤 모임 활동을 하실건가요?</ItemTitle>
@@ -105,14 +212,13 @@ export default function CrewCreate() {
                     
                 </CrewSettings>
         
-                {/* <ItemTitle>크루 설명</ItemTitle> */}
-                <CrewIntro
-                    value={crewIntro}
-                    onChange={handleCrewIntro}
-                    placeholder="크루 설명을 입력해주세요"
-                />
+                {/* 크루 설명 컴포넌트 */}
+                <CrewIntroEditor setInfoContent={setInfoContent}/>
                 <SubmitContainer>
-                    <CreateButton onClick={handleSubmit}>완료</CreateButton>
+                    <CreateButton 
+                        onClick={handleSubmit}
+                        disabled={!allow}
+                    >완료</CreateButton>
                 </SubmitContainer>
             </Container>
         </Wrapper>
@@ -156,7 +262,8 @@ const NameInput = styled.input`
         color: #929292;
     }
 `;
-
+const Banner = styled.div`
+`;
 
 const CrewSettings = styled.div`
 `;
@@ -184,14 +291,6 @@ const SetNumber = styled.input`
     border: 1px solid #DEDFE7;
     border-radius: 3px;
 `;
-const CrewIntro = styled.textarea`
-    padding: 50px;
-    width: 60%;
-    height: 400px;
-    border: 1px solid #DEDFE7;
-    border-radius: 10px;
-    resize: none;
-`;
 const SubmitContainer = styled.div`
     display: flex;
     justify-content: center;
@@ -206,7 +305,7 @@ const CreateButton = styled.button`
     color: white;
     border-radius: 10px;
     &:hover{
-        background-color: #352EAE;
-        cursor: pointer;
+        background-color: ${props => props.disabled ?'gray' :'#352EAE'};
+        cursor: ${props => props.disabled ? 'not-allowed':'pointer'};
     }
 `;

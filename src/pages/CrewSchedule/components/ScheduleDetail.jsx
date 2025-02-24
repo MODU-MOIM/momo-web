@@ -17,7 +17,7 @@ export default function ScheduleDetail({schedule, deleteSchedule, setEditMode}) 
             {/* 상세 위치 */}
             <ItemContainer>
                 <FaMapMarkerAlt />
-                <ItemText>{schedule.spot}</ItemText>
+                <ItemText>{schedule.detailAddress}</ItemText>
             </ItemContainer>
             <SubButtonContainer>
                 {/* 수정 버튼 */}

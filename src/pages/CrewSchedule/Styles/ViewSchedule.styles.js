@@ -3,12 +3,27 @@ import { IoIosArrowUp } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 
 // view schedule
+export const Wrapper = styled.div`
+    /* height: 100%; */
+    /* overflow: scroll; */
+`;
 export const ViewContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-top: 10px;
+`;
+export const ScheduleContainer = styled.div`
+    width: 100%;
+    max-height: 500px;
+    overflow: scroll;
+    overflow-x: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 `;
 export const ViewScheduleButton = styled.div`
     width: 90%;
@@ -19,11 +34,9 @@ export const ViewScheduleButton = styled.div`
     padding: 10px;
     color: white;
     background-color: #8681CE;
-
+    
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
-    /* align-items: center; */
     &:hover{
         cursor: pointer;
         /* background-color: ${(props) => props.isClickedAddButton ? '#8681CE' : '#786bcf'}; */
@@ -41,7 +54,7 @@ export const ScheduleInfo = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-right: 10px;
-    `;
+`;
 export const CrewName = styled.div`
     display: flex;
     justify-content: flex-end;
@@ -78,12 +91,12 @@ export const CrewInfoBox = styled.button`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0px 10px 20px 10px;
+    margin: 20px 10px 20px 10px;
     background-color: transparent;
     border: none;
     color: white;
     &:hover{
-        cursor: pointer;
+        /* cursor: pointer; */
         /* background-color: #8681CE; */
     }
 `;
@@ -99,7 +112,7 @@ export const ItemContainer = styled.div`
 `;
 export const SelectSpot = styled.input`
     margin-left: 10px;
-    `;
+`;
 export const SelectTime = styled.input`
     margin-left: 10px;
 `;

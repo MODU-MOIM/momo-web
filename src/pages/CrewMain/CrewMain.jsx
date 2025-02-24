@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import FloatingMenu from "./components/FloatingMenu";
 import { Outlet } from "react-router-dom";
-import Banner from "../activities/components/Banner";
+import styled from "styled-components";
+import Banner from "./components/Banner"
+import FloatingMenu from "./components/FloatingMenu";
 
 export default function CrewMain() {
     return(
@@ -26,5 +26,5 @@ const TopContainer = styled.div`
     margin-top: 50px;
 `;
 const BannerContainer = styled.div`
-    width: 70%;
+    width: 60%;
 `;

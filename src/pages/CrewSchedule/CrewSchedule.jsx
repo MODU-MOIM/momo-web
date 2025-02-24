@@ -4,9 +4,13 @@ import FloatingMenu from "../CrewMain/components/FloatingMenu";
 import Calendar from "./components/ScheduleCalendar";
 import moment from "moment";
 import ViewScheduleBox from "./components/ViewScheduleBox";
+import { crewAPI, scheduleAPI } from "../../api";
+import { useParams } from "react-router-dom";
 
 
 export default function CrewSchedule() {
+    const { crewId } = useParams();
+    const [crewData, setCrewData] = useState();
     const [date, setDate] = useState(new Date());
     const [isPast, setIsPast] = useState(moment().isAfter(moment(date), 'day'));
     const [schedules, setSchedules] = useState([]);
@@ -14,48 +18,81 @@ export default function CrewSchedule() {
     const [isClickedAddButton, setIsClickedAddButton] = useState(false);
     const [editMode, setEditMode] = useState(null);
 
-    const initialSchedule = [
-        {id: 1, crew: "초코러닝", spot:"꿈트리 움 갤러리", time: "18:00", date:"2025/01/04 (SAT)", isDetailVisible: false},
-        {id: 2, crew: "초코러닝", spot:"경상북도 남매지", time: "18:00", date:"2025/01/19 (SUN)", isDetailVisible: false},
-        {id: 3, crew: "초코러닝", spot:"경상북도 남매지", time: "19:00", date:"2024/12/20 (FRI)", isDetailVisible: false},
-    ];
+    const fetchCrewInfo = async () => {
+        try {
+            const response = await crewAPI.getCrewData(crewId);
+            setCrewData(response.data.data);
+        } catch (error) {
+            console.error("크루 정보 불러오기 실패", error);
+        }
+    }
     
     const SelectedDate = moment(date).format("YYYY년 MM월 DD일");
-    useEffect(()=>{ setSchedules(initialSchedule)},[]);
     useEffect(()=>{ setShowSchedules(schedules)},[schedules]);
     useEffect(()=>{setIsPast(moment().isAfter(moment(date), 'day'))},[date]);
+
+    // 외부 클릭 시 일정 추가 모드 나가기
+    // const handlePanelClick = (e) => {
+    //     console.log('Event Target:', e.target);
+    //     console.log('Current Target:', e.currentTarget);
+    //     console.log('isClickedAddButton:', isClickedAddButton);
+        
+    //     if(e.target !== e.currentTarget){
+    //         setIsClickedAddButton(false);
+    //     }
+    // }
 
     const handleClickAddButton = () => { 
         setIsClickedAddButton(!isClickedAddButton);
     };
-    const handleAddSchedule = (newSchedule) => {
-        // 유효성 검사 필요(크루선택&&장소선택&&시간선택했는지)
-        setSchedules(prevSchedules => [...prevSchedules, newSchedule]);
-        setIsClickedAddButton(false); // 일정 추가 후 버튼 상태 초기화
-    };
+    
+    const fetchDailySchedule = async(date) => {
+        const selectedDate = moment(date).format('YYYY-MM-DD');
+        try {
+            const response = await scheduleAPI.readDailySchedule(crewId, selectedDate);
+            // console.log(response);
+            setShowSchedules(response.data.data);
+        } catch (error) {
+            console.error("해당 날짜 일정 조회 실패", error);
+        }
+    }
+    const fetchMonthSchedule = async(acticeStartDate) => {
+        const yearMonth = moment(acticeStartDate).format('YYYY-MM');
+        try {
+            const response = await scheduleAPI.readMonthlySchedule(crewId, yearMonth);
+            const sortSchedules = (schedule) => {
+                return[...schedule].sort((a,b)=>{
+                    return a.scheduleDate > b.scheduleDate ? 1 : -1;
+                })
+            }
+            const sortedSchedules = sortSchedules(response.data.data)
+            setShowSchedules(sortedSchedules);
+            setSchedules(sortedSchedules);
+        } catch (error) {
+            console.error("이번 달 일정 조회 실패", error);
+        }
+    }
+
+    // 날짜 선택
     const handleDate = (date) => {
         const formattedDate = moment(date).format("YYYY/MM/DD (ddd)").toUpperCase();
         const filteredSchedules = schedules.filter((schedule)=>(schedule.date === formattedDate));
         setShowSchedules(filteredSchedules);
         setDate(date);
+        fetchDailySchedule(date);
     }
-    // 월 클릭 시 해당 월의 일정들 보여주기
+    // 월 이동 시 해당 월의 일정들 보여주기
     const handleMonthChange = (activeStartDate) => {
-        // 해당 월의 시작과 끝 날짜
-        const startOfMonth = moment(activeStartDate).startOf('month').format('YYYY-MM-DD');
-        const endOfMonth = moment(activeStartDate).endOf('month').format('YYYY-MM-DD');
-
-        // 해당 월에 속하는 일정만 필터링
-        const filteredSchedules = schedules.filter(schedule => {
-            const DateSchedule = moment(schedule.date);
-            return DateSchedule.isSameOrAfter(startOfMonth) && DateSchedule.isSameOrBefore(endOfMonth);
-        });
-
-        setShowSchedules(filteredSchedules);
         setDate(activeStartDate);
+        fetchMonthSchedule(activeStartDate);
     };
-    const handleDeleteSchedule = (id) => {
-        setSchedules((prevSchedules) => prevSchedules.filter(schedule => schedule.id !== id));
+    const handleDeleteSchedule = async (id) => {
+        try {
+            const response = await scheduleAPI.deleteSchedule(crewId, id);
+            setSchedules((prevSchedules) => prevSchedules.filter(schedule => schedule.id !== id));
+        } catch (error) {
+            console.log("일정 삭제 실패 : ", error);
+        }
     };
     const handleUpdateSchedule = (updatedSchedule) => {
         setSchedules(prevSchedules => prevSchedules.map(sch =>
@@ -63,21 +100,33 @@ export default function CrewSchedule() {
         ));
         setEditMode(null);  // 수정 모드 종료
     };
+
+    useEffect(() => {
+        fetchCrewInfo();
+        fetchMonthSchedule();
+    }, [crewId]);
+
+    useEffect(()=>{
+        fetchDailySchedule();
+    },[isClickedAddButton]);
     return(
         <Wrapper>
             <FloatingMenu/>
-            <CalendarContainer>
+            <CalendarContainer 
+                // onClick={handlePanelClick}
+            >
                 <ScheduleContainer>
                     {/* 해당 월/날 일정 보여주기 */}
                     <DetailScheduleContainer>
                         <div>{SelectedDate}</div>
                         <ViewScheduleBox
+                            crewData={crewData}
                             showSchedules={showSchedules}
                             setShowSchedules={setShowSchedules}
                             isPast={isPast}
                             isClickedAddButton={isClickedAddButton}
+                            setIsClickedAddButton={setIsClickedAddButton}
                             date={SelectedDate}
-                            handleAddSchedule={handleAddSchedule}
                             editMode={editMode}
                             setEditMode={setEditMode}
                             handleUpdateSchedule={handleUpdateSchedule}
