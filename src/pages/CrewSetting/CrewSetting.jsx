@@ -120,6 +120,7 @@ const CrewSetting = () => {
             )}
             {isCrewRuleOpen && (
                 <CrewRule
+                    crewData={crewData}
                     onClose={() => setIsCrewRuleOpen(false)}
                 />
             )}
