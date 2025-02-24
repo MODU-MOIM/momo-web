@@ -115,6 +115,11 @@ export const crewAPI = {
     uploadImage: (formData, config) => api.post('/crews/images', formData, config),
     createIntro: (data) => api.post('/crews', data),
     getMyCrewList: () => api.get('/crews/me'),
+    updateCrewData: (crewId, formData) => api.put(`/crews/${crewId}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    }),
 };
 
 export const scheduleAPI = {
