@@ -18,13 +18,13 @@ const SettingBanner = ({ crewData, onClose }) => {
         setUpdatedName(e.target.value);
     }
     const handleSubmit = async() => {
-        const submitData = {}
+        const submitData = {};
         if(updatedName !== crewData.name){
-            console.log(updatedName, crewData.name);
+            console.log(updatedName, "vs",crewData.name);
             submitData.name = updatedName;
         }
         const formData = new FormData();
-        formData.append("crewReqDto", new Blob([JSON.stringify(submitData)], { type: "multipart/form-data" }));
+        formData.append("crewReqDto", new Blob([JSON.stringify(submitData)], { type: "application/json" }));
         try {
             console.log("submitData: ", submitData);
             const response = await crewAPI.updateCrewData(crewId, formData);
