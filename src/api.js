@@ -135,6 +135,11 @@ export const communityAPI = {
     },
     getCommunityList: (crewId) => api.get(`/crews/${crewId}/feeds`),
     getCommunityDetail: (crewId, feedId) => api.get(`/crews/${crewId}/feeds/${feedId}`),
+
+    createComment: (crewId, feedId, commentData) => api.post(`/crews/${crewId}/feeds/${feedId}/comments`, commentData),
+    updateComment: (crewId, feedId, commentId, commentData) => api.put(`/crews/${crewId}/feeds/${feedId}/comments/${commentId}`, commentData),
+    deleteComment: (crewId, feedId, commentId) => api.delete(`/crews/${crewId}/feeds/${feedId}/comments/${commentId}`),
+    createReply: (crewId, feedId, parentId, commentData) => api.post(`/crews/${crewId}/feeds/${feedId}/comments/${parentId}/replies`, commentData),
 };
 
 
