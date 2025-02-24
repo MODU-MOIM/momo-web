@@ -8,6 +8,7 @@ const CrewMember = ({ crewData, onClose }) => {
     const { crewId } = useParams();
     const [minNumber, setMinNumber] = useState(crewData?.minMembers);
     const [maxNumber, setMaxNumber] = useState(crewData?.maxMembers);
+
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
             onClose();
@@ -17,22 +18,19 @@ const CrewMember = ({ crewData, onClose }) => {
     const handleMinNumber = (e) => setMinNumber(e.target.value);
     const handleMaxNumber = (e) => setMaxNumber(e.target.value);
 
+    // 변경된 필드만 submit
     const handleSubmit = async() => {
         const submitData = {};
         if(minNumber !== crewData.minMembers){
-            console.log(minNumber, "vs",crewData.minMembers);
             submitData.minMembers = Number(minNumber);
         }
         if(maxNumber !== crewData.maxMembers){
-            console.log(maxNumber, "vs",crewData.maxMembers);
             submitData.maxMembers = Number(maxNumber);
         }
         const formData = new FormData();
         formData.append("crewReqDto", new Blob([JSON.stringify(submitData)], { type: "application/json" }));
         try {
-            console.log("submitData: ", submitData);
             const response = await crewAPI.updateCrewData(crewId, formData);
-            console.log(response.data);
         } catch (error) {
             console.log("변경 실패", error);
         }

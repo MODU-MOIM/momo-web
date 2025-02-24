@@ -8,6 +8,7 @@ const SettingBanner = ({ crewData, onClose }) => {
     const { crewId } = useParams();
     const [updatedName, setUpdatedName] = useState(crewData?.name);
     const [bgImg, setBgImg] = useState();
+
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
             onClose();
@@ -17,18 +18,17 @@ const SettingBanner = ({ crewData, onClose }) => {
     const handleCrewName = (e) => {
         setUpdatedName(e.target.value);
     }
+    // 변경된 필드만 submit
     const handleSubmit = async() => {
         const submitData = {};
         if(updatedName !== crewData.name){
-            console.log(updatedName, "vs",crewData.name);
             submitData.name = updatedName;
         }
         const formData = new FormData();
         formData.append("crewReqDto", new Blob([JSON.stringify(submitData)], { type: "application/json" }));
         try {
-            console.log("submitData: ", submitData);
+            // console.log("submitData: ", submitData);
             const response = await crewAPI.updateCrewData(crewId, formData);
-            console.log(response.data);
         } catch (error) {
             console.log("변경 실패", error);
         }

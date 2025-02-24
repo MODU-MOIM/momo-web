@@ -13,50 +13,44 @@ const CrewRule = ({ crewData, onClose }) => {
     const [maxAge, setMaxAge] = useState(crewData?.maxAge);
    
     const handlePanelClick = (e) => {
-        console.log(crewData);
         if(e.target === e.currentTarget){
             onClose();
         }
     }
 
-    const handleGender = (e) => {
-        setGender(e.target.value);
-        console.log(e.target.value);
-    };
+    const handleGender = (e) => setGender(e.target.value);
     const handleMinAge = (e) => setMinAge(e.target.value);
     const handleMaxAge = (e) => setMaxAge(e.target.value);
+
+    // 변경된 필드만 submit
     const handleSubmit = async() => {
         const submitData = {};
         if(gender !== crewData.genderRestriction){
-            console.log(gender, "vs",crewData.genderRestriction);
             if(gender !== "none"){
                 submitData.genderRestriction = gender;
             }else{
-                submitData.genderRestriction = null;
+                submitData.genderRestriction = null;  // 제한없음인 경우 null 값 전달
             }
         }
         if(minAge !== crewData.minAge){
-            console.log(minAge, "vs",crewData.minAge);
             if(minAge !== ''){
                 submitData.minAge = Number(minAge);
             }else{
-                submitData.minAge = null;
+                submitData.minAge = null;  // 제한없음인 경우 null 값 전달
             }
         }
         if(maxAge !== crewData.maxAge){
-            console.log(maxAge, "vs",crewData.maxAge);
             if(maxAge !== ''){
                 submitData.maxAge = Number(maxAge);
             }else{
-                submitData.maxAge = null;
+                submitData.maxAge = null;  // 제한없음인 경우 null 값 전달
             }
         }
         const formData = new FormData();
         formData.append("crewReqDto", new Blob([JSON.stringify(submitData)], { type: "application/json" }));
         try {
-            console.log("submitData: ", submitData);
+            // console.log("submitData: ", submitData);
             const response = await crewAPI.updateCrewData(crewId, formData);
-            console.log(response.data);
         } catch (error) {
             console.log("변경 실패", error);
         }
