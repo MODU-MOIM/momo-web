@@ -140,6 +140,9 @@ export const communityAPI = {
     updateComment: (crewId, feedId, commentId, commentData) => api.put(`/crews/${crewId}/feeds/${feedId}/comments/${commentId}`, commentData),
     deleteComment: (crewId, feedId, commentId) => api.delete(`/crews/${crewId}/feeds/${feedId}/comments/${commentId}`),
     createReply: (crewId, feedId, parentId, commentData) => api.post(`/crews/${crewId}/feeds/${feedId}/comments/${parentId}/replies`, commentData),
+
+    likeCommunity: (crewId, feedId) => api.post(`/crews/${crewId}/feeds/${feedId}/likes`),
+    unlikeCommunity: (crewId, feedId) => api.delete(`/crews/${crewId}/feeds/${feedId}/likes`),
 };
 
 
