@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { communityAPI } from '../../api';
+import LikeButton from '../shared/LikeButton';
 import { getTimeAgo } from './components/getTimeAgo';
 import Popup from './components/Popup';
 import striptHtmlAndTruncate from './components/textUtils';
@@ -53,6 +54,7 @@ const Community = () => {
         setIsPopupOpen(true);
     };
 
+
     return (
         <S.Container>
             <S.List>
@@ -74,10 +76,13 @@ const Community = () => {
                         />
                         <S.PostInfoContainer>
                             <S.ButtonsContainer>
-                                <S.IconButton>
-                                    ♥️ {post.likeCount}
-                                </S.IconButton>
-                                <S.IconButton>
+                                <LikeButton 
+                                    crewId={crewId}
+                                    feedId={post.feedId}
+                                    initialLiked={post.isLiked}
+                                    initialCount={post.likeCount}
+                                />
+                                <S.IconButton onClick={() => handlePostClick(post.feedId)}>
                                     💬
                                 </S.IconButton>
                             </S.ButtonsContainer>

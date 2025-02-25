@@ -62,11 +62,6 @@ function Popup({ isOpen, onClose, feedId, crewId }) {
         // 댓글 목록만 따로 가져오는 함수
         const fetchComments = async () => {
             try {
-                // 댓글 API 엔드포인트가 있는 경우 사용
-                // 예시: const response = await communityAPI.getComments(crewId, feedId);
-                // setComments(response.data.data);
-                
-                // 지금은 서버에서 댓글 목록을 제공하지 않아 빈 배열로 설정
                 setComments([]);
             } catch (error) {
                 console.error('댓글 목록 가져오기 실패:', error);
@@ -228,7 +223,9 @@ function Popup({ isOpen, onClose, feedId, crewId }) {
                     </S.ImageGallery>
                 )}
                 <S.ContentContainer>
-                    <S.PopupCloseButton onClick={onClose}>✕</S.PopupCloseButton>
+                    <S.PopupCloseButton onClick={() => {onClose(); setCurrentImageIndex(0);}}>
+                        ✕
+                    </S.PopupCloseButton>
                     <S.PopupTitle>
                         <S.ProfileImage
                             src={postDetail.profileImage}

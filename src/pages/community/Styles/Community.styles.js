@@ -238,7 +238,6 @@ export const PopupTitle = styled.div`
 
 export const Writer = styled.div`
     font-size:1.2em;
-    margin-left:10px;
 `;
 
 export const PopupCloseButton = styled.button`
@@ -361,7 +360,7 @@ export const Content = styled.div`
     padding:20px 0;
     margin:0 20px;
     position: relative;
-    font-weight:200;
+    font-weight:500;
 `;
 
 export const ContentButtonContainer = styled.div`
@@ -397,7 +396,7 @@ export const ContentText = styled.div`
 
 // 댓글 입력 컴포넌트
 export const CommentContainer = styled.div`
-    height: calc(60% - 60px);
+    height: calc(55% - 60px);
     margin: 0 20px;
     padding: 10px 0;
     display: flex;
@@ -478,7 +477,6 @@ export const CommentContent = styled.div`
 
 export const CommentForm = styled.form`
     display: flex;
-    border-top: 1px solid #333;
     padding-top: 10px;
 `;
 
@@ -545,9 +543,7 @@ export const ReplyButton = styled.button`
 export const ReplyItem = styled.div`
     padding: 10px 0;
     margin-left: 30px;
-    border-left: 2px solid #444;
     padding-left: 10px;
-    border-bottom: 1px solid #333;
     &:last-child {
         border-bottom: none;
     }
@@ -558,7 +554,6 @@ export const ReplyForm = styled.form`
     display: flex;
     margin-left: 30px;
     padding: 10px 0;
-    border-left: 2px solid #444;
     padding-left: 10px;
 `;
 
