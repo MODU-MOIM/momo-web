@@ -43,6 +43,7 @@ export const ProfileImage = styled.img`
     width:45px;
     height:45px;
     border-radius:50%;
+    border: 1px solid #c3c3c3;
 `;
 
 export const UserName = styled.p`
