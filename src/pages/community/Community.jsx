@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { communityAPI } from '../../api';
-import LikeButton from '../shared/LikeButton';
+import LikeButton from '../../pages/shared/LikeButton';
 import { getTimeAgo } from './components/getTimeAgo';
 import Popup from './components/Popup';
 import striptHtmlAndTruncate from './components/textUtils';
@@ -17,17 +17,19 @@ const Community = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [selectedFeedId, setSelectedFeedId] = useState(null);
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const response = await communityAPI.getCommunityList(crewId);
-                setPosts(Array.isArray(response.data.data) ? response.data.data.reverse() : []);
-            } catch (error) {
-                console.error('게시물 가져오기 실패:', error);
-                setPosts([]);
-            }
-        };
 
+    // 게시물 목록을 새로 불러오는 함수
+    const fetchPosts = async () => {
+        try {
+            const response = await communityAPI.getCommunityList(crewId);
+            setPosts(Array.isArray(response.data.data) ? response.data.data.reverse() : []);
+        } catch (error) {
+            console.error('게시물 가져오기 실패:', error);
+            setPosts([]);
+        }
+    };
+
+    useEffect(() => {
         fetchPosts();
     }, [crewId]);
 
@@ -48,12 +50,16 @@ const Community = () => {
         return () => observer.disconnect();
     }, [visiblePosts, posts.length]);
 
-
     const handlePostClick = (feedId) => {
         setSelectedFeedId(feedId);
         setIsPopupOpen(true);
     };
 
+    const handlePopupClose = () => {
+        setIsPopupOpen(false);
+        // 팝업이 닫힐 때마다 게시물 목록을 새로고침
+        fetchPosts();
+    };
 
     return (
         <S.Container>
@@ -76,15 +82,12 @@ const Community = () => {
                         />
                         <S.PostInfoContainer>
                             <S.ButtonsContainer>
-                                <LikeButton 
-                                    crewId={crewId}
-                                    feedId={post.feedId}
-                                    initialLiked={post.isLiked}
-                                    initialCount={post.likeCount}
-                                />
-                                <S.IconButton onClick={() => handlePostClick(post.feedId)}>
-                                    💬
-                                </S.IconButton>
+                            <LikeButton
+                                crewId={crewId}
+                                feedId={post.feedId}
+                                initialLiked={post.isLiked}
+                                initialCount={post.likeCount}
+                            />
                             </S.ButtonsContainer>
                             <S.TextContainer>
                                 <S.UserName>{post.writer}</S.UserName>
@@ -104,14 +107,16 @@ const Community = () => {
                     }} />
                 )}
             </S.List>
-
-            <Popup
-                key={selectedFeedId}
-                isOpen={isPopupOpen}
-                onClose={() => setIsPopupOpen(false)}
-                feedId={selectedFeedId}
-                crewId={crewId}
-            />
+            
+            {isPopupOpen && (
+                <Popup
+                    key={selectedFeedId}
+                    isOpen={isPopupOpen}
+                    onClose={handlePopupClose}
+                    feedId={selectedFeedId}
+                    crewId={crewId}
+                />
+            )}
         </S.Container>
     );
 };

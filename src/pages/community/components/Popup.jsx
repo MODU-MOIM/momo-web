@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { communityAPI } from '../../../api';
+import LikeButton from '../../shared/LikeButton';
 import * as S from '../Styles/Community.styles';
 import { getTimeAgo } from './getTimeAgo';
 
-function Popup({ isOpen, onClose, feedId, crewId }) {
-    const [postDetail, setPostDetail] = useState(null);
+
+function Popup({ isOpen, onClose, feedId, crewId }){
+    const [post, setPost] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
@@ -42,14 +44,11 @@ function Popup({ isOpen, onClose, feedId, crewId }) {
             if (feedId) {
                 try {
                     const response = await communityAPI.getCommunityDetail(crewId, feedId);
-                    setPostDetail(response.data.data);
+                    setPost(response.data.data);
                     
                     // 댓글 데이터가 있는지 확인하고 설정
                     if (response.data.data.comments) {
                         setComments(response.data.data.comments);
-                    } else {
-                        // 댓글 목록을 별도로 가져와야 하는 경우를 대비
-                        fetchComments();
                     }
                     
                     setCurrentImageIndex(0); // 팝업이 열릴 때마다 첫 번째 이미지부터 보여주기
@@ -59,16 +58,6 @@ function Popup({ isOpen, onClose, feedId, crewId }) {
             }
         };
         
-        // 댓글 목록만 따로 가져오는 함수
-        const fetchComments = async () => {
-            try {
-                setComments([]);
-            } catch (error) {
-                console.error('댓글 목록 가져오기 실패:', error);
-                setComments([]);
-            }
-        };
-
         if (isOpen) {
             fetchPostDetail();
         }
@@ -76,7 +65,7 @@ function Popup({ isOpen, onClose, feedId, crewId }) {
 
     // 이미지 네비게이션 함수
     const handleNextImage = () => {
-        if (postDetail.photos && currentImageIndex < postDetail.photos.length - 1) {
+        if (post.photos && currentImageIndex < post.photos.length - 1) {
             setCurrentImageIndex(prev => prev + 1);
         }
     };
@@ -165,12 +154,12 @@ function Popup({ isOpen, onClose, feedId, crewId }) {
             setIsSubmitting(false);
         }
     };
-    
+
     // 데이터 새로고침 함수
     const refreshData = async () => {
         try {
             const response = await communityAPI.getCommunityDetail(crewId, feedId);
-            setPostDetail(response.data.data);
+            setPost(response.data.data);
             
             // 댓글 데이터 설정
             if (response.data.data.comments) {
@@ -181,25 +170,25 @@ function Popup({ isOpen, onClose, feedId, crewId }) {
         }
     };
 
-    if (!isOpen || !postDetail) return null;
+    if (!isOpen || !post) return null;
 
     return (
         <S.PopupContainer>
             <S.PopupContent>
-                {postDetail.photos && postDetail.photos.length > 0 && (
+                {post.photos && post.photos.length > 0 && (
                     <S.ImageGallery>
                         <S.SlideContainer>
                             <S.SlideWrapper currentImage={currentImageIndex}>
-                                {postDetail.photos.map((photo, index) => (
+                                {post.photos.map((photo, index) => (
                                     <S.Slide key={index}>
                                         <S.PopupImage src={photo.url} alt={`사진 ${index + 1}`} />
                                     </S.Slide>
                                 ))}
                             </S.SlideWrapper>
                         </S.SlideContainer>
-                        {postDetail.photos.length > 1 && (
+                        {post.photos.length > 1 && (
                             <S.ImageIndicator>
-                                {postDetail.photos.map((_, index) => (
+                                {post.photos.map((_, index) => (
                                     <S.IndicatorDot
                                         key={index}
                                         active={index === currentImageIndex}
@@ -209,12 +198,12 @@ function Popup({ isOpen, onClose, feedId, crewId }) {
                             </S.ImageIndicator>
                         )}
                         <S.ButtonContainer>
-                            {postDetail.photos.length > 1 && (
+                            {post.photos.length > 1 && (
                                 <>
                                     {currentImageIndex > 0 && (
                                         <S.PrevButton onClick={handlePrevImage}/>
                                     )}
-                                    {currentImageIndex < postDetail.photos.length - 1 && (
+                                    {currentImageIndex < post.photos.length - 1 && (
                                         <S.NextButton onClick={handleNextImage}/>
                                     )}
                                 </>
@@ -223,28 +212,28 @@ function Popup({ isOpen, onClose, feedId, crewId }) {
                     </S.ImageGallery>
                 )}
                 <S.ContentContainer>
-                    <S.PopupCloseButton onClick={() => {onClose(); setCurrentImageIndex(0);}}>
+                    <S.PopupCloseButton onClick={onClose}>
                         ✕
                     </S.PopupCloseButton>
                     <S.PopupTitle>
                         <S.ProfileImage
-                            src={postDetail.profileImage}
+                            src={post.profileImage}
                             alt="Profile"
                         />
-                        <S.Writer>{postDetail.writer}</S.Writer>
+                        <S.Writer>{post.writer}</S.Writer>
                     </S.PopupTitle>
                     <S.Content>
-                        <S.TimeAgo>{getTimeAgo(postDetail.createdAt)}</S.TimeAgo>
+                        <S.TimeAgo>{getTimeAgo(post.createdAt)}</S.TimeAgo>
                         <S.ContentText
-                            dangerouslySetInnerHTML={{ __html: postDetail.content }}
+                            dangerouslySetInnerHTML={{ __html: post.content }}
                         />
                         <S.ContentButtonContainer>
-                            <button>
-                            ♥️ {postDetail.likeCount}
-                            </button>
-                            <button>
-                                💬 {postDetail.commentCount || 0}
-                            </button>
+                        <LikeButton
+                            crewId={crewId}
+                            feedId={post.feedId}
+                            initialLiked={post.isLiked}
+                            initialCount={post.likeCount}
+                        />
                         </S.ContentButtonContainer>
                     </S.Content>
                     <S.CommentContainer>
