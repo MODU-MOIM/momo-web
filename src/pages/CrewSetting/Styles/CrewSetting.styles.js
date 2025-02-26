@@ -77,6 +77,12 @@ export const CompletionButton = styled.button`
     }
 `;
 
+export const HelpMsg = styled.div`
+    color: red;
+    font-size: small;
+    padding: 10px;
+`;
+
 // SettingBanner.jsx
 
 export const Panel = styled.div`
