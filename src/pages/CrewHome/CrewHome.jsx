@@ -91,7 +91,7 @@ export default function CrewHome() {
         }
         fetchCrewData();
         fetchMembers();
-    }, [crewId, members]);
+    }, [crewId]);
 
     return(
         <Wrapper>
