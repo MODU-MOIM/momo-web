@@ -120,6 +120,7 @@ export const crewAPI = {
             "Content-Type": "multipart/form-data",
         },
     }),
+    requestsCrewJoin: (crewId, userId) => api.post(`/crews/${crewId}/join-requests`, userId),
 };
 export const crewMembersAPI = {
     getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),

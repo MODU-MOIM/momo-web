@@ -3,13 +3,12 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { crewAPI, crewMembersAPI } from "../../api";
+import { authAPI, crewAPI, crewMembersAPI } from "../../api";
 
 export default function CrewHome() {
     const { crewId } = useParams();
-    // const [members, setMembers] = useState({});
+    const [members, setMembers] = useState({});
     const [leader, setLeader] = useState({});
-    // getuserInfo로 사용자 nickname 가져와서 확인
     const [isMember, setIsMember] = useState(false);
     const [crewData, setCrewData] = useState({
         region: '',
@@ -18,6 +17,48 @@ export default function CrewHome() {
         crewIntro: ''
     });
 
+    const handleJoin = async() => {
+        try {
+            // fetchUserId
+            const userResponse = await authAPI.getUserInfo();
+            const userId = userResponse.data.data.id;
+            // requestJoin
+            const requestJoin = await crewAPI.requestsCrewJoin(crewId, userId);
+        } catch (error) {
+            switch (error.response.data.code) {
+                case "CM002":
+                    alert("이미 해당 크루에 가입 요청을 했습니다");
+                    break;
+                case "C003":
+                    alert("크루 정원이 꽉 찼습니다");
+                    break;
+                case "CM004":
+                    alert("크루 가입 조건에 맞지 않습니다");
+                    break;
+                default:
+                    console.error("실패", error.response.data);
+                    break;
+            }
+        }
+    }
+
+    // 해당 크루가 유저가 가입한 크루인지 확인
+    useEffect(()=>{
+        async function cmpUserCrew() {
+            try {
+                const response = await crewAPI.getMyCrewList();
+                const crewList = response.data.data;
+                const myCrewListId = crewList.map(crew => crew.crewId);
+                if(myCrewListId.find(id => id ==crewId)){
+                    setIsMember(true);
+                }
+            } catch (error) {
+                console.error("유저 가입 크루 확인 실패", error);
+            }
+        }
+        cmpUserCrew();
+    },[crewId]);
+
     //초기 데이터 설정
     useEffect(() => {
         // 크루 데이터
@@ -25,11 +66,10 @@ export default function CrewHome() {
             try {
                 const response = await crewAPI.getCrewData(crewId);
                 const resCrewData = response.data.data;
-                // console.log(response.data.data);
                 const regions = resCrewData.regions.map(region => region.regionDepth2).join(', ');
                 setCrewData({
                     region: regions,
-                    currentNum: 2,
+                    currentNum: members.length,
                     maxMembers: resCrewData.maxMembers,
                     crewIntro: resCrewData.description
                 });
@@ -43,7 +83,7 @@ export default function CrewHome() {
             try {
                 const response = await crewMembersAPI.getMemberList(crewId);
                 const resMem = (response.data.data);
-                // setMembers(resMem);
+                setMembers(resMem);
                 setLeader(resMem.find(member => member.role == "LEADER"));
             } catch (error) {
                 console.error("크루 멤버 데이터 가져오기 실패");
@@ -51,7 +91,7 @@ export default function CrewHome() {
         }
         fetchCrewData();
         fetchMembers();
-    }, [crewId]);
+    }, [crewId, members]);
 
     return(
         <Wrapper>
@@ -81,7 +121,7 @@ export default function CrewHome() {
                     <CrewIntroText dangerouslySetInnerHTML={{ __html: crewData.crewIntro }}/>
                     {isMember ? null : (
                         <JoinButton
-                            // onClick={}
+                            onClick={handleJoin}
                         >가입하기</JoinButton>
                     )}
                 </CrewMainHome>
@@ -185,5 +225,8 @@ const JoinButton = styled.button`
     color: white;
     background-color: #4B44B6;
     margin-bottom: 25px;
-    
+    &:hover{
+        cursor: pointer;
+        background-color: #2c22b4;
+    }
 `;
