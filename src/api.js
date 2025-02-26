@@ -121,6 +121,9 @@ export const crewAPI = {
         },
     }),
 };
+export const crewMembersAPI = {
+    getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),
+}
 
 export const scheduleAPI = {
     createSchedule: (crewId, scheduleData) => api.post(`/crews/${crewId}/schedules`, scheduleData),

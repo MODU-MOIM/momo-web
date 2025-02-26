@@ -3,11 +3,13 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { crewAPI } from "../../api";
+import { crewAPI, crewMembersAPI } from "../../api";
 
 export default function CrewHome() {
     const { crewId } = useParams();
-    //userId로 크루멤버인지 확인
+    // const [members, setMembers] = useState({});
+    const [leader, setLeader] = useState({});
+    // getuserInfo로 사용자 nickname 가져와서 확인
     const [isMember, setIsMember] = useState(false);
     const [crewData, setCrewData] = useState({
         region: '',
@@ -18,6 +20,7 @@ export default function CrewHome() {
 
     //초기 데이터 설정
     useEffect(() => {
+        // 크루 데이터
         async function fetchCrewData() {
             try {
                 const response = await crewAPI.getCrewData(crewId);
@@ -35,8 +38,20 @@ export default function CrewHome() {
                 console.error("크루 읽기 실패", error);
             }
         }
+        // 크루 멤버 확인
+        async function fetchMembers() {
+            try {
+                const response = await crewMembersAPI.getMemberList(crewId);
+                const resMem = (response.data.data);
+                // setMembers(resMem);
+                setLeader(resMem.find(member => member.role == "LEADER"));
+            } catch (error) {
+                console.error("크루 멤버 데이터 가져오기 실패");
+            }
+        }
         fetchCrewData();
-    }, []);
+        fetchMembers();
+    }, [crewId]);
 
     return(
         <Wrapper>
@@ -45,10 +60,10 @@ export default function CrewHome() {
                     <CrewInfo>
                         <UserInfoContainer>
                             <Profile>
-                                <ProfileImage/>
+                                <ProfileImage src={leader?.profileImage}/>
                                 <ProfileText>
                                     <UserPosition>리더</UserPosition>
-                                    <UserName>초보123</UserName>
+                                    <UserName>{leader?.nickname}</UserName>
                                 </ProfileText>
                             </Profile>
                         </UserInfoContainer>
@@ -110,26 +125,26 @@ const Profile = styled.div`
     display: flex;
     align-items: center;
     /* margin: 20px; */
-    `;
+`;
 const ProfileImage = styled.img`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 1px solid red;
+    border: 1px solid #c3c3c3;
     margin-right: 10px;
-    `;
+`;
 const ProfileText = styled.div`
     height:35px;
     display: flex;
     flex-direction: column;
     margin:0;
-    `;
+`;
 const UserPosition = styled.p`
     color:#4B44B6;
     font-size: 15px;
     font-weight: 600;
     margin: 0;
-    `;
+`;
 const UserName = styled.p`
     margin:0px;
     color:#000;
