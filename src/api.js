@@ -126,6 +126,7 @@ export const crewAPI = {
     updateCrewRestriction: (crewId, data) => api.patch(`/crews/${crewId}/condition`, data),
     
     requestsCrewJoin: (crewId, userId) => api.post(`/crews/${crewId}/join-requests`, userId),
+    getReqJoinUserList: (crewId) => api.get(`/crews/${crewId}/join-requests`),
 };
 export const crewMembersAPI = {
     getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),

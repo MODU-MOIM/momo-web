@@ -1,29 +1,39 @@
 import { AiOutlineClose } from "react-icons/ai";
 import * as S from "../Styles/CrewSetting.styles";
 import { useState, useRef, useEffect } from "react";
+import { crewAPI } from "../../../api";
+import { useParams } from "react-router-dom";
 
 const JoinReqList = ({ crewData, onClose }) => {
+    const { crewId } = useParams();
+    const [reqMembers, setReqMembers] = useState([]);
+    const [visibleMembers, setVisibleMembers] = useState(3);
+    const observerRef = useRef();
+
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
             onClose();
         }
     }
 
-    // 멤버 api를 불러와 리더와 멤버를 비교
-    // 리더외엔 탈퇴버튼 표시
-    const members = Array.from({ length: 20 }, (_, index) => ({
-        id: index,
-        name: `김멤버`,
-        role: index === 0 ? '리더' : '', // 첫 번째 멤버(index가 0)일 때만 '리더'로 설정
-    }));
-
-    const [visibleMembers, setVisibleMembers] = useState(3);
-    const observerRef = useRef();
+    useEffect(()=>{
+        async function fetchJoinUserList() {
+            try {
+                const response = await crewAPI.getReqJoinUserList(crewId);
+                const joinReqList = response.data.data;
+                console.log(joinReqList);
+                setReqMembers(joinReqList || []);
+            } catch (error) {
+                console.error("요청 불러오기 실패", error);
+            }
+        }
+        fetchJoinUserList();
+    },[]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
-                if(entries[0].isIntersecting && visibleMembers < members.length){
+                if(entries[0].isIntersecting && visibleMembers < reqMembers.length){
                     setVisibleMembers(prev => prev + 3);
                 }
             },
@@ -35,7 +45,7 @@ const JoinReqList = ({ crewData, onClose }) => {
         }
 
         return () => observer.disconnect();
-    }, [visibleMembers, members.length]);
+    }, [visibleMembers, reqMembers.length]);
 
 
     return (
@@ -66,7 +76,7 @@ const JoinReqList = ({ crewData, onClose }) => {
                         }
                     }}
                 >
-                    {members.slice(0, visibleMembers).map((member, index) => (
+                    {Array.isArray(reqMembers) && reqMembers?.map((member, index) => (
                         <S.MemberSection
                             key={index}
                             style={{
@@ -75,9 +85,9 @@ const JoinReqList = ({ crewData, onClose }) => {
                             }}
                         >
                             <S.SectionContainer style={{display: 'flex'}}>
-                                <S.ProfileImage />
+                                <S.ProfileImage src={member.profileImage}/>
                                 <S.Name style={{marginTop: '11px'}}>
-                                    {member.name}
+                                    {member.nickname}
                                 </S.Name>
                             </S.SectionContainer>
                             <S.SectionContainer>
@@ -91,7 +101,7 @@ const JoinReqList = ({ crewData, onClose }) => {
                             </S.SectionContainer>
                         </S.MemberSection>
                     ))}
-                    {visibleMembers < members.length && (
+                    {visibleMembers < reqMembers.length && (
                         <div ref={observerRef}>
                         </div>
                     )}
