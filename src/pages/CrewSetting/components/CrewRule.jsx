@@ -22,35 +22,28 @@ const CrewRule = ({ crewData, onClose }) => {
     const handleMinAge = (e) => setMinAge(e.target.value);
     const handleMaxAge = (e) => setMaxAge(e.target.value);
 
-    // 변경된 필드만 submit
     const handleSubmit = async() => {
         const submitData = {};
-        if(gender !== crewData.genderRestriction){
-            if(gender !== "none"){
-                submitData.genderRestriction = gender;
-            }else{
-                submitData.genderRestriction = null;  // 제한없음인 경우 null 값 전달
-            }
+        // 성별 제한 필드
+        if(gender !== "none"){
+            submitData.genderRestriction = gender;
+        }else{
+            submitData.genderRestriction = null;  // 제한없음인 경우 null 값 전달
         }
-        if(minAge !== crewData.minAge){
-            if(minAge !== ''){
-                submitData.minAge = Number(minAge);
-            }else{
-                submitData.minAge = null;  // 제한없음인 경우 null 값 전달
-            }
+        //최소 나이 필드
+        if(minAge !== ''){
+            submitData.minAge = Number(minAge);
+        }else{
+            submitData.minAge = null;  // 제한없음인 경우 null 값 전달
         }
-        if(maxAge !== crewData.maxAge){
-            if(maxAge !== ''){
-                submitData.maxAge = Number(maxAge);
-            }else{
-                submitData.maxAge = null;  // 제한없음인 경우 null 값 전달
-            }
+        // 최대 나이 필드
+        if(maxAge !== ''){
+            submitData.maxAge = Number(maxAge);
+        }else{
+            submitData.maxAge = null;  // 제한없음인 경우 null 값 전달
         }
-        const formData = new FormData();
-        formData.append("crewReqDto", new Blob([JSON.stringify(submitData)], { type: "application/json" }));
         try {
-            // console.log("submitData: ", submitData);
-            const response = await crewAPI.updateCrewData(crewId, formData);
+            const response = await crewAPI.updateCrewRestriction(crewId, submitData);
         } catch (error) {
             console.log("변경 실패", error);
         }
@@ -126,7 +119,9 @@ const CrewRule = ({ crewData, onClose }) => {
                             onChange={handleMaxAge}
                         />
                     </S.NumberSetting>
-                    <S.ButtonContainer style={{ marginTop: '40px' }}>
+                    {/* 도움 메시지 */}
+                    <S.HelpMsg>* 제한을 두고 싶지 않은 경우는 숫자를 지워주세요.</S.HelpMsg>
+                    <S.ButtonContainer style={{ marginTop: '10px' }}>
                         <S.CompletionButton onClick={handleSubmit}>
                             수정완료
                         </S.CompletionButton>
