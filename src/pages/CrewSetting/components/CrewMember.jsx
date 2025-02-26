@@ -18,21 +18,15 @@ const CrewMember = ({ crewData, onClose }) => {
     const handleMinNumber = (e) => setMinNumber(e.target.value);
     const handleMaxNumber = (e) => setMaxNumber(e.target.value);
 
-    // 변경된 필드만 submit
     const handleSubmit = async() => {
-        const submitData = {};
-        if(minNumber !== crewData.minMembers){
-            submitData.minMembers = Number(minNumber);
-        }
-        if(maxNumber !== crewData.maxMembers){
-            submitData.maxMembers = Number(maxNumber);
-        }
-        const formData = new FormData();
-        formData.append("crewReqDto", new Blob([JSON.stringify(submitData)], { type: "application/json" }));
+        const submitData = {
+            minMembers: Number(minNumber),
+            maxMembers: Number(maxNumber)
+        };
         try {
-            const response = await crewAPI.updateCrewData(crewId, formData);
+            const response = await crewAPI.updateCrewHeadCount(crewId, submitData);
         } catch (error) {
-            console.log("변경 실패", error);
+            console.error("변경 실패", error);
         }
     }
 
@@ -81,8 +75,15 @@ const CrewMember = ({ crewData, onClose }) => {
                             <S.TextItem>명</S.TextItem>
                         </S.NumberContainer>
                     </S.NumberSetting>
+                    {/* 도움 메시지 */}
+                    <S.HelpMsg style={{ padding: '0px 0px 0px 10px', }}>
+                        * 크루 수용 최대 멤버는 30명입니다.
+                    </S.HelpMsg>
+                    <S.HelpMsg style={{ padding: '0px 0px 0px 10px' }}>
+                        * 제한을 두고 싶지 않은 경우는 숫자를 지워주세요.
+                    </S.HelpMsg>
                 </S.SettingContainer>
-                <S.ButtonContainer style={{ marginTop: '40px' }}>
+                <S.ButtonContainer style={{ marginTop: '10px' }}>
                         <S.CompletionButton onClick={handleSubmit}>
                             수정완료
                         </S.CompletionButton>
