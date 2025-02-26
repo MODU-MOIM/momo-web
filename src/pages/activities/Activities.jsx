@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import * as S from "./Styles/Activities.styles";
-import Banner from "./components/Banner";
-
 
 const Activities = () => {
     // 초기 게시물 데이터 추후 API로 데이터 받아오기
