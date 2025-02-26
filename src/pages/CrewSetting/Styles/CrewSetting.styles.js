@@ -213,6 +213,21 @@ export const Select = styled.select`
     outline: none;
     margin-bottom: 20px;
 `;
+// JoinReqList.jsx
+export const SectionContainer = styled.div`
+    display: flex;
+`;
+export const DecisionButton = styled.div`
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: #fff;
+    background: #352EAE;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-left: 20px;
+`;
 
 // CrewActivity.jsx
 

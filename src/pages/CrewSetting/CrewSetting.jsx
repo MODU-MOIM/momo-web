@@ -12,6 +12,7 @@ import SettingBanner from "./components/SettingBanner";
 import * as S from "./Styles/CrewSetting.styles";
 import { useParams } from "react-router-dom";
 import { crewAPI } from "../../api";
+import JoinReqList from "./components/JoinReqList";
 
 
 const CrewSetting = () => {
@@ -21,6 +22,7 @@ const CrewSetting = () => {
     const [isCrewIntroOpen, setIsCrewIntroOpen] = useState(false);
     const [isCrewMemberOpen, setIsCrewMemberOpen] = useState(false);
     const [isCrewRuleOpen, setIsCrewRuleOpen] = useState(false);
+    const [isJoinReqListOpen, setIsJoinReqListOpen] = useState(false);
     const [isCrewActivityOpen, setIsCrewActivityOpen] = useState(false);
     const [isCrewScheduleOpen, setIsCrewScheduleOpen] = useState(false);
     const [isAdministratorOpen, setIsAdministratorOpen] = useState(false);
@@ -68,6 +70,10 @@ const CrewSetting = () => {
                     <S.Button onClick={() => setIsCrewRuleOpen(true)}><BsChevronRight/></S.Button>
                     {/* 설정한 조건 출력 */}
                     {/* <S.Desc>성별 제한없음, 나이 제한없음</S.Desc> */}
+                </S.SubTitle>
+                <S.SubTitle>
+                    <S.Title>가입 요청 목록 조회</S.Title>
+                    <S.Button onClick={() => setIsJoinReqListOpen(true)}><BsChevronRight/></S.Button>
                 </S.SubTitle>
                 <S.MainTitle>
                     <S.Title>멤버 활동 관리</S.Title>
@@ -122,6 +128,12 @@ const CrewSetting = () => {
                 <CrewRule
                     crewData={crewData}
                     onClose={() => setIsCrewRuleOpen(false)}
+                />
+            )}
+            {isJoinReqListOpen && (
+                <JoinReqList
+                    crewData={crewData}
+                    onClose={() => setIsJoinReqListOpen(false)}
                 />
             )}
             {isCrewActivityOpen && (
