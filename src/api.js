@@ -124,7 +124,12 @@ export const crewAPI = {
     updateCrewIntro: (crewId, data) => api.patch(`/crews/${crewId}/report`, data),
     updateCrewHeadCount: (crewId, data) => api.patch(`/crews/${crewId}/headcount`, data),
     updateCrewRestriction: (crewId, data) => api.patch(`/crews/${crewId}/condition`, data),
+    
+    requestsCrewJoin: (crewId, userId) => api.post(`/crews/${crewId}/join-requests`, userId),
 };
+export const crewMembersAPI = {
+    getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),
+}
 
 export const scheduleAPI = {
     createSchedule: (crewId, scheduleData) => api.post(`/crews/${crewId}/schedules`, scheduleData),
