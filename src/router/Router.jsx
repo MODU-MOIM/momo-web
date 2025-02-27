@@ -3,6 +3,7 @@ import Layout from "../components/layout/Layout";
 import Activities from "../pages/activities/Activities";
 import Details from "../pages/activities/components/Details";
 import Community from "../pages/community/Community";
+import UpdateCommunity from "../pages/community/components/updateCommunity";
 import WriteCommunity from "../pages/community/components/WriteCommunity";
 import CrewCreate from "../pages/CrewCreate/CrewCreate";
 import CrewHome from "../pages/CrewHome/CrewHome";
@@ -35,6 +36,7 @@ const Router = () => {
                     <Route path="crewActivity/:index" element={<Details />} />
                     <Route path="crewCommunity" element={<Community />} />
                     <Route path="crewCommunity/write" element={<WriteCommunity />} />
+                    <Route path="crewCommunity/update/:feedId" element={<UpdateCommunity />} />
                     <Route path="crewSetting" element={<Setting />} />
                 </Route>
                 <Route path="/crews/:crewId/crewSchedule" element={<CrewSchedule />} />
