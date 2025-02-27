@@ -241,16 +241,17 @@ export const Writer = styled.div`
     font-size:1.2em;
 `;
 
-export const PopupCloseButton = styled.button`
+export const PopupButton = styled.button`
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 5px;
     border: none;
     background: none;
     color:white;
     cursor: pointer;
     font-size: 1.5em;
     margin-right:20px;
+
 `;
 
 export const ImageGallery = styled.div`

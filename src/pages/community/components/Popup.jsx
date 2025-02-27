@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { communityAPI } from '../../../api';
+import { useAuth } from "../../../AuthProvider";
+import EditDeleteMenu from "../../shared/EditDeleteMenu";
 import LikeButton from '../../shared/LikeButton';
 import * as S from '../Styles/Community.styles';
 import { getTimeAgo } from './getTimeAgo';
-
 
 function Popup({ isOpen, onClose, feedId, crewId }){
     const [post, setPost] = useState(null);
@@ -14,6 +16,8 @@ function Popup({ isOpen, onClose, feedId, crewId }){
     const [replyToId, setReplyToId] = useState(null);
     const [replyToWriter, setReplyToWriter] = useState("");
     const [newReply, setNewReply] = useState("");
+    const [showMenu, setShowMenu] = useState(false);
+    const { userInfo } = useAuth();
     
     useEffect(() => {
         if (isOpen) {
@@ -170,11 +174,18 @@ function Popup({ isOpen, onClose, feedId, crewId }){
         }
     };
 
+    const toggleMenu = (e) => {
+        e.stopPropagation();
+        setShowMenu(!showMenu);
+    };
+
     if (!isOpen || !post) return null;
 
+    const isOwner = post.writer === userInfo?.nickname;
+
     return (
-        <S.PopupContainer>
-            <S.PopupContent>
+        <S.PopupContainer  onClick={onClose}>
+            <S.PopupContent onClick={(e) => e.stopPropagation()}>
                 {post.photos && post.photos.length > 0 && (
                     <S.ImageGallery>
                         <S.SlideContainer>
@@ -212,9 +223,17 @@ function Popup({ isOpen, onClose, feedId, crewId }){
                     </S.ImageGallery>
                 )}
                 <S.ContentContainer>
-                    <S.PopupCloseButton onClick={onClose}>
-                        ✕
-                    </S.PopupCloseButton>
+                        {isOwner && (
+                            <S.PopupButton>
+                                <BsThreeDotsVertical onClick={toggleMenu}/>
+                                {showMenu && (
+                                    <EditDeleteMenu 
+                                        crewId={crewId} 
+                                        feedId={feedId}
+                                    />
+                                )}
+                            </S.PopupButton>
+                        )}
                     <S.PopupTitle>
                         <S.ProfileImage
                             src={post.profileImage}
