@@ -180,6 +180,7 @@ const MyPage = ({ closeModal }) => {
 
     // 크루 홈 이동
     const linktoCrewHome = (crewId) => {
+        closeModal();
         navigate(`/crews/${crewId}/crewHome`);
     }
 
