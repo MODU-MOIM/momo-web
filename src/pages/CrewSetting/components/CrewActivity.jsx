@@ -1,24 +1,42 @@
 import { AiOutlineClose } from "react-icons/ai";
 import * as S from "../Styles/CrewSetting.styles";
 import { useState, useRef, useEffect } from "react";
+import { crewMembersAPI } from "../../../api";
+import { useParams } from "react-router-dom";
 
 const CrewActivity = ({ onClose }) => {
+    const { crewId } = useParams();
+    const [members, setMembers] = useState([]);
+    const [visibleMembers, setVisibleMembers] = useState(3);
+    const observerRef = useRef();
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
             onClose();
         }
     }
 
-    // 멤버 api를 불러와 리더와 멤버를 비교
-    // 리더외엔 탈퇴버튼 표시
-    const members = Array.from({ length: 20 }, (_, index) => ({
-        id: index,
-        name: `김멤버`,
-        role: index === 0 ? '리더' : '', // 첫 번째 멤버(index가 0)일 때만 '리더'로 설정
-    }));
+    const handleKickOut = async(memberId) => {
+        try {
+            const response = await crewMembersAPI.kickoutMember(crewId, memberId);
+            // members에 memberId 값이 없어서 기능 작동은 안되는 중...
+            console.log("탈퇴",response);
+        } catch (error) {
+            console.error("탈퇴 실패", error);
+        }
+    }
 
-    const [visibleMembers, setVisibleMembers] = useState(3);
-    const observerRef = useRef();
+    useEffect(() => {
+        async function fetchMembers() {
+            try {
+                const response = await crewMembersAPI.getMemberList(crewId);
+                // console.log(response.data.data);
+                setMembers(response.data.data);
+            } catch (error) {
+                console.error("크루 멤버 읽기 실패", error);
+            }
+        }
+        fetchMembers();
+    },[]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -68,13 +86,16 @@ const CrewActivity = ({ onClose }) => {
                 >
                     {members.slice(0, visibleMembers).map((member, index) => (
                         <S.MemberSection key={index}>
-                            <S.ProfileImage />
+                            <S.ProfileImage src={member.profileImage}/>
                             <S.Name>
-                                {member.name}
+                                {member.nickname}
                             </S.Name>
                             <S.Role>{member.role}</S.Role>
-                            {member.role !== '리더' && (
-                                <S.CrewButton>탈퇴</S.CrewButton>
+                            {member.role !== 'LEADER' && (
+                                <S.CrewButton
+                                    // memberId 없어서 일단은 index값 넣어둠ㅎㅎ
+                                    onClick={() => handleKickOut(index)}
+                                >탈퇴</S.CrewButton>
                             )}
                         </S.MemberSection>
                     ))}
