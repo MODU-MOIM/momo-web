@@ -1,11 +1,32 @@
 import { AiOutlineClose } from "react-icons/ai";
 import * as S from "../Styles/CrewSetting.styles";
+import { crewMembersAPI } from "../../../api";
+import { useParams } from "react-router-dom";
+import { useState } from "react";
 
 
 const CrewSchedule = ({ onClose }) => {
+    const { crewId } = useParams();
+    const [createRole, setCreateRole] = useState();
+    const [updateRole, setUpdateRole] = useState();
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
             onClose();
+        }
+    }
+    
+    const handleCreateRole = (e) => setCreateRole(e.target.value);
+    const handleUpdateRole = (e) => setUpdateRole(e.target.value);
+
+    const handleSubmit = async() => {
+        const SubmitData = {
+            createPermission: createRole,
+            updatePermission: updateRole
+        }
+        try {
+            const response = await crewMembersAPI.manageSchPermission(crewId, SubmitData);
+        } catch (error) {
+            console.error("권한 변경 실패", error);
         }
     }
 
@@ -29,23 +50,25 @@ const CrewSchedule = ({ onClose }) => {
                 <S.SettingContainer>
                     <S.SettingTitle>일정 등록 권한</S.SettingTitle>
                     <S.RuleContainer>
-                        <S.Select>
-                            <option value="leader">리더</option>
-                            <option value="manager">리더와 관리자</option>
-                            <option value="all">모두</option>
+                        <S.Select value={createRole} onChange={handleCreateRole}>
+                            <option selected disabled>등록 권한 설정</option>/
+                            <option value="LEADER">리더</option>
+                            <option value="ADMIN">리더와 관리자</option>
+                            <option value="MEMBER">모두</option>
                         </S.Select>
                     </S.RuleContainer>
                     <S.SettingTitle>일정 수정 권한</S.SettingTitle>
                     <S.RuleContainer style={{ marginTop: "20px" }}>
-                        <S.Select>
-                            <option value="leader">리더</option>
-                            <option value="manager">리더와 관리자</option>
-                            <option value="all">모두</option>
+                        <S.Select value={updateRole} onChange={handleUpdateRole}>
+                            <option selected disabled>수정 권한 설정</option>/
+                            <option value="LEADER">리더</option>
+                            <option value="ADMIN">리더와 관리자</option>
+                            <option value="MEMBER">모두</option>
                         </S.Select>
                     </S.RuleContainer>
                 </S.SettingContainer>
                 <S.ButtonContainer>
-                    <S.CompletionButton>
+                    <S.CompletionButton onClick={handleSubmit}>
                         수정완료
                     </S.CompletionButton>
                     <S.CancelButton onClick={onClose}>

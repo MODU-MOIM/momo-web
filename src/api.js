@@ -133,7 +133,7 @@ export const crewAPI = {
 export const crewMembersAPI = {
     getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),
     kickoutMember: (crewId, memberId) => api.delete(`/crews/${crewId}/members/${memberId}`),
-    manageSchedulePermission: (crewId, data) => api.patch(`/crews/${crewId}/schedules/permissions`, data),
+    manageSchPermission: (crewId, data) => api.patch(`/crews/${crewId}/schedules/permissions`, data),
     manageMemberRole: (crewId, memberId, data) => api.patch(`/crews/${crewId}/members/${memberId}/role`, data),
     delegateLeader: (crewId, memberId, data) => api.patch(`/crews/${crewId}/members/${memberId}/leader`, data),
 }
