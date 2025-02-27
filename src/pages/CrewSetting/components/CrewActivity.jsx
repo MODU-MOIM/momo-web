@@ -18,8 +18,6 @@ const CrewActivity = ({ onClose }) => {
     const handleKickOut = async(memberId) => {
         try {
             const response = await crewMembersAPI.kickoutMember(crewId, memberId);
-            // members에 memberId 값이 없어서 기능 작동은 안되는 중...
-            console.log("탈퇴",response);
         } catch (error) {
             console.error("탈퇴 실패", error);
         }
@@ -29,14 +27,13 @@ const CrewActivity = ({ onClose }) => {
         async function fetchMembers() {
             try {
                 const response = await crewMembersAPI.getMemberList(crewId);
-                // console.log(response.data.data);
                 setMembers(response.data.data);
             } catch (error) {
                 console.error("크루 멤버 읽기 실패", error);
             }
         }
         fetchMembers();
-    },[]);
+    },[members]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -93,8 +90,7 @@ const CrewActivity = ({ onClose }) => {
                             <S.Role>{member.role}</S.Role>
                             {member.role !== 'LEADER' && (
                                 <S.CrewButton
-                                    // memberId 없어서 일단은 index값 넣어둠ㅎㅎ
-                                    onClick={() => handleKickOut(index)}
+                                    onClick={() => handleKickOut(member.memberId)}
                                 >탈퇴</S.CrewButton>
                             )}
                         </S.MemberSection>

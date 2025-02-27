@@ -42,7 +42,7 @@ const JoinReqList = ({ onClose }) => {
             }
         }
         fetchJoinUserList();
-    },[]);
+    },[reqMembers]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
