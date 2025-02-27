@@ -21,7 +21,6 @@ const Administrator = ({ onClose }) => {
                 role: role
             }
             const response = crewMembersAPI.manageMemberRole(crewId, memberId, submitdata);
-            console.log("역할 변경 성공", response);
         } catch (error) {
             console.error("변경 실패",error);
         }
