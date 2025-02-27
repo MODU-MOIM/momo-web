@@ -1,23 +1,43 @@
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import * as S from "../Styles/CrewSetting.styles";
+import { useParams } from "react-router-dom";
+import { crewMembersAPI } from "../../../api";
 
 const Administrator = ({ onClose }) => {
+    const { crewId } = useParams();
+    const [members, setMembers] = useState([]);
+    const [visibleMembers, setVisibleMembers] = useState(3);
+    const observerRef = useRef();
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
             onClose();
         }
     }
 
-    // 멤버 api를 불러와 리더, 관리자, 멤버를 비교
-    const members = Array.from({ length: 20 }, (_, index) => ({
-        id: index,
-        name: `김멤버`,
-        role: index === 0 ? '리더' : (index === 1 || index === 2) ? '관리자' : '멤버', // 리더, 관리자, 멤버 구분
-    }));
+    const handleRole = async(memberId, role) => {
+        try {
+            const submitdata = {
+                role: role
+            }
+            const response = crewMembersAPI.manageMemberRole(crewId, memberId, submitdata);
+            console.log("역할 변경 성공", response);
+        } catch (error) {
+            console.error("변경 실패",error);
+        }
+    }
 
-    const [visibleMembers, setVisibleMembers] = useState(3);
-    const observerRef = useRef();
+    useEffect(() => {
+        async function fetchMembers() {
+            try {
+                const response = await crewMembersAPI.getMemberList(crewId);
+                setMembers(response.data.data);
+            } catch (error) {
+                console.error("크루 멤버 읽기 실패", error);
+            }
+        }
+        fetchMembers();
+    },[members]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -38,7 +58,7 @@ const Administrator = ({ onClose }) => {
 
     // 멤버 정렬 함수
     const sortMembers = (members) => {
-        const roleOrder = { '리더': 0, '관리자': 1, '멤버': 2 };
+        const roleOrder = { 'LEADER': 0, 'ADMIN': 1, 'MEMBER': 2 };
         return [...members].sort((a, b) => roleOrder[a.role] - roleOrder[b.role]);
     };
 
@@ -74,16 +94,24 @@ const Administrator = ({ onClose }) => {
                 >
                     {sortedMembers.slice(0, visibleMembers).map((member, index) => (
                         <S.MemberSection key={index}>
-                            <S.ProfileImage />
+                            <S.ProfileImage src={member.profileImage}/>
                             <S.Name>
-                                {member.name}
+                                {member.nickname}
                             </S.Name>
                             <S.Role>{member.role}</S.Role>
-                            {member.role === '멤버' && (
-                                <S.AdminButton>관리자로 승격</S.AdminButton>
+                            {member.role === 'MEMBER' && (
+                                <S.AdminButton
+                                    onClick={() => handleRole(member.memberId, "ADMIN")}
+                                >
+                                    관리자로 승격
+                                </S.AdminButton>
                             )}
-                            {member.role === '관리자' && (
-                                <S.AdminButton>멤버로 강등</S.AdminButton>
+                            {member.role === 'ADMIN' && (
+                                <S.AdminButton
+                                    onClick={() => handleRole(member.memberId, "MEMBER")}
+                                >
+                                    멤버로 강등
+                                </S.AdminButton>
                             )}
                         </S.MemberSection>
                     ))}
