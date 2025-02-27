@@ -189,7 +189,7 @@ function Popup({ isOpen, onClose, feedId, crewId }){
                 {post.photos && post.photos.length > 0 && (
                     <S.ImageGallery>
                         <S.SlideContainer>
-                            <S.SlideWrapper currentImage={currentImageIndex}>
+                            <S.SlideWrapper $currentImage={currentImageIndex}>
                                 {post.photos.map((photo, index) => (
                                     <S.Slide key={index}>
                                         <S.PopupImage src={photo.url} alt={`사진 ${index + 1}`} />
@@ -202,7 +202,7 @@ function Popup({ isOpen, onClose, feedId, crewId }){
                                 {post.photos.map((_, index) => (
                                     <S.IndicatorDot
                                         key={index}
-                                        active={index === currentImageIndex}
+                                        $active={index === currentImageIndex}
                                         onClick={() => handleIndicatorClick(index)}
                                     />
                                 ))}

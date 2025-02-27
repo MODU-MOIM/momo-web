@@ -35,7 +35,7 @@ const LikeButton = ({
         <Container>
             <Button
                 onClick={handleClick}
-                isLiked={currentLikeState.isLiked}
+                $isLiked={currentLikeState.isLiked}
                 className={className}
             >
                 {currentLikeState.isLiked ? '❤️' : '🤍'}
@@ -62,7 +62,7 @@ const Button = styled.button`
     gap: 4px;
     transition: all 0.2s ease;
 
-    ${props => props.isLiked && css`
+    ${props => props.$isLiked && css`
         color: #FF3B30;
     `}
 `;

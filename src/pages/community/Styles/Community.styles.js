@@ -273,7 +273,7 @@ export const SlideWrapper = styled.div`
     width: 100%;
     height: 100%;
     transition: transform 0.2s ease-in-out;
-    transform: translateX(-${props => props.currentImage * 100}%);
+    transform: translateX(-${props => props.$currentImage * 100}%);
 `;
 
 export const Slide = styled.div`
@@ -340,7 +340,7 @@ export const IndicatorDot = styled.button`
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: ${props => props.active ? '#fff' : 'rgba(255, 255, 255, 0.5)'};
+    background: ${props => props.$active ? '#fff' : 'rgba(255, 255, 255, 0.5)'};
     border: none;
     padding: 0;
     cursor: pointer;
