@@ -53,10 +53,10 @@ api.interceptors.response.use(
                     originalRequest.headers['Authorization'] = newToken;
 
                     // 토큰 재발급 후 원래 요청이 GET 메서드인 경우 페이지 새로고침
-                    if(originalRequest.method.toLowerCase() === 'get'){
-                        window.location.reload();
-                        return new Promise(() => {});
-                    }
+                    // if(originalRequest.method.toLowerCase() === 'get'){
+                    //     window.location.reload();
+                    //     return new Promise(() => {});
+                    // }
                     
                     // 토큰 재발급 후 원래 요청이 GET 메서드가 아닌 경우 재시도
                     return api(originalRequest);
@@ -68,7 +68,6 @@ api.interceptors.response.use(
                 return new Promise(() => {});
             }
         }
-        // 그 외 에러는 그대로 반환
         if(error.response?.status !== 401){
             return Promise.reject(error);
         }
@@ -149,6 +148,13 @@ export const communityAPI = {
     },
     getCommunityList: (crewId) => api.get(`/crews/${crewId}/feeds`),
     getCommunityDetail: (crewId, feedId) => api.get(`/crews/${crewId}/feeds/${feedId}`),
+    updateCommunity: (crewId, feedId, formData) => {
+        delete api.defaults.headers['Content-Type'];
+        return api.put(`/crews/${crewId}/feeds/${feedId}`, formData).finally(() => {
+            api.defaults.headers['Content-Type'] = 'multipart/form-data';
+        });
+    },
+    deleteCommunity: (crewId, feedId) => api.delete(`/crews/${crewId}/feeds/${feedId}`),
 
     createComment: (crewId, feedId, commentData) => api.post(`/crews/${crewId}/feeds/${feedId}/comments`, commentData),
     updateComment: (crewId, feedId, commentId, commentData) => api.put(`/crews/${crewId}/feeds/${feedId}/comments/${commentId}`, commentData),
