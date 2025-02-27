@@ -132,7 +132,6 @@ const CrewSetting = () => {
             )}
             {isJoinReqListOpen && (
                 <JoinReqList
-                    crewData={crewData}
                     onClose={() => setIsJoinReqListOpen(false)}
                 />
             )}

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { crewAPI } from "../../../api";
 import { useParams } from "react-router-dom";
 
-const JoinReqList = ({ crewData, onClose }) => {
+const JoinReqList = ({ onClose }) => {
     const { crewId } = useParams();
     const [reqMembers, setReqMembers] = useState([]);
     const [visibleMembers, setVisibleMembers] = useState(3);
@@ -16,12 +16,26 @@ const JoinReqList = ({ crewData, onClose }) => {
         }
     }
 
+    const handleAccept = async(userId) => {
+        try {
+            const response = crewAPI.acceptJoinReq(crewId, userId);
+        } catch (error) {
+            console.error("수락 실패", error);
+        }
+    }
+    const handleReject = async(userId) => {
+        try {
+            const response = crewAPI.rejectJoinReq(crewId, userId);
+        } catch (error) {
+            console.error("거절 실패", error);
+        }
+    }
+
     useEffect(()=>{
         async function fetchJoinUserList() {
             try {
                 const response = await crewAPI.getReqJoinUserList(crewId);
                 const joinReqList = response.data.data;
-                console.log(joinReqList);
                 setReqMembers(joinReqList || []);
             } catch (error) {
                 console.error("요청 불러오기 실패", error);
@@ -76,31 +90,43 @@ const JoinReqList = ({ crewData, onClose }) => {
                         }
                     }}
                 >
-                    {Array.isArray(reqMembers) && reqMembers?.map((member, index) => (
-                        <S.MemberSection
-                            key={index}
-                            style={{
-                                display:'flex',
-                                justifyContent:'space-between'
-                            }}
-                        >
-                            <S.SectionContainer style={{display: 'flex'}}>
-                                <S.ProfileImage src={member.profileImage}/>
-                                <S.Name style={{marginTop: '11px'}}>
-                                    {member.nickname}
-                                </S.Name>
-                            </S.SectionContainer>
-                            <S.SectionContainer>
-                                <S.DecisionButton>승낙</S.DecisionButton>
-                                <S.DecisionButton
-                                    style={{
-                                        color: 'red',
-                                        background: '#DEDFE7'
-                                    }}
-                                >거절</S.DecisionButton>
-                            </S.SectionContainer>
-                        </S.MemberSection>
-                    ))}
+                    
+                    {(Array.isArray(reqMembers) &&
+                    reqMembers.some(member => member.requestStatus == "PENDING")) ? (
+                        reqMembers?.map((member, index) =>
+                            member.requestStatus == "PENDING" && (
+                            <S.MemberSection
+                                key={index}
+                                style={{
+                                    display:'flex',
+                                    justifyContent:'space-between'
+                                }}
+                            >
+                                <S.SectionContainer style={{display: 'flex'}}>
+                                    <S.ProfileImage src={member.profileImage}/>
+                                    <S.Name style={{marginTop: '11px'}}>
+                                        {member.nickname}
+                                    </S.Name>
+                                </S.SectionContainer>
+                                <S.SectionContainer>
+                                    <S.DecisionButton
+                                        onClick={() => handleAccept(member.joinRequestId)}
+                                    >수락</S.DecisionButton>
+                                    <S.DecisionButton
+                                        style={{
+                                            color: 'red',
+                                            background: '#DEDFE7'
+                                        }}
+                                        onClick={() => handleReject(member.joinRequestId)}
+                                    >거절</S.DecisionButton>
+                                </S.SectionContainer>
+                            </S.MemberSection>
+                        ))) :(
+                            <div style={{margin: "10px"}}>
+                                <div>신규 가입 요청이 없습니다.</div>
+                            </div>
+                        )
+                    }
                     {visibleMembers < reqMembers.length && (
                         <div ref={observerRef}>
                         </div>
