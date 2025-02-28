@@ -17,14 +17,15 @@ api.interceptors.request.use(
         }
 
         // 파일 업로드 요청인 경우 Content-Type 헤더 제거
-        if (config.url === '/users/upload-profile') {
+        if (config.url === '/users/upload-profile' ||
+            config.url.includes('/archives/images') ||
+            config.url.includes('/crews/images')) {
             delete config.headers['Content-Type'];
         }
         return config;
     },
     error => Promise.reject(error)
 );
-
 
 // 응답 인터셉터 설정
 api.interceptors.response.use(
@@ -51,12 +52,6 @@ api.interceptors.response.use(
                 if (newToken) {
                     localStorage.setItem('token', newToken);
                     originalRequest.headers['Authorization'] = newToken;
-
-                    // 토큰 재발급 후 원래 요청이 GET 메서드인 경우 페이지 새로고침
-                    // if(originalRequest.method.toLowerCase() === 'get'){
-                    //     window.location.reload();
-                    //     return new Promise(() => {});
-                    // }
                     
                     // 토큰 재발급 후 원래 요청이 GET 메서드가 아닌 경우 재시도
                     return api(originalRequest);
@@ -140,19 +135,19 @@ export const scheduleAPI = {
 };
 
 export const communityAPI = {
-    createCommunity: (crewId, formData) => {
-        delete api.defaults.headers['Content-Type'];
-        return api.post(`/crews/${crewId}/feeds`, formData).finally(() => {
-            api.defaults.headers['Content-Type'] = 'multipart/form-data';
-        });
-    },
+    createCommunity: (crewId, formData) =>
+        api.post(`/crews/${crewId}/feeds`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        }
+    ),
     getCommunityList: (crewId) => api.get(`/crews/${crewId}/feeds`),
     getCommunityDetail: (crewId, feedId) => api.get(`/crews/${crewId}/feeds/${feedId}`),
     updateCommunity: (crewId, feedId, formData) => {
         delete api.defaults.headers['Content-Type'];
-        return api.put(`/crews/${crewId}/feeds/${feedId}`, formData).finally(() => {
-            api.defaults.headers['Content-Type'] = 'multipart/form-data';
-        });
+        return api.put(`/crews/${crewId}/feeds/${feedId}`, formData)
+            .finally(() => {
+                api.defaults.headers['Content-Type'] = 'application/json';
+            });
     },
     deleteCommunity: (crewId, feedId) => api.delete(`/crews/${crewId}/feeds/${feedId}`),
 
@@ -165,5 +160,17 @@ export const communityAPI = {
     unlikeCommunity: (crewId, feedId) => api.delete(`/crews/${crewId}/feeds/${feedId}/likes`),
 };
 
+export const archiveAPI = {
+    createArchive: (crewId, archiveData) => api.post(`/crews/${crewId}/archives`, archiveData),
+    uploadArchiveImage: (crewId, file) => {
+        const formData = new FormData();
+        formData.append('archiveImage', file);
+        return api.post(`/crews/${crewId}/archives/images`, formData);
+    },
+    getArchiveList: (crewId) => api.get(`/crews/${crewId}/archives`),
+    getArchiveDetail: (crewId, archiveId) => api.get(`/crews/${crewId}/archives/${archiveId}`),
+    updateArchive: (crewId, archiveId, archiveData) => api.put(`/crews/${crewId}/archives/${archiveId}`, archiveData),
+    deleteArchive: (crewId, archiveId) => api.delete(`/crews/${crewId}/archives/${archiveId}`)
+};
 
 export default api;
