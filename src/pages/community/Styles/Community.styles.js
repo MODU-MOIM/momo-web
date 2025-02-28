@@ -703,3 +703,95 @@ export const ReplyInput = styled.input`
         border-color: #666;
     }
 `;
+
+export const CommentMenuWrapper = styled.div`
+    position: relative;
+    margin-left: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+`;
+
+export const CommentMenu = styled.div`
+    position: absolute;
+    right: 0;
+    top: 20px;
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 4px;
+    width: 80px;
+    z-index: 5;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+`;
+
+export const CommentMenuItem = styled.div`
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    &:hover {
+        background-color: #333;
+    }
+`;
+
+export const EditCommentForm = styled.form`
+    margin-left: 40px;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+`;
+
+export const EditCommentInput = styled.input`
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: white;
+    outline: none;
+    
+    &:focus {
+        border-color: #666;
+    }
+`;
+
+export const EditCommentButtons = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+`;
+
+export const CancelEditButton = styled.button`
+    background: none;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #ccc;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: #333;
+    }
+`;
+
+export const SaveEditButton = styled.button`
+    background-color: #352EAE;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    
+    &:hover:not(:disabled) {
+        background-color: #2A258A;
+    }
+    
+    &:disabled {
+        background-color: #333;
+        cursor: not-allowed;
+    }
+`;

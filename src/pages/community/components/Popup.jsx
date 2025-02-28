@@ -19,6 +19,11 @@ function Popup({ isOpen, onClose, feedId, crewId }){
     const [showMenu, setShowMenu] = useState(false);
     const { userInfo } = useAuth();
     
+    // 댓글 수정/삭제 관련 상태
+    const [showCommentMenu, setShowCommentMenu] = useState(null);
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editCommentContent, setEditCommentContent] = useState('');
+    
     useEffect(() => {
         if (isOpen) {
             // 현재 스크롤 위치 저장
@@ -174,9 +179,68 @@ function Popup({ isOpen, onClose, feedId, crewId }){
         }
     };
 
+    // 게시물 메뉴 토글
     const toggleMenu = (e) => {
         e.stopPropagation();
         setShowMenu(!showMenu);
+    };
+    
+    // 댓글 메뉴 토글
+    const toggleCommentMenu = (e, commentId) => {
+        e.stopPropagation();
+        setShowCommentMenu(showCommentMenu === commentId ? null : commentId);
+    };
+    
+    // 댓글 수정 시작
+    const handleEditComment = (comment) => {
+        setEditingCommentId(comment.commentId);
+        setEditCommentContent(comment.content);
+        setShowCommentMenu(null);
+    };
+    
+    // 댓글 수정 취소
+    const cancelEditComment = () => {
+        setEditingCommentId(null);
+        setEditCommentContent('');
+    };
+    
+    // 댓글 수정 저장
+    const saveEditComment = async (commentId) => {
+        if (!editCommentContent.trim() || isSubmitting) return;
+        
+        setIsSubmitting(true);
+        try {
+            const commentData = {
+                content: editCommentContent
+            };
+            await communityAPI.updateComment(crewId, feedId, commentId, commentData);
+            
+            // 댓글 수정 후 데이터 다시 가져오기
+            refreshData();
+            
+            // 수정 모드 종료
+            setEditingCommentId(null);
+            setEditCommentContent('');
+        } catch (error) {
+            console.error('댓글 수정 실패:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+    
+    // 댓글 삭제
+    const handleDeleteComment = async (commentId) => {
+        if (window.confirm('정말 삭제하시겠습니까?')) {
+            try {
+                await communityAPI.deleteComment(crewId, feedId, commentId);
+                
+                // 댓글 삭제 후 데이터 다시 가져오기
+                refreshData();
+            } catch (error) {
+                console.error('댓글 삭제 실패:', error);
+            }
+        }
+        setShowCommentMenu(null);
     };
 
     if (!isOpen || !post) return null;
@@ -184,7 +248,7 @@ function Popup({ isOpen, onClose, feedId, crewId }){
     const isOwner = post.writer === userInfo?.nickname;
 
     return (
-        <S.PopupContainer  onClick={onClose}>
+        <S.PopupContainer onClick={onClose}>
             <S.PopupContent onClick={(e) => e.stopPropagation()}>
                 {post.photos && post.photos.length > 0 && (
                     <S.ImageGallery>
@@ -268,13 +332,55 @@ function Popup({ isOpen, onClose, feedId, crewId }){
                                                 />
                                                 <S.CommentWriter>{comment.writer}</S.CommentWriter>
                                                 <S.CommentTimeAgo>{getTimeAgo(comment.createdAt)}</S.CommentTimeAgo>
+                                                
+                                                {/* 댓글 작성자 확인 후 수정/삭제 메뉴 추가 */}
+                                                {comment.writer === userInfo?.nickname && (
+                                                    <S.CommentMenuWrapper>
+                                                        <BsThreeDotsVertical onClick={(e) => toggleCommentMenu(e, comment.commentId)} />
+                                                        {showCommentMenu === comment.commentId && (
+                                                            <S.CommentMenu>
+                                                                <S.CommentMenuItem onClick={() => handleEditComment(comment)}>
+                                                                    수정
+                                                                </S.CommentMenuItem>
+                                                                <S.CommentMenuItem onClick={() => handleDeleteComment(comment.commentId)}>
+                                                                    삭제
+                                                                </S.CommentMenuItem>
+                                                            </S.CommentMenu>
+                                                        )}
+                                                    </S.CommentMenuWrapper>
+                                                )}
                                             </S.CommentHeader>
-                                            <S.CommentContent>{comment.content}</S.CommentContent>
-                                            <S.ReplyButton 
-                                                onClick={() => handleReplyClick(comment.commentId, comment.writer)}
-                                            >
-                                                답글 달기
-                                            </S.ReplyButton>
+                                            
+                                            {/* 댓글 수정 모드 */}
+                                            {editingCommentId === comment.commentId ? (
+                                                <S.EditCommentForm onSubmit={(e) => {
+                                                    e.preventDefault();
+                                                    saveEditComment(comment.commentId);
+                                                }}>
+                                                    <S.EditCommentInput
+                                                        value={editCommentContent}
+                                                        onChange={(e) => setEditCommentContent(e.target.value)}
+                                                        autoFocus
+                                                    />
+                                                    <S.EditCommentButtons>
+                                                        <S.CancelEditButton onClick={cancelEditComment} type="button">
+                                                            취소
+                                                        </S.CancelEditButton>
+                                                        <S.SaveEditButton type="submit" disabled={isSubmitting}>
+                                                            저장
+                                                        </S.SaveEditButton>
+                                                    </S.EditCommentButtons>
+                                                </S.EditCommentForm>
+                                            ) : (
+                                                <>
+                                                    <S.CommentContent>{comment.content}</S.CommentContent>
+                                                    <S.ReplyButton 
+                                                        onClick={() => handleReplyClick(comment.commentId, comment.writer)}
+                                                    >
+                                                        답글 달기
+                                                    </S.ReplyButton>
+                                                </>
+                                            )}
                                         </S.CommentItem>
                                         
                                         {/* 대댓글 목록 */}
@@ -288,8 +394,48 @@ function Popup({ isOpen, onClose, feedId, crewId }){
                                                         />
                                                         <S.CommentWriter>{reply.writer}</S.CommentWriter>
                                                         <S.CommentTimeAgo>{getTimeAgo(reply.createdAt)}</S.CommentTimeAgo>
+                                                        
+                                                        {/* 대댓글 작성자 확인 후 수정/삭제 메뉴 추가 */}
+                                                        {reply.writer === userInfo?.nickname && (
+                                                            <S.CommentMenuWrapper>
+                                                                <BsThreeDotsVertical onClick={(e) => toggleCommentMenu(e, reply.commentId)} />
+                                                                {showCommentMenu === reply.commentId && (
+                                                                    <S.CommentMenu>
+                                                                        <S.CommentMenuItem onClick={() => handleEditComment(reply)}>
+                                                                            수정
+                                                                        </S.CommentMenuItem>
+                                                                        <S.CommentMenuItem onClick={() => handleDeleteComment(reply.commentId)}>
+                                                                            삭제
+                                                                        </S.CommentMenuItem>
+                                                                    </S.CommentMenu>
+                                                                )}
+                                                            </S.CommentMenuWrapper>
+                                                        )}
                                                     </S.CommentHeader>
-                                                    <S.CommentContent>{reply.content}</S.CommentContent>
+                                                    
+                                                    {/* 대댓글 수정 모드 */}
+                                                    {editingCommentId === reply.commentId ? (
+                                                        <S.EditCommentForm onSubmit={(e) => {
+                                                            e.preventDefault();
+                                                            saveEditComment(reply.commentId);
+                                                        }}>
+                                                            <S.EditCommentInput
+                                                                value={editCommentContent}
+                                                                onChange={(e) => setEditCommentContent(e.target.value)}
+                                                                autoFocus
+                                                            />
+                                                            <S.EditCommentButtons>
+                                                                <S.CancelEditButton onClick={cancelEditComment} type="button">
+                                                                    취소
+                                                                </S.CancelEditButton>
+                                                                <S.SaveEditButton type="submit" disabled={isSubmitting}>
+                                                                    저장
+                                                                </S.SaveEditButton>
+                                                            </S.EditCommentButtons>
+                                                        </S.EditCommentForm>
+                                                    ) : (
+                                                        <S.CommentContent>{reply.content}</S.CommentContent>
+                                                    )}
                                                 </S.ReplyItem>
                                             ))
                                         )}
