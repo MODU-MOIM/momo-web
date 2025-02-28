@@ -115,6 +115,7 @@ export const crewAPI = {
     uploadImage: (formData, config) => api.post('/crews/images', formData, config),
     createIntro: (data) => api.post('/crews', data),
     getMyCrewList: () => api.get('/crews/me'),
+    deleteCrew: (crewId) => api.delete(`/crews/${crewId}`),
     // update api
     updateCrewBasicData: (crewId, formData) => api.patch(`/${crewId}/basic`, formData, {
         headers: {

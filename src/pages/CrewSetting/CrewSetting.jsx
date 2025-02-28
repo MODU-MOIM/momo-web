@@ -157,6 +157,7 @@ const CrewSetting = () => {
             )}
             {isDeleteOpen && (
                 <Delete
+                    setIsCrewActivityOpen={setIsCrewActivityOpen}
                     onClose={() => setIsDeleteOpen(false)}
                 />
             )}
