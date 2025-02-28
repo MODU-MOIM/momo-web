@@ -227,8 +227,8 @@ function Popup({ isOpen, onClose, feedId, crewId }){
                             <S.PopupButton>
                                 <BsThreeDotsVertical onClick={toggleMenu}/>
                                 {showMenu && (
-                                    <EditDeleteMenu 
-                                        crewId={crewId} 
+                                    <EditDeleteMenu
+                                        crewId={crewId}
                                         feedId={feedId}
                                     />
                                 )}
