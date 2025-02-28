@@ -134,11 +134,11 @@ export const FloatingButton = styled.button`
 
 
 // WriteCommunity.jsx
-
 export const EditorWrapper = styled.div`
-    width: 1024px;  // 컨테이너 너비 지정
+    width: 100%;
+    max-width: 1024px;
     min-height: 100vh;
-    margin: 0 auto;  // 중앙 정렬
+    margin: 0 auto;
     padding: 20px;
     background-color: #f5f5f5;
 `;
@@ -149,13 +149,13 @@ export const EditorContainer = styled.div`
     background: white;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 20px;  // 내부 여백 추가
+    padding: 20px;
 `;
 
 export const QuillWrapper = styled.div`
     .quill {
         width: 100%;
-        height: 500px;  // 에디터 높이 고정
+        height: 300px;
     }
 
     .ql-container {
@@ -167,12 +167,6 @@ export const QuillWrapper = styled.div`
         height: 100%;
         padding: 20px;
         overflow-y: auto;
-
-        img {
-            max-width: 100%;
-            max-height: 500px;
-            object-fit: contain;
-        }
     }
 
     .ql-toolbar {
@@ -181,18 +175,21 @@ export const QuillWrapper = styled.div`
     }
 `;
 
+export const WriteButton = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    gap: 10px;
+`;
+
 export const SubmitButton = styled.button`
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 12px 24px;
+    padding: 10px 20px;
     background-color: #4B44B6;
     color: white;
     border: none;
-    border-radius: 30px;
+    border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: background-color 0.2s;
 
     &:disabled {
@@ -204,6 +201,105 @@ export const SubmitButton = styled.button`
         background-color: #3d37a1;
     }
 `;
+
+export const CancelButton = styled.button`
+    padding: 10px 20px;
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #e5e5e5;
+    }
+`;
+
+export const ImageSection = styled.div`
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+`;
+
+export const ImageSectionTitle = styled.h3`
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+`;
+
+export const ImageUploadButton = styled.button`
+    padding: 10px 20px;
+    background-color: #352EAE;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #2a259e;
+    }
+`;
+
+export const SectionSubtitle = styled.h4`
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #666;
+`;
+
+export const ImagePreviewContainer = styled.div`
+    margin-top: 20px;
+`;
+
+export const ImageGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+`;
+
+export const ImagePreview = styled.div`
+    position: relative;
+    width: 100%;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+`;
+
+export const RemoveButton = styled.button`
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+`;
+
+
 
 // Popup.jsx
 export const PopupContainer = styled.div`
@@ -391,6 +487,7 @@ export const TimeAgo = styled.div`
 `;
 
 export const ContentText = styled.div`
+    white-space: pre-wrap;
     font-size:1.2em;
     line-height:1.2;
     padding:0 20px;
