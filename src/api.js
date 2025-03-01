@@ -115,7 +115,7 @@ export const crewAPI = {
     uploadImage: (formData, config) => api.post('/crews/images', formData, config),
     createIntro: (data) => api.post('/crews', data),
     getMyCrewList: () => api.get('/crews/me'),
-
+    // update api
     updateCrewBasicData: (crewId, formData) => api.patch(`/${crewId}/basic`, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
@@ -124,8 +124,11 @@ export const crewAPI = {
     updateCrewIntro: (crewId, data) => api.patch(`/crews/${crewId}/report`, data),
     updateCrewHeadCount: (crewId, data) => api.patch(`/crews/${crewId}/headcount`, data),
     updateCrewRestriction: (crewId, data) => api.patch(`/crews/${crewId}/condition`, data),
-    
+    // join api
     requestsCrewJoin: (crewId, userId) => api.post(`/crews/${crewId}/join-requests`, userId),
+    getReqJoinUserList: (crewId) => api.get(`/crews/${crewId}/join-requests`),
+    acceptJoinReq: (crewId, joinRequestId) => api.post(`/crews/${crewId}/join-requests/${joinRequestId}/accept`),
+    rejectJoinReq: (crewId, joinRequestId) => api.post(`/crews/${crewId}/join-requests/${joinRequestId}/reject`),
 };
 export const crewMembersAPI = {
     getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),
