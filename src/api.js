@@ -170,7 +170,17 @@ export const archiveAPI = {
     getArchiveList: (crewId) => api.get(`/crews/${crewId}/archives`),
     getArchiveDetail: (crewId, archiveId) => api.get(`/crews/${crewId}/archives/${archiveId}`),
     updateArchive: (crewId, archiveId, archiveData) => api.put(`/crews/${crewId}/archives/${archiveId}`, archiveData),
-    deleteArchive: (crewId, archiveId) => api.delete(`/crews/${crewId}/archives/${archiveId}`)
+    deleteArchive: (crewId, archiveId) => api.delete(`/crews/${crewId}/archives/${archiveId}`),
+
+    // 댓글 관련
+    createComment: (crewId, archiveId, data) => api.post(`/crews/${crewId}/archives/${archiveId}/comments`, data),
+    updateComment: (crewId, archiveId, commentId, data) => api.put(`/crews/${crewId}/archives/${archiveId}/comments/${commentId}`, data),
+    deleteComment: (crewId, archiveId, commentId) => api.delete(`/crews/${crewId}/archives/${archiveId}/comments/${commentId}`),
+    createReply: (crewId, archiveId, parentId, data) => api.post(`/crews/${crewId}/archives/${archiveId}/comments/${parentId}/replies`, data),
+
+    // 좋아요 관련
+    likeArchive: (crewId, archiveId) => api.post(`/crews/${crewId}/archives/${archiveId}/likes`),
+    unlikeArchive: (crewId, archiveId) => api.delete(`/crews/${crewId}/archives/${archiveId}/likes`),
 };
 
 export default api;
