@@ -247,6 +247,7 @@ export const CrewImage = styled.img`
 export const CrewName = styled.p`
     margin:13px;
     font-weight: 600;
+    cursor: pointer;
 `;
 
 export const CrewMember = styled.p`

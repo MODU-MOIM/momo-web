@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import Banner from "./components/Banner"
+import Banner from "./components/Banner";
 import FloatingMenu from "./components/FloatingMenu";
 
 export default function CrewMain() {

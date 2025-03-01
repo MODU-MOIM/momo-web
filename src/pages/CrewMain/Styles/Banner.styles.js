@@ -66,5 +66,4 @@ export const Setting = styled.div`
 `
 
 export const Link = styled(RouterNavLink)`
-    border:1px solid red;
 `;
