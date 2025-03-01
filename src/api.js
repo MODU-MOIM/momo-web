@@ -117,7 +117,7 @@ export const crewAPI = {
     getMyCrewList: () => api.get('/crews/me'),
     deleteCrew: (crewId) => api.delete(`/crews/${crewId}`),
     // update api
-    updateCrewBasicData: (crewId, formData) => api.patch(`/${crewId}/basic`, formData, {
+    updateCrewBasicData: (crewId, formData) => api.patch(`/crews/${crewId}/basic`, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
