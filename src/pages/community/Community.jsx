@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { communityAPI } from '../../api';
-import LikeButton from '../../pages/shared/LikeButton';
+import LikeButton from '../../pages/shared/CommunityLikeButton';
 import { getTimeAgo } from './components/getTimeAgo';
 import Popup from './components/Popup';
 import striptHtmlAndTruncate from './components/textUtils';

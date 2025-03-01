@@ -3,7 +3,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { communityAPI } from '../../../api';
 import { useAuth } from "../../../AuthProvider";
 import EditDeleteMenu from "../../shared/EditDeleteMenu";
-import LikeButton from '../../shared/LikeButton';
+import LikeButton from '../../shared/CommunityLikeButton';
 import * as S from '../Styles/Community.styles';
 import { getTimeAgo } from './getTimeAgo';
 
