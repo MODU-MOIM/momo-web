@@ -115,6 +115,7 @@ const CrewSetting = () => {
             )}
             {isCrewIntroOpen && (
                 <CrewIntro
+                    crewData={crewData}
                     onClose={() => setIsCrewIntroOpen(false)}
                 />
             )}
