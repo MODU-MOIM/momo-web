@@ -1,13 +1,11 @@
-import * as S from "../Styles/ViewSchedule.styles";
-import MainImage from "../../../assets/MainImage.png";
-import { FaMapMarkerAlt } from "react-icons/fa";
-import { MdAccessTimeFilled } from "react-icons/md";
-import { MdOutlineArrowRight } from "react-icons/md";
-import { AddScheduleButton, ButtonContainer } from "../CrewSchedule";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { crewAPI, scheduleAPI } from "../../../api";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { MdAccessTimeFilled } from "react-icons/md";
 import { useParams } from "react-router-dom";
+import { crewAPI, scheduleAPI } from "../../../api";
+import { AddScheduleButton, ButtonContainer } from "../CrewSchedule";
+import * as S from "../Styles/ViewSchedule.styles";
 
 export default function AddSchedule({date, setIsClickedAddButton}) {
     const { crewId } = useParams();
