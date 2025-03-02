@@ -1,72 +1,124 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { archiveAPI } from '../../api';
 import * as S from "./Styles/Activities.styles";
-import Banner from "./components/Banner";
-
 
 const Activities = () => {
-    // 초기 게시물 데이터 추후 API로 데이터 받아오기
-    const initialPosts = Array.from({ length: 41 }, (_, index) => ({
-        id: index,
-        title: `오늘은 자유 달리기 ${index}회차 진행했습니다.`,
-        date: `2025-01-06`
-    }));
-
-    // 게시물과 보이는 게시물 수를 저장하는 상태
-    const [posts, setPosts] = useState(initialPosts);
-    const [visiblePosts, setVisiblePosts] = useState(6);
+    // 상태 관리
+    const [archives, setArchives] = useState([]);
+    const [visibleArchives, setVisibleArchives] = useState(6);
+    const [loading, setLoading] = useState(true);
+    
     const observerRef = useRef();
+    const navigate = useNavigate();
+    const { crewId } = useParams();
 
+    // 컴포넌트 마운트 시 및 crewId 변경 시 데이터 로드
     useEffect(() => {
-        // IntersectionObserver를 사용하여 관찰 요소가 보일 때 더 많은 게시물을 로드
+        const fetchArchives = async () => {
+            try {
+                setLoading(true);
+                const response = await archiveAPI.getArchiveList(crewId);
+                // console.log('Archive List Response:', response.data);
+                
+                // 응답 데이터 구조에 따라 적절하게 처리
+                const archiveData = response.data.data || response.data || [];
+                setArchives(Array.isArray(archiveData) ? archiveData : []);
+            } catch (error) {
+                console.error('아카이브 목록 불러오기 실패:', error);
+                setArchives([]);
+            } finally {
+                setLoading(false);  // 로딩 상태 업데이트
+            }
+        };
+    
+        fetchArchives();
+    }, [crewId]);
+
+    // 무한 스크롤 구현
+    useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
-                if (entries[0].isIntersecting && visiblePosts < posts.length) {
-                    setVisiblePosts(prev => prev + 3);
+                if (entries[0].isIntersecting && visibleArchives < archives.length) {
+                    setVisibleArchives(prev => prev + 3);
                 }
             },
             { threshold: 0.5 }
         );
 
-        // observerRef 요소를 관찰
         if (observerRef.current) {
             observer.observe(observerRef.current);
         }
 
-        // 컴포넌트 언마운트 시 옵저버 정리
         return () => observer.disconnect();
-    }, [visiblePosts, posts.length]);
+    }, [visibleArchives, archives.length]);
 
-    // 게시물 제목이 18자 이상일 경우 제목을 잘라주는 함수
+    const handleArchiveClick = (archive) => {
+        // 어떤 ID 필드가 있는지 확인하고 사용
+        const archiveId = archive.archiveId || archive.id;
+        
+        if (!archiveId) {
+            console.error('아카이브 ID를 찾을 수 없습니다:', archive);
+            alert('아카이브 정보를 불러올 수 없습니다.');
+            return;
+        }
+        
+        navigate(`/crews/${crewId}/archives/${archiveId}`);
+    };
+
+    // 게시물 제목 길이 제한 함수
     const truncateTitle = (title) => {
+        if (!title) return '';
         return title.length > 18 ? `${title.substring(0, 18)} ··· ` : title;
+    };
+
+
+    // 날짜 포맷팅 함수
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate() + 1).padStart(2, '0')}`;
     };
 
     return(
         <S.Container>
-            <S.TotalPosts>{posts.length}개의 글</S.TotalPosts>
-            <S.List>
-                {posts.slice(0, visiblePosts).map((post, index) => (
-                <S.ActivityCard key={post.id}>
-                    <S.ActivityImage to={`/crew/crewActivity/${post.id}`}/>
-                    <S.Title to={`/crew/crewActivity/${post.id}`}>{truncateTitle(post.title)}[11]</S.Title>
-                    <S.Date>{post.date}</S.Date>
-                </S.ActivityCard>
-                ))}
-                {/*
-                    사용자가 스크롤을 내려 div가 화면에서 보이면 observer가 div를 감지하고
-                    추가 게시글 3개를 불러오도록 하는 trigger
-                */}
-                {visiblePosts < posts.length && (
-                    // observer를 작동하기 위한 감지점
-                    <div ref={observerRef} style={{
-                        height: '1px',
-                        margin: '0',
-                        padding: '0'
-                    }} />
-                )}
-            </S.List>
+            <S.FloatingButton onClick={() => navigate(`/crews/${crewId}/crewActivity/write`)}>
+                글작성
+            </S.FloatingButton>
+            
+            <S.TotalPosts>{archives.length}개의 글</S.TotalPosts>
+            
+            {loading ? (
+                <S.LoadingIndicator>로딩 중...</S.LoadingIndicator>
+            ) : (
+                <S.List>
+                    {archives.length > 0 ? (
+                        archives.slice(0, visibleArchives).map((archive) => (
+                        <S.ActivityCard 
+                            key={`archive-${archive.archiveId || archive.id || Math.random()}`} 
+                            onClick={() => handleArchiveClick(archive)}
+                        >
+                            <S.ActivityImage
+                                style={{ backgroundImage: `url(${archive.thumbnailImageUrl || archive.thumbnailImage})` }}
+                            />
+                            <S.Title>{truncateTitle(archive.title)}</S.Title>
+                            <S.Date>{formatDate(archive.createdAt)}</S.Date>
+                        </S.ActivityCard>
+                        ))
+                    ) : (
+                        <S.EmptyMessage>아직 게시물이 없습니다.</S.EmptyMessage>
+                    )}
+                    {archives.length > 0 && visibleArchives < archives.length && (
+                        <div ref={observerRef} style={{
+                            height: '1px',
+                            margin: '0',
+                            padding: '0'
+                        }} />
+                    )}
+                </S.List>
+            )}
         </S.Container>
     );
 };
 
-export default  Activities;
+export default Activities;

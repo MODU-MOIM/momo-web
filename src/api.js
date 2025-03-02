@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json'},
     withCredentials: true,
 });
 
@@ -15,15 +15,17 @@ api.interceptors.request.use(
         if (token && !config.url.includes('reissue')) {
             config.headers['Authorization'] = token;
         }
+
         // 파일 업로드 요청인 경우 Content-Type 헤더 제거
-        if (config.url === '/users/upload-profile') {
+        if (config.url === '/users/upload-profile' ||
+            config.url.includes('/archives/images') ||
+            config.url.includes('/crews/images')) {
             delete config.headers['Content-Type'];
         }
         return config;
     },
     error => Promise.reject(error)
 );
-
 
 // 응답 인터셉터 설정
 api.interceptors.response.use(
@@ -50,17 +52,22 @@ api.interceptors.response.use(
                 if (newToken) {
                     localStorage.setItem('token', newToken);
                     originalRequest.headers['Authorization'] = newToken;
+                    
+                    // 토큰 재발급 후 원래 요청이 GET 메서드가 아닌 경우 재시도
                     return api(originalRequest);
                 }
             } catch (error) {
                 // 토큰 재발급 실패 시 로그인 페이지로 이동
-                console.error('토큰 재발급 실패:', error);
                 localStorage.removeItem('token');
                 window.location.href = '/login';
+                return new Promise(() => {});
             }
         }
-        // 그 외 에러는 그대로 반환
-        return Promise.reject(error);
+        if(error.response?.status !== 401){
+            return Promise.reject(error);
+        }
+
+        return new Promise(() => {});
     }
 );
 
@@ -85,20 +92,97 @@ export const authAPI = {
     ),
 };
 export const noticeAPI = {
-   createNotice (crewId, noticeData){
-    return api.post(`/crews/${crewId}/notices`, noticeData)
-   },
-   readNoticeList: (crewId) => api.get(`/crews/${crewId}/notices`),
-   readNotice: (crewId, noticeId) => api.get(`/crews/${crewId}/notices/${noticeId}`),
-   updateNotice: (crewId, noticeId,noticeData)=> api.put(`/crews/${crewId}/notices/${noticeId}`, noticeData),
-   deleteNotice: (crewId, noticeId) => api.delete(`/crews/${crewId}/notices/${noticeId}`),
-   noticePinToggle: (crewId, noticeId) => api.patch(`/crews/${crewId}/notices/${noticeId}/pin-toggle`),
+    createNotice (crewId, noticeData){
+        return api.post(`/crews/${crewId}/notices`, noticeData)
+    },
+    readNoticeList: (crewId) => api.get(`/crews/${crewId}/notices`),
+    readNotice: (crewId, noticeId) => api.get(`/crews/${crewId}/notices/${noticeId}`),
+    updateNotice: (crewId, noticeId,noticeData)=> api.put(`/crews/${crewId}/notices/${noticeId}`, noticeData),
+    deleteNotice: (crewId, noticeId) => api.delete(`/crews/${crewId}/notices/${noticeId}`),
+    noticePinToggle: (crewId, noticeId) => api.patch(`/crews/${crewId}/notices/${noticeId}/pin-toggle`),
 };
 
 export const crewAPI = {
     getCrewList: () => api.get('/crews'),
+    getCrewData: (crewId) => api.get(`/crews/${crewId}`),
     uploadImage: (formData, config) => api.post('/crews/images', formData, config),
-    createIntro: (data) => api.post('/crews', data)
+    createIntro: (data) => api.post('/crews', data),
+    getMyCrewList: () => api.get('/crews/me'),
+    // update api
+    updateCrewBasicData: (crewId, formData) => api.patch(`/${crewId}/basic`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    }),
+    updateCrewIntro: (crewId, data) => api.patch(`/crews/${crewId}/report`, data),
+    updateCrewHeadCount: (crewId, data) => api.patch(`/crews/${crewId}/headcount`, data),
+    updateCrewRestriction: (crewId, data) => api.patch(`/crews/${crewId}/condition`, data),
+    // join api
+    requestsCrewJoin: (crewId, userId) => api.post(`/crews/${crewId}/join-requests`, userId),
+    getReqJoinUserList: (crewId) => api.get(`/crews/${crewId}/join-requests`),
+    acceptJoinReq: (crewId, joinRequestId) => api.post(`/crews/${crewId}/join-requests/${joinRequestId}/accept`),
+    rejectJoinReq: (crewId, joinRequestId) => api.post(`/crews/${crewId}/join-requests/${joinRequestId}/reject`),
+};
+export const crewMembersAPI = {
+    getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),
+}
+
+export const scheduleAPI = {
+    createSchedule: (crewId, scheduleData) => api.post(`/crews/${crewId}/schedules`, scheduleData),
+    readSchedule: (crewId, scheduleId) => api.get(`/crews/${crewId}/schedules/${scheduleId}`),
+    updateSchedule: (crewId, scheduleId, scheduleData) => api.put(`/crews/${crewId}/schedules/${scheduleId}`, scheduleData),
+    deleteSchedule: (crewId, scheduleId) => api.delete(`/crews/${crewId}/schedules/${scheduleId}`),
+    readMonthlySchedule: (crewId, yearMonth) => api.get(`/crews/${crewId}/schedules/monthly?yearMonth=${yearMonth}`),
+    readDailySchedule: (crewId, date) => api.get(`/crews/${crewId}/schedules/daily?date=${date}`),
+};
+
+export const communityAPI = {
+    createCommunity: (crewId, formData) =>
+        api.post(`/crews/${crewId}/feeds`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        }
+    ),
+    getCommunityList: (crewId) => api.get(`/crews/${crewId}/feeds`),
+    getCommunityDetail: (crewId, feedId) => api.get(`/crews/${crewId}/feeds/${feedId}`),
+    updateCommunity: (crewId, feedId, formData) => {
+        delete api.defaults.headers['Content-Type'];
+        return api.put(`/crews/${crewId}/feeds/${feedId}`, formData)
+            .finally(() => {
+                api.defaults.headers['Content-Type'] = 'application/json';
+            });
+    },
+    deleteCommunity: (crewId, feedId) => api.delete(`/crews/${crewId}/feeds/${feedId}`),
+
+    createComment: (crewId, feedId, commentData) => api.post(`/crews/${crewId}/feeds/${feedId}/comments`, commentData),
+    updateComment: (crewId, feedId, commentId, commentData) => api.put(`/crews/${crewId}/feeds/${feedId}/comments/${commentId}`, commentData),
+    deleteComment: (crewId, feedId, commentId) => api.delete(`/crews/${crewId}/feeds/${feedId}/comments/${commentId}`),
+    createReply: (crewId, feedId, parentId, commentData) => api.post(`/crews/${crewId}/feeds/${feedId}/comments/${parentId}/replies`, commentData),
+
+    likeCommunity: (crewId, feedId) => api.post(`/crews/${crewId}/feeds/${feedId}/likes`),
+    unlikeCommunity: (crewId, feedId) => api.delete(`/crews/${crewId}/feeds/${feedId}/likes`),
+};
+
+export const archiveAPI = {
+    createArchive: (crewId, archiveData) => api.post(`/crews/${crewId}/archives`, archiveData),
+    uploadArchiveImage: (crewId, file) => {
+        const formData = new FormData();
+        formData.append('archiveImage', file);
+        return api.post(`/crews/${crewId}/archives/images`, formData);
+    },
+    getArchiveList: (crewId) => api.get(`/crews/${crewId}/archives`),
+    getArchiveDetail: (crewId, archiveId) => api.get(`/crews/${crewId}/archives/${archiveId}`),
+    updateArchive: (crewId, archiveId, archiveData) => api.put(`/crews/${crewId}/archives/${archiveId}`, archiveData),
+    deleteArchive: (crewId, archiveId) => api.delete(`/crews/${crewId}/archives/${archiveId}`),
+
+    // 댓글 관련
+    createComment: (crewId, archiveId, data) => api.post(`/crews/${crewId}/archives/${archiveId}/comments`, data),
+    updateComment: (crewId, archiveId, commentId, data) => api.put(`/crews/${crewId}/archives/${archiveId}/comments/${commentId}`, data),
+    deleteComment: (crewId, archiveId, commentId) => api.delete(`/crews/${crewId}/archives/${archiveId}/comments/${commentId}`),
+    createReply: (crewId, archiveId, parentId, data) => api.post(`/crews/${crewId}/archives/${archiveId}/comments/${parentId}/replies`, data),
+
+    // 좋아요 관련
+    likeArchive: (crewId, archiveId) => api.post(`/crews/${crewId}/archives/${archiveId}/likes`),
+    unlikeArchive: (crewId, archiveId) => api.delete(`/crews/${crewId}/archives/${archiveId}/likes`),
 };
 
 export default api;

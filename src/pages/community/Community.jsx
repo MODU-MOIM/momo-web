@@ -1,22 +1,39 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { communityAPI } from '../../api';
+import LikeButton from '../../pages/shared/CommunityLikeButton';
+import { getTimeAgo } from './components/getTimeAgo';
+import Popup from './components/Popup';
+import striptHtmlAndTruncate from './components/textUtils';
 import * as S from "./Styles/Community.styles";
 
 const Community = () => {
     const navigate = useNavigate();
-    // 초기 게시물 데이터 추후 API로 데이터 받아오기
-    const initialPosts = Array.from({ length: 12 }, (_, index) => ({
-        id: index,
-        title: `오늘은 초코러닝 ${index}차 정모에 총 20명이나 참여를 했습니다.`,
-    }));
-
-    // 게시물과 보이는 게시물 수를 저장하는 상태
-    const [posts, setPosts] = useState(initialPosts);
+    const { crewId } = useParams();
+    const [posts, setPosts] = useState([]);
     const [visiblePosts, setVisiblePosts] = useState(2);
     const observerRef = useRef();
+    
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [selectedFeedId, setSelectedFeedId] = useState(null);
+
+
+    // 게시물 목록을 새로 불러오는 함수
+    const fetchPosts = async () => {
+        try {
+            const response = await communityAPI.getCommunityList(crewId);
+            setPosts(Array.isArray(response.data.data) ? response.data.data.reverse() : []);
+        } catch (error) {
+            console.error('게시물 가져오기 실패:', error);
+            setPosts([]);
+        }
+    };
 
     useEffect(() => {
-        // IntersectionObserver를 사용하여 관찰 요소가 보일 때 더 많은 게시물을 로드
+        fetchPosts();
+    }, [crewId]);
+
+    useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting && visiblePosts < posts.length) {
@@ -26,58 +43,63 @@ const Community = () => {
             { threshold: 0.5 }
         );
 
-        // observerRef 요소를 관찰
         if (observerRef.current) {
             observer.observe(observerRef.current);
         }
 
-        // 컴포넌트 언마운트 시 옵저버 정리
         return () => observer.disconnect();
     }, [visiblePosts, posts.length]);
 
-    // 게시물 제목을 잘라주는 함수
-    const truncateTitle = (title) => {
-        return title.length > 23 ? `${title.substring(0, 23)} ··· ` : title;
+    const handlePostClick = (feedId) => {
+        setSelectedFeedId(feedId);
+        setIsPopupOpen(true);
     };
 
-    return(
+    const handlePopupClose = () => {
+        setIsPopupOpen(false);
+        // 팝업이 닫힐 때마다 게시물 목록을 새로고침
+        fetchPosts();
+    };
+
+    return (
         <S.Container>
             <S.List>
-                <S.FloatingButton onClick={() => navigate('/crew/crewCommunity/write')}>
+                <S.FloatingButton onClick={() => navigate(`/crews/${crewId}/crewCommunity/write`)}>
                     글작성
                 </S.FloatingButton>
-                {posts.slice(0, visiblePosts).map((post, index) => (
-                <S.ActivityCard key={post.id}>
-                    <S.UserInfoContainer>
-                        <S.ProfileImage/>
-                        <S.UserName>러닝초보123</S.UserName>
-                        {/* 작성일은 현재 시간 - 작성 시간으로 계산 */}
-                        <S.Date> · 1일</S.Date>
-                    </S.UserInfoContainer>
-                    <S.ActivityImage to={`/crew/crewCommunity/${post.id}`}/>
-                    <S.PostInfoContainer>
-                        <S.ButtonsContainer>
-                            {/* uid를 통해 좋아요는 한번만 가능하도록 설정 */}
-                            <S.IconButton>
-                                ♥️
-                            </S.IconButton>
-                            <S.IconButton>
-                                💬
-                            </S.IconButton>
-                        </S.ButtonsContainer>
-                        <S.TextContainer>
-                            <S.UserName>러닝초보123</S.UserName>
-                            <S.Title to={`/crew/crewCommunity/${post.id}`}>{truncateTitle(post.title)}</S.Title>
-                        </S.TextContainer>
-                    </S.PostInfoContainer>
-                </S.ActivityCard>
+                
+                {Array.isArray(posts) && posts.slice(0, visiblePosts).map((post) => (
+                    <S.ActivityCard key={`post-${post.feedId}`}>
+                        <S.UserInfoContainer>
+                            <S.ProfileImage src={post.profileImage}/>
+                            <S.UserName>{post.writer}</S.UserName>
+                            <S.Date> · {getTimeAgo(post.createdAt)}</S.Date>
+                        </S.UserInfoContainer>
+                        <S.ActivityImage
+                            onClick={() => handlePostClick(post.feedId)}
+                            src={post.thumbnailImage || '/default-image.png'}
+                            alt={`${post.writer}의 게시물`}
+                        />
+                        <S.PostInfoContainer>
+                            <S.ButtonsContainer>
+                            <LikeButton
+                                crewId={crewId}
+                                feedId={post.feedId}
+                                initialLiked={post.isLiked}
+                                initialCount={post.likeCount}
+                            />
+                            </S.ButtonsContainer>
+                            <S.TextContainer>
+                                <S.UserName>{post.writer}</S.UserName>
+                                <S.Title onClick={() => handlePostClick(post.feedId)}>
+                                    {striptHtmlAndTruncate(post.content, 13)}
+                                </S.Title>
+                            </S.TextContainer>
+                        </S.PostInfoContainer>
+                    </S.ActivityCard>
                 ))}
-                {/*
-                    사용자가 스크롤을 내려 div가 화면에서 보이면 observer가 div를 감지하고
-                    추가 게시글 1개씩 불러오도록 하는 trigger
-                */}
-                {visiblePosts < posts.length && (
-                    // observer를 작동하기 위한 감지점
+
+                {Array.isArray(posts) && visiblePosts < posts.length && (
                     <div ref={observerRef} style={{
                         height: '1px',
                         margin: '0',
@@ -85,9 +107,18 @@ const Community = () => {
                     }} />
                 )}
             </S.List>
+            
+            {isPopupOpen && (
+                <Popup
+                    key={selectedFeedId}
+                    isOpen={isPopupOpen}
+                    onClose={handlePopupClose}
+                    feedId={selectedFeedId}
+                    crewId={crewId}
+                />
+            )}
         </S.Container>
     );
 };
-
 
 export default Community;

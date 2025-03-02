@@ -77,6 +77,12 @@ export const CompletionButton = styled.button`
     }
 `;
 
+export const HelpMsg = styled.div`
+    color: red;
+    font-size: small;
+    padding: 10px;
+`;
+
 // SettingBanner.jsx
 
 export const Panel = styled.div`
@@ -206,6 +212,21 @@ export const Select = styled.select`
     border: 1px solid #ddd;
     outline: none;
     margin-bottom: 20px;
+`;
+// JoinReqList.jsx
+export const SectionContainer = styled.div`
+    display: flex;
+`;
+export const DecisionButton = styled.div`
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: #fff;
+    background: #352EAE;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-left: 20px;
 `;
 
 // CrewActivity.jsx

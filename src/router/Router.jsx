@@ -2,7 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "../components/layout/Layout";
 import Activities from "../pages/activities/Activities";
 import Details from "../pages/activities/components/Details";
+import WriteActivity from "../pages/activities/components/WriteActivity";
 import Community from "../pages/community/Community";
+import UpdateCommunity from "../pages/community/components/updateCommunity";
 import WriteCommunity from "../pages/community/components/WriteCommunity";
 import CrewCreate from "../pages/CrewCreate/CrewCreate";
 import CrewHome from "../pages/CrewHome/CrewHome";
@@ -11,12 +13,12 @@ import CrewMain from "../pages/CrewMain/CrewMain";
 import AddNotice from "../pages/CrewNotice/Components/AddNotice";
 import UpdateNotice from "../pages/CrewNotice/Components/UpdateNotice";
 import CrewNotice from "../pages/CrewNotice/CrewNotice";
+import { NoticeProvider } from "../pages/CrewNotice/NoticeProvider";
 import CrewSchedule from "../pages/CrewSchedule/CrewSchedule";
 import Setting from "../pages/CrewSetting/CrewSetting";
 import Home from "../pages/home/Home";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
-import { NoticeProvider } from "../pages/CrewNotice/NoticeProvider";
 
 const Router = () => {
     return(
@@ -32,15 +34,18 @@ const Router = () => {
                     <Route path="addNotice" element={<NoticeProvider><AddNotice /></NoticeProvider>} />
                     <Route path="updateNotice/:noticeId" element={<UpdateNotice />} />
                     <Route path="crewActivity" element={<Activities />} />
-                    <Route path="crewActivity/:index" element={<Details />} />
+                    <Route path="archives/:archiveId" element={<Details />} />
+                    <Route path="crewActivity/write" element={<WriteActivity />} />
                     <Route path="crewCommunity" element={<Community />} />
+                    <Route path="crewCommunity/write" element={<WriteCommunity />} />
+                    <Route path="crewCommunity/update/:feedId" element={<UpdateCommunity />} />
                     <Route path="crewSetting" element={<Setting />} />
                 </Route>
                 <Route path="/crews/:crewId/crewSchedule" element={<CrewSchedule />} />
-                <Route path="/crew/crewCommunity/write" element={<WriteCommunity />} />
                 <Route path="/crewList" element={<CrewList />} />
             </Route>
         </Routes>
+
     )
 }
 

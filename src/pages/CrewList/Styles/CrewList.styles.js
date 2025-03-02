@@ -49,10 +49,15 @@ export const CrewCard = styled.div`
     }
 `;
 
-export const CrewImage = styled.div`
+export const CrewImageWrapper = styled.div`
     width: 100%;
-    min-height: 200px;
-    border:1px solid red;
+    height: 200px;
+    overflow: hidden;
+`;
+
+export const CrewImage = styled.img`
+    width: 100%;
+    min-height: 100%;
 `;
 
 export const CrewInfo = styled.div`

@@ -1,13 +1,13 @@
 // AuthProvider.jsx
-import { createContext, useContext, useEffect, useState } from 'react';
-import { authAPI } from './api';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { authAPI, communityAPI } from './api';
 
 // 인증 관련 전역 상태를 관리할 Context 생성
 export const AuthContext = createContext();
 
 // 인증 관련 전역 상태와 기능을 제공하는 Provider 컴포넌트
 export const AuthProvider = ({ children }) => {
-    // 로그인 상태를 localStorage에서 가져와 초기화
+   // 로그인 상태를 localStorage에서 가져와 초기화
     const [isLoggedIn, setIsLoggedIn] = useState(() =>
         localStorage.getItem('isLoggedIn') === 'true'
     );
@@ -17,11 +17,14 @@ export const AuthProvider = ({ children }) => {
         localStorage.getItem('token')
     );
 
-    // 사용자 정보 상태 관리
+   // 사용자 정보 상태 관리
     const [userInfo, setUserInfo] = useState(() => {
         const savedUserInfo = localStorage.getItem('userInfo');
         return savedUserInfo ? JSON.parse(savedUserInfo) : null;
     });
+
+    // 좋아요 상태 관리
+    const [likeStates, setLikeStates] = useState({});
 
     // 페이지 로드 시 사용자 정보 가져오기
     useEffect(() => {
@@ -70,8 +73,50 @@ export const AuthProvider = ({ children }) => {
         setUserInfo(null);
         window.location.href = '/';
     };
+
+    // 좋아요 토글 함수
+    const toggleLike = useCallback(async (crewId, feedId) => {
+        try {
+            // 현재 해당 피드의 좋아요 상태 확인
+            const currentState = likeStates[feedId] || { isLiked: false, likeCount: 0 };
+            
+            // 새로운 좋아요 상태 계산
+            const newIsLiked = !currentState.isLiked;
+            const newLikeCount = newIsLiked 
+                ? currentState.likeCount + 1 
+                : Math.max(0, currentState.likeCount - 1);
+
+            // API 호출
+            if (newIsLiked) {
+                await communityAPI.likeCommunity(crewId, feedId);
+            } else {
+                await communityAPI.unlikeCommunity(crewId, feedId);
+            }
+
+            // 상태 업데이트
+            setLikeStates(prev => ({
+                ...prev,
+                [feedId]: {
+                    isLiked: newIsLiked,
+                    likeCount: newLikeCount
+                }
+            }));
+
+            return { isLiked: newIsLiked, likeCount: newLikeCount };
+        } catch (error) {
+            console.error('좋아요 토글 실패:', error);
+            throw error;
+        }
+    }, [likeStates]);
+
+    // 초기 좋아요 상태 설정
+    const initializeLikeState = useCallback((feedId, isLiked, likeCount) => {
+        setLikeStates(prev => ({
+            ...prev,
+            [feedId]: { isLiked, likeCount }
+        }));
+    }, []);
     
-    // Context Provider 반환
     return (
         <AuthContext.Provider value={{
             isLoggedIn,
@@ -79,14 +124,18 @@ export const AuthProvider = ({ children }) => {
             userInfo,
             setUserInfo,
             login,
-            logout
+            logout,
+            
+            // 좋아요
+            likeStates,
+            toggleLike,
+            initializeLikeState
         }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-// 커스텀 훅: AuthContext 사용을 위한 헬퍼 함수
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {

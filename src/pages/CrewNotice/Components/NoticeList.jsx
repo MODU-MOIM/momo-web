@@ -1,11 +1,9 @@
-import React from 'react';
-import styled from "styled-components";
-import { BsPinAngleFill } from "react-icons/bs";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from 'react';
+import { BsPinAngleFill, BsThreeDotsVertical } from "react-icons/bs";
 import { useNavigate, useParams } from "react-router-dom";
-import * as S from "../Styles/Notice.styles";
+import styled from "styled-components";
 import { noticeAPI } from "../../../api";
+import * as S from "../Styles/Notice.styles";
 
 export default function NoticeList({noticeList, togglePin, toggleMenu, setNoticeList, isManager}) {
     const { crewId } = useParams();
@@ -174,7 +172,7 @@ const ProfileImage = styled.img`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 1px solid red;
+    border: 1px solid #c3c3c3;
     margin-right: 10px;
     `;
 const ProfileText = styled.div`

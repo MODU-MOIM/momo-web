@@ -25,9 +25,9 @@ export default function FloatingMenu() {
         <Wrapper>
             <MenuContainer>
                 {Object.entries(menu).map(([item, path])=>(
-                    <MenuButton onClick={()=>handleNavigate(path)}>
+                    <MenuButton key={path} onClick={()=>handleNavigate(path)}>
                             <MenuText
-                                isSelected={selectedMenu===path}
+                                $isSelected={selectedMenu===path}
                             >
                                 {item}
                             </MenuText>
@@ -72,5 +72,5 @@ const MenuText = styled.div`
     font-size: 14px;
     font-weight: bolder;
     /* 선택한 메뉴에 따라 색상 변경 */
-    color: ${props => props.isSelected ? '#352EAE' : '#38383D'};
+    color: ${props => props.$isSelected ? '#352EAE' : '#38383D'};
 `;

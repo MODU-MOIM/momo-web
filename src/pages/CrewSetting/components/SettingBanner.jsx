@@ -1,10 +1,36 @@
 import { AiOutlineClose } from "react-icons/ai";
 import * as S from "../Styles/CrewSetting.styles";
+import { useState } from "react";
+import { crewAPI } from "../../../api";
+import { useParams } from "react-router-dom";
 
-const SettingBanner = ({ onClose }) => {
+const SettingBanner = ({ crewData, onClose }) => {
+    const { crewId } = useParams();
+    const [updatedName, setUpdatedName] = useState(crewData?.name);
+    const [bgImg, setBgImg] = useState();
+
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
             onClose();
+        }
+    }
+
+    const handleCrewName = (e) => {
+        setUpdatedName(e.target.value);
+    }
+    // 변경된 필드만 submit
+    const handleSubmit = async() => {
+        const submitData = {};
+        if(updatedName !== crewData.name){
+            submitData.name = updatedName;
+        }
+        const formData = new FormData();
+        formData.append("crewReqDto", new Blob([JSON.stringify(submitData)], { type: "application/json" }));
+        try {
+            // console.log("submitData: ", submitData);
+            const response = await crewAPI.updateCrewData(crewId, formData);
+        } catch (error) {
+            console.log("변경 실패", error);
         }
     }
 
@@ -24,7 +50,9 @@ const SettingBanner = ({ onClose }) => {
                     {/* 크루명 변경 기능 */}
                     <S.CrewNameInput
                         type="text"
+                        value={updatedName}
                         placeholder="크루명을 입력해주세요"
+                        onChange={handleCrewName}
                     />
                     <S.BannerImageContainer>
                         {/* 배너 이미지 변경 기능 */}
@@ -38,6 +66,7 @@ const SettingBanner = ({ onClose }) => {
                                         const reader = new FileReader();
                                         reader.onloadend = () => {
                                             console.log("이미지가 선택되었습니다:", reader.result);
+                                            setBgImg(reader.result);
                                         };
                                         reader.readAsDataURL(file);
                                     }
@@ -51,7 +80,8 @@ const SettingBanner = ({ onClose }) => {
                                     width: "100%",
                                     height: "100%",
                                     cursor: "pointer",
-                                    display: "block"
+                                    display: "block",
+                                    backgroundImage: `url(${bgImg})`
                                 }}
                             >
                             </label>
@@ -59,7 +89,7 @@ const SettingBanner = ({ onClose }) => {
                     </S.BannerImageContainer>
                 </S.SettingContainer>
                 <S.ButtonContainer>
-                    <S.CompletionButton>
+                    <S.CompletionButton onClick={() => handleSubmit()}>
                         수정완료
                     </S.CompletionButton>
                     <S.CancelButton onClick={onClose}>

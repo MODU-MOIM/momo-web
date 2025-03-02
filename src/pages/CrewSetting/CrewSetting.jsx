@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsChevronRight } from "react-icons/bs";
 import Administrator from "./components/Administrator";
 import CrewActivity from "./components/CrewActivity";
@@ -10,23 +10,41 @@ import Delete from "./components/Delete";
 import LeaderTransfer from "./components/LeaderTransfer";
 import SettingBanner from "./components/SettingBanner";
 import * as S from "./Styles/CrewSetting.styles";
+import { useParams } from "react-router-dom";
+import { crewAPI } from "../../api";
+import JoinReqList from "./components/JoinReqList";
 
 
 const CrewSetting = () => {
+    const { crewId } = useParams();
+    const [crewData, setCrewData] = useState();
     const [isSettingBannerOpen, setIsSettingBannerOpen] = useState(false);
     const [isCrewIntroOpen, setIsCrewIntroOpen] = useState(false);
     const [isCrewMemberOpen, setIsCrewMemberOpen] = useState(false);
     const [isCrewRuleOpen, setIsCrewRuleOpen] = useState(false);
+    const [isJoinReqListOpen, setIsJoinReqListOpen] = useState(false);
     const [isCrewActivityOpen, setIsCrewActivityOpen] = useState(false);
     const [isCrewScheduleOpen, setIsCrewScheduleOpen] = useState(false);
     const [isAdministratorOpen, setIsAdministratorOpen] = useState(false);
     const [isLeaderTransferOpen, setIsLeaderTransferOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    
+    const fetchCrewInfo = async () => {
+            try {
+                const response = await crewAPI.getCrewData(crewId);
+                setCrewData(response.data.data);
+            } catch (error) {
+                console.error("크루 정보 불러오기 실패", error);
+            }
+    }
+    useEffect(()=>{
+        fetchCrewInfo();
+    },[crewId]);
     return(
         <S.Container>
             <S.Setting>
                 <S.CrewName>
-                    <S.Title>초코러닝(초보자 코스 러닝)</S.Title>
+                    <S.Title>{crewData?.name}</S.Title>
                 </S.CrewName>
                 <S.MainTitle>
                     <S.Title>크루 기본 정보 관리</S.Title>
@@ -52,6 +70,10 @@ const CrewSetting = () => {
                     <S.Button onClick={() => setIsCrewRuleOpen(true)}><BsChevronRight/></S.Button>
                     {/* 설정한 조건 출력 */}
                     {/* <S.Desc>성별 제한없음, 나이 제한없음</S.Desc> */}
+                </S.SubTitle>
+                <S.SubTitle>
+                    <S.Title>가입 요청 목록 조회</S.Title>
+                    <S.Button onClick={() => setIsJoinReqListOpen(true)}><BsChevronRight/></S.Button>
                 </S.SubTitle>
                 <S.MainTitle>
                     <S.Title>멤버 활동 관리</S.Title>
@@ -87,6 +109,7 @@ const CrewSetting = () => {
 
             {isSettingBannerOpen && (
                 <SettingBanner
+                    crewData={crewData}
                     onClose={() => setIsSettingBannerOpen(false)}
                 />
             )}
@@ -97,12 +120,19 @@ const CrewSetting = () => {
             )}
             {isCrewMemberOpen && (
                 <CrewMember
+                    crewData={crewData}
                     onClose={() => setIsCrewMemberOpen(false)}
                 />
             )}
             {isCrewRuleOpen && (
                 <CrewRule
+                    crewData={crewData}
                     onClose={() => setIsCrewRuleOpen(false)}
+                />
+            )}
+            {isJoinReqListOpen && (
+                <JoinReqList
+                    onClose={() => setIsJoinReqListOpen(false)}
                 />
             )}
             {isCrewActivityOpen && (
