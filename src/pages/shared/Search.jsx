@@ -1,18 +1,32 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-// 카테고리 데이터
+// 아이콘 이미지 가져오기
+import Camper from "../../assets/category/Camper.png";
+import Coin from "../../assets/category/Coin.png";
+import Easel from "../../assets/category/Easel.png";
+import GameController from '../../assets/category/GameController.png';
+import Activity from '../../assets/category/Running.png';
+import SausageBarbeque from '../../assets/category/SausageBarbeque.png';
+import SelfDev from "../../assets/category/SelfDev.png";
+import Star from "../../assets/category/Star.png";
+
+// 카테고리 데이터 (이미지 아이콘 적용)
 const CATEGORIES = [
-    { value: "ACTIVITY", label: "액티비티" },
-    { value: "CULTURE_ART", label: "문화·예술" },
-    { value: "FOOD", label: "푸드·드링크" },
-    { value: "HOBBY", label: "취미" },
-    { value: "TRAVEL", label: "여행" },
-    { value: "SELF_IMPROVEMENT", label: "자기계발" },
-    { value: "FINANCE", label: "재태크" },
-    { value: "GAMING", label: "게임" }
+    { value: "ACTIVITY", label: "액티비티", icon: Activity },
+    { value: "CULTURE_ART", label: "문화·예술", icon: Easel },
+    { value: "FOOD", label: "푸드·드링크", icon: SausageBarbeque },
+    { value: "HOBBY", label: "취미", icon: Star },
+    { value: "TRAVEL", label: "여행", icon: Camper },
+    { value: "SELF_IMPROVEMENT", label: "자기계발", icon: SelfDev },
+    { value: "FINANCE", label: "재태크", icon: Coin },
+    { value: "GAMING", label: "게임", icon: GameController }
 ];
 
+// 지역 데이터 샘플 (실제 데이터는 Region.json에서 가져옴)
+const REGIONS_SAMPLE = ["서울", "경기", "인천", "부산", "대구", "대전", "경남", "전남", "충남", "광주", "울산", "경북"];
+
+// 연령대 데이터
 const AGE_GROUPS = [
     { value: "10", label: "10대" },
     { value: "20", label: "20대" },
@@ -30,7 +44,6 @@ const AGE_GROUPS = [
 const Search = React.forwardRef(({ onSearch, onReset }, ref) => {
     // 지역 데이터 상태
     const [regions, setRegions] = useState([]);
-    const [districts, setDistricts] = useState({});
     
     // 검색 상태 관리
     const [searchParams, setSearchParams] = useState({
@@ -40,7 +53,7 @@ const Search = React.forwardRef(({ onSearch, onReset }, ref) => {
         region: ""
     });
     
-    // 필터 확장 상태
+    // 필터 표시 상태
     const [isExpanded, setIsExpanded] = useState(false);
     
     // 외부 클릭 감지를 위한 ref
@@ -56,6 +69,12 @@ const Search = React.forwardRef(({ onSearch, onReset }, ref) => {
                 region: ""
             });
             setIsExpanded(false);
+        },
+        setFormValues: (values) => {
+            setSearchParams(values);
+            if(Object.values(values).some(value => value)) {
+                setIsExpanded(true);
+            }
         }
     }));
     
@@ -65,10 +84,10 @@ const Search = React.forwardRef(({ onSearch, onReset }, ref) => {
             .then(response => response.json())
             .then(data => {
                 setRegions(data.regions);
-                setDistricts(data.districtsByRegion);
             })
             .catch(error => {
                 console.error('지역 데이터 로드 실패:', error);
+                setRegions(REGIONS_SAMPLE); // 로드 실패 시 샘플 데이터 사용
             });
     }, []);
     
@@ -95,34 +114,53 @@ const Search = React.forwardRef(({ onSearch, onReset }, ref) => {
         }));
     };
 
+    // 카테고리 버튼 클릭 핸들러
+    const handleCategoryClick = (categoryValue) => {
+        setSearchParams(prev => ({
+            ...prev,
+            category: prev.category === categoryValue ? "" : categoryValue
+        }));
+    };
+
+    // 지역 버튼 클릭 핸들러
+    const handleRegionClick = (regionValue) => {
+        setSearchParams(prev => ({
+            ...prev,
+            region: prev.region === regionValue ? "" : regionValue
+        }));
+    };
+
+    // 연령대 버튼 클릭 핸들러
+    const handleAgeClick = (ageValue) => {
+        setSearchParams(prev => ({
+            ...prev,
+            ageGroup: prev.ageGroup === ageValue ? "" : ageValue
+        }));
+    };
+
     // 검색 폼 제출 핸들러
     const handleSubmit = (e) => {
         e.preventDefault();
-        // 부모 컴포넌트로 검색 파라미터 전달
         onSearch({ ...searchParams });
-        // 검색 후 필터 접기 (옵션)
-        // setIsExpanded(false);
-    };
-
-    // 필터 초기화 핸들러
-    const handleReset = () => {
-        setSearchParams({
-            name: "",
-            category: "",
-            ageGroup: "",
-            region: ""
-        });
-        
-        // 부모 컴포넌트에 초기화 알림
-        if (onReset) onReset();
-        
-        // 필터 접기
-        setIsExpanded(false);
     };
 
     // 인풋 클릭 핸들러
     const handleInputClick = () => {
         setIsExpanded(true);
+    };
+
+    // 필터 초기화 핸들러
+    const handleFilterReset = () => {
+        setSearchParams({
+            name: searchParams.name, // 검색어는 유지
+            category: "",
+            ageGroup: "",
+            region: ""
+        });
+        
+        if (onReset) {
+            onReset();
+        }
     };
 
     return (
@@ -142,61 +180,66 @@ const Search = React.forwardRef(({ onSearch, onReset }, ref) => {
             
             {/* 확장 가능한 필터 섹션 */}
             <FilterSection $isExpanded={isExpanded}>
-                {/* 카테고리 선택 */}
-                <SelectWrapper>
-                    <SelectLabel>카테고리</SelectLabel>
-                    <Select
-                        name="category"
-                        value={searchParams.category}
-                        onChange={handleChange}
-                    >
-                        <option value="">카테고리 선택</option>
+                {/* 테마별 모임 섹션 */}
+                <FilterGroup>
+                    <FilterTitle>테마별 모임</FilterTitle>
+                    <CategoryButtonsGrid>
                         {CATEGORIES.map(category => (
-                            <option key={category.value} value={category.value}>
-                                {category.label}
-                            </option>
+                            <CategoryButton
+                                key={category.value}
+                                type="button"
+                                $isSelected={searchParams.category === category.value}
+                                onClick={() => handleCategoryClick(category.value)}
+                            >
+                                <CategoryIconWrapper>
+                                    <CategoryIcon src={category.icon} alt={category.label} />
+                                </CategoryIconWrapper>
+                                <CategoryLabel>{category.label}</CategoryLabel>
+                            </CategoryButton>
                         ))}
-                    </Select>
-                </SelectWrapper>
+                    </CategoryButtonsGrid>
+                </FilterGroup>
                 
-                {/* 지역 선택 */}
-                <SelectWrapper>
-                    <SelectLabel>지역</SelectLabel>
-                    <Select
-                        name="region"
-                        value={searchParams.region}
-                        onChange={handleChange}
-                    >
-                        <option value="">지역 선택</option>
+                {/* 지역별 모임 섹션 */}
+                <FilterGroup>
+                    <FilterTitle>지역별 모임</FilterTitle>
+                    <RegionButtonsGrid>
                         {regions.map((region, index) => (
-                            <option key={`region-${index}`} value={region}>
+                            <RegionButton
+                                key={`region-${index}`}
+                                type="button"
+                                $isSelected={searchParams.region === region}
+                                onClick={() => handleRegionClick(region)}
+                            >
                                 {region}
-                            </option>
+                            </RegionButton>
                         ))}
-                    </Select>
-                </SelectWrapper>
+                    </RegionButtonsGrid>
+                </FilterGroup>
                 
-                {/* 연령대 선택 */}
-                <SelectWrapper>
-                    <SelectLabel>연령대</SelectLabel>
-                    <Select
-                        name="ageGroup"
-                        value={searchParams.ageGroup}
-                        onChange={handleChange}
-                    >
-                        <option value="">연령대 선택</option>
+                {/* 연령별 모임 섹션 */}
+                <FilterGroup>
+                    <FilterTitle>연령별 모임</FilterTitle>
+                    <AgeButtonsGrid>
                         {AGE_GROUPS.map(age => (
-                        <option key={age.value} value={age.value}>
-                            {age.label}
-                        </option>
+                            <AgeButton
+                                key={age.value}
+                                type="button"
+                                $isSelected={searchParams.ageGroup === age.value}
+                                onClick={() => handleAgeClick(age.value)}
+                            >
+                                {age.label}
+                            </AgeButton>
                         ))}
-                    </Select>
-                </SelectWrapper>
+                    </AgeButtonsGrid>
+                </FilterGroup>
                 
-                {/* 필터 초기화 */}
-                <FilterButton type="button" onClick={handleReset}>
-                    필터 초기화
-                </FilterButton>
+                {/* 필터 제어 버튼 */}
+                <FilterControls>
+                    <FilterResetButton type="button" onClick={handleFilterReset}>
+                        필터 초기화
+                    </FilterResetButton>
+                </FilterControls>
             </FilterSection>
         </SearchForm>
     );
@@ -207,6 +250,7 @@ const SearchForm = styled.form`
     margin-bottom: 20px;
     width: 100%;
     position: relative;
+    font-family: 'Noto Sans KR', sans-serif;
 `;
 
 const SearchInputWrapper = styled.div`
@@ -241,54 +285,150 @@ const SearchButton = styled.button`
 `;
 
 const FilterSection = styled.div`
-    display: ${props => props.$isExpanded ? 'grid' : 'none'};
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
+    display: ${props => props.$isExpanded ? 'flex' : 'none'};
+    flex-direction: column;
     margin-top: 15px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 `;
 
-const SelectWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const SelectLabel = styled.label`
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: #555;
-`;
-
-const Select = styled.select`
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: white;
-    font-size: 14px;
-    &:focus {
-        outline: none;
-        border-color: #4a90e2;
+const FilterGroup = styled.div`
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    
+    &:last-of-type {
+        border-bottom: none;
     }
 `;
 
-const FilterButton = styled.button`
+const FilterTitle = styled.h3`
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+`;
+
+const CategoryButtonsGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+`;
+
+const CategoryButton = styled.button`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 10px;
+    background: ${props => props.$isSelected ? '#e8f2ff' : '#f8f8f8'};
+    border: 1px solid ${props => props.$isSelected ? '#4a90e2' : '#eee'};
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+        background: ${props => props.$isSelected ? '#e8f2ff' : '#f0f0f0'};
+        transform: translateY(-2px);
+    }
+`;
+
+const CategoryIconWrapper = styled.div`
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+`;
+
+const CategoryIcon = styled.img`
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+`;
+
+const CategoryLabel = styled.span`
+    font-size: 14px;
+`;
+
+const RegionButtonsGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+`;
+
+const RegionButton = styled.button`
+    padding: 10px;
+    background: ${props => props.$isSelected ? '#e8f2ff' : '#f8f8f8'};
+    border: 1px solid ${props => props.$isSelected ? '#4a90e2' : '#eee'};
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+        background: ${props => props.$isSelected ? '#e8f2ff' : '#f0f0f0'};
+    }
+`;
+
+const AgeButtonsGrid = styled.div`
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+`;
+
+const AgeButton = styled.button`
     padding: 10px 15px;
-    background-color: #f5f5f5;
+    background: ${props => props.$isSelected ? '#e8f2ff' : '#f8f8f8'};
+    border: 1px solid ${props => props.$isSelected ? '#4a90e2' : '#eee'};
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+        background: ${props => props.$isSelected ? '#e8f2ff' : '#f0f0f0'};
+    }
+`;
+
+const FilterControls = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    gap: 10px;
+`;
+
+const FilterResetButton = styled.button`
+    padding: 8px 15px;
+    background: #f8f8f8;
     border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
-    height: 40px;
-    align-self: end;
-    margin-top: auto;
+    
     &:hover {
-        background-color: #e9e9e9;
+        background: #f0f0f0;
+    }
+`;
+
+const ApplyFilterButton = styled.button`
+    padding: 8px 15px;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    
+    &:hover {
+        background: #3a80d2;
     }
 `;
 
