@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNotices } from "./NoticeProvider";
 import { noticeAPI } from "../../api";
+import CrewChat from "../CrewChat/CrewChat";
 
 // user role 받아서 isManager 확인
 export default function CrewNotice() {
@@ -116,6 +117,7 @@ export default function CrewNotice() {
 
     return(
         <Wrapper>
+            <CrewChat/>
             {/* userid 받아서 관리자만 보이도록 수정해야 함 */}
             <AddNoticeButton onClick={linktoAddNotice} >+ 공지추가</AddNoticeButton>
             {/* 무한스크롤 적용해야 함 */}
