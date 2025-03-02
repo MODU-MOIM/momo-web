@@ -167,7 +167,7 @@ export const BannerImage = styled.div`
 
 export const EditContainer = styled.div`
     width: 100%;
-    height: 450px;
+    height: 400px;
     /* background-color: white; */
     position: relative;
 `;
@@ -177,7 +177,8 @@ export const QuillStyled = styled(ReactQuill)`
     /* border: none; */
     background-color: white;
     position: absolute;
-    top: 60%;
+    top: 10%;
+    left: 15%;
 
     .ql-container {
         height: calc(100% - 42px); // 툴바 높이(42px) 제외
