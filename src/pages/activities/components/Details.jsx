@@ -29,7 +29,7 @@ const Details = () => {
             try {
                 setLoading(true);
                 const response = await archiveAPI.getArchiveDetail(crewId, archiveId);
-                console.log('아카이브 상세 정보:', response.data);
+                // console.log('아카이브 상세 정보:', response.data);
                 
                 // 응답 데이터 구조에 따라 적절하게 처리
                 const archiveData = response.data.data || response.data;
