@@ -1,28 +1,67 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { crewAPI } from "../../api";
 import * as S from "./Styles/CrewList.styles";
+import Search from "../shared/Search";
 
 const CrewList = () => {
     const navigate = useNavigate();
     const [crews, setCrews] = useState([]);
     const [loading, setLoading] = useState(true);
+    const SearchRef = useRef(null);
 
+
+    // 컴포넌트 마운트시 모든 크루 목록 조회
     useEffect(() => {
-        const fetchCrews = async () => {
-            try {
-                const response = await crewAPI.getCrewList();
-                // console.log('Response:', response.data.data); // 데이터 확인용
-                setCrews(response.data.data);
-            } catch (error) {
-                console.error('크루 목록 조회 실패:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchCrews();
     }, []);
+
+    // 크루 목록 조회
+    const fetchCrews = async () => {
+        try {
+            const response = await crewAPI.getCrewList();
+            // console.log('Response:', response.data.data); // 데이터 확인용
+            setCrews(response.data.data || response.data);
+        } catch (error) {
+            console.error('크루 목록 조회 실패:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    const handleSearch = async (SearchParams) => {
+        setLoading(true);
+        try {
+            const apiParams = {
+                name: SearchParams.name,
+                category: SearchParams.category,
+                ageGroup: SearchParams.ageGroup,
+                region: SearchParams.region,
+            };
+
+            const response = await crewAPI.searchCrews(apiParams);
+            const searchResult = response.data.data || response.data;
+
+            if(searchResult.length === 0) {
+                alert('검색 결과가 없습니다.');
+               
+                //
+                fetchCrews();
+            } else {
+                setCrews(searchResult);
+            }
+        } catch (error) {
+            console.error('크루 검색 실패:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 검색 초기화
+    const handleReset = () => {
+        fetchCrews();
+    }
 
     if (loading) return <S.Container>로딩 중...</S.Container>;
 
@@ -32,16 +71,7 @@ const CrewList = () => {
 
     return (
         <S.Container>
-            <S.FilterSection>
-                <S.SearchInput
-                    type="text"
-                    placeholder="크루 검색"
-                />
-                {/* 생성일 오름차 내림차 정렬 버튼 */}
-            </S.FilterSection>
-            <S.FilterSection>
-                <S.FilterButton>생성일</S.FilterButton>
-            </S.FilterSection>
+            <Search onSearch={handleSearch} onReset={handleReset} ref={SearchRef} />
             {crews.map((crew) => (
                 <S.CrewCard 
                     key={crew.crewId}
