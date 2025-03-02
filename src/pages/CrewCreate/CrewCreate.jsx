@@ -95,8 +95,8 @@ export default function CrewCreate() {
         const formData = new FormData();
         formData.append("crewReqDto", new Blob([JSON.stringify(crewReqDto)], { type: "application/json" }));
 
-        console.log("crewReqDto: ",crewReqDto);
-        console.log("File to be uploaded:", bannerImageFile);
+        // console.log("crewReqDto: ",crewReqDto);
+        // console.log("File to be uploaded:", bannerImageFile);
 
         if (bannerImageFile) {
             formData.append("bannerImage", bannerImageFile);
@@ -105,20 +105,15 @@ export default function CrewCreate() {
         }
         
         try {
-            console.log("get하여 배너이미지 확인 :");
-            console.log(formData.get("bannerImage"));
+            // console.log("get하여 배너이미지 확인 :");
+            // console.log(formData.get("bannerImage"));
             const token = localStorage.getItem('token');
             const response = await axios.post('/crews', formData, {
                 headers: {
                     'Authorization': token,
                 }
             });
-            // if (response.status === 200 && !response.data.error) {
-            //     console.log('크루 생성 성공 :', response);
-            //     alert('크루 생성 성공');
-            // } else {
-            //     throw new Error(response.data.message || '알 수 없는 에러가 발생했습니다.');
-            // }
+            
             if (response.data.status === 200 && response.status === 200) {
                 alert('요청이 성공적으로 처리되었습니다.');
             } else if (response.data.status === 500 || response.status === 500) {

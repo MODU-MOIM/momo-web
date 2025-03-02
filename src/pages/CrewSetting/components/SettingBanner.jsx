@@ -1,6 +1,6 @@
 import { AiOutlineClose } from "react-icons/ai";
 import * as S from "../Styles/CrewSetting.styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { crewAPI } from "../../../api";
 import { useParams } from "react-router-dom";
 
@@ -8,6 +8,7 @@ const SettingBanner = ({ crewData, onClose }) => {
     const { crewId } = useParams();
     const [updatedName, setUpdatedName] = useState(crewData?.name);
     const [bgImg, setBgImg] = useState();
+    const [imgURL, setImgURL] = useState(crewData?.bannerImage);
 
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
@@ -20,17 +21,21 @@ const SettingBanner = ({ crewData, onClose }) => {
     }
     // 변경된 필드만 submit
     const handleSubmit = async() => {
-        const submitData = {};
-        if(updatedName !== crewData.name){
-            submitData.name = updatedName;
-        }
+        const submitData = {
+            name: updatedName
+        };
         const formData = new FormData();
-        formData.append("crewReqDto", new Blob([JSON.stringify(submitData)], { type: "application/json" }));
+        formData.append("crewNameReqDto", new Blob([JSON.stringify(submitData)], { type: "application/json" }));
+        formData.append("bannerImage", bgImg);
+        
         try {
-            // console.log("submitData: ", submitData);
-            const response = await crewAPI.updateCrewData(crewId, formData);
+            const response = await crewAPI.updateCrewBasicData(crewId, formData);
+            if (response.data.status === 200) {
+                // 성공하면 새로고침
+                window.location.reload();
+            }
         } catch (error) {
-            console.log("변경 실패", error);
+            console.error("변경 실패", error);
         }
     }
 
@@ -63,10 +68,11 @@ const SettingBanner = ({ crewData, onClose }) => {
                                 onChange={(e) => {
                                     const file = e.target.files[0];
                                     if(file) {
+                                        setBgImg(file);
                                         const reader = new FileReader();
                                         reader.onloadend = () => {
-                                            console.log("이미지가 선택되었습니다:", reader.result);
-                                            setBgImg(reader.result);
+                                            // url 저장
+                                            setImgURL(reader.result);
                                         };
                                         reader.readAsDataURL(file);
                                     }
@@ -81,9 +87,21 @@ const SettingBanner = ({ crewData, onClose }) => {
                                     height: "100%",
                                     cursor: "pointer",
                                     display: "block",
-                                    backgroundImage: `url(${bgImg})`
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center"
                                 }}
                             >
+                                <img 
+                                    src={imgURL || crewData?.bannerImage}
+                                    backgroundSize="cover"
+                                    backgroundPosition="center"
+                                    style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center"
+                                    }}
+                                />
                             </label>
                         </S.BannerImage>
                     </S.BannerImageContainer>

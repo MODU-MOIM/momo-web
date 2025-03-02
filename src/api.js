@@ -109,8 +109,9 @@ export const crewAPI = {
     uploadImage: (formData, config) => api.post('/crews/images', formData, config),
     createIntro: (data) => api.post('/crews', data),
     getMyCrewList: () => api.get('/crews/me'),
+    deleteCrew: (crewId) => api.delete(`/crews/${crewId}`),
     // update api
-    updateCrewBasicData: (crewId, formData) => api.patch(`/${crewId}/basic`, formData, {
+    updateCrewBasicData: (crewId, formData) => api.patch(`/crews/${crewId}/basic`, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
@@ -126,6 +127,10 @@ export const crewAPI = {
 };
 export const crewMembersAPI = {
     getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),
+    kickoutMember: (crewId, memberId) => api.delete(`/crews/${crewId}/members/${memberId}`),
+    manageSchPermission: (crewId, data) => api.patch(`/crews/${crewId}/schedules/permissions`, data),
+    manageMemberRole: (crewId, memberId, data) => api.patch(`/crews/${crewId}/members/${memberId}/role`, data),
+    delegateLeader: (crewId, memberId) => api.patch(`/crews/${crewId}/members/${memberId}/leader`),
 }
 
 export const scheduleAPI = {

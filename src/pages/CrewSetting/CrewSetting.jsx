@@ -115,6 +115,7 @@ const CrewSetting = () => {
             )}
             {isCrewIntroOpen && (
                 <CrewIntro
+                    crewData={crewData}
                     onClose={() => setIsCrewIntroOpen(false)}
                 />
             )}
@@ -157,6 +158,7 @@ const CrewSetting = () => {
             )}
             {isDeleteOpen && (
                 <Delete
+                    setIsCrewActivityOpen={setIsCrewActivityOpen}
                     onClose={() => setIsDeleteOpen(false)}
                 />
             )}

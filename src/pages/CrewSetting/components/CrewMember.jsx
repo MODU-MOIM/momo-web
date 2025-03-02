@@ -25,6 +25,10 @@ const CrewMember = ({ crewData, onClose }) => {
         };
         try {
             const response = await crewAPI.updateCrewHeadCount(crewId, submitData);
+            if (response.data.status === 200) {
+                // 성공하면 새로고침
+                window.location.reload();
+            }
         } catch (error) {
             console.error("변경 실패", error);
         }
