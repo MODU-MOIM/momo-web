@@ -37,6 +37,10 @@ const JoinReqList = ({ onClose }) => {
                 const response = await crewAPI.getReqJoinUserList(crewId);
                 const joinReqList = response.data.data;
                 setReqMembers(joinReqList || []);
+                if (response.data.status === 200) {
+                    // 성공하면 새로고침
+                    window.location.reload();
+                }
             } catch (error) {
                 console.error("요청 불러오기 실패", error);
             }

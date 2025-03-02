@@ -21,6 +21,10 @@ const Administrator = ({ onClose }) => {
                 role: role
             }
             const response = crewMembersAPI.manageMemberRole(crewId, memberId, submitdata);
+            if (response.data.status === 200) {
+                // 성공하면 새로고침
+                window.location.reload();
+            }
         } catch (error) {
             console.error("변경 실패",error);
         }

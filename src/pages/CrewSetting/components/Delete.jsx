@@ -1,12 +1,13 @@
 import { AiOutlineClose } from "react-icons/ai";
 import * as S from "../Styles/CrewSetting.styles";
 import { crewAPI, crewMembersAPI } from "../../../api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 
 const Delete = ({ setIsCrewActivityOpen, onClose }) => {
     const { crewId } = useParams();
+    const navigate = useNavigate();
     const [members, setMembers] = useState([]);
 
     const handlePanelClick = (e) => {
@@ -24,6 +25,7 @@ const Delete = ({ setIsCrewActivityOpen, onClose }) => {
         try {
             const response = await crewAPI.deleteCrew(crewId);
             console.log(response);
+            navigate("/crewList");
         } catch (error) {
             console.error("크루 삭제 실패", error);
         }

@@ -25,6 +25,10 @@ const CrewSchedule = ({ onClose }) => {
         }
         try {
             const response = await crewMembersAPI.manageSchPermission(crewId, SubmitData);
+            if (response.data.status === 200) {
+                // 성공하면 새로고침
+                window.location.reload();
+            }
         } catch (error) {
             console.error("권한 변경 실패", error);
         }

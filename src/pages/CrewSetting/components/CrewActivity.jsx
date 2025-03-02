@@ -18,6 +18,10 @@ const CrewActivity = ({ onClose }) => {
     const handleKickOut = async(memberId) => {
         try {
             const response = await crewMembersAPI.kickoutMember(crewId, memberId);
+            if (response.data.status === 200) {
+                // 성공하면 새로고침
+                window.location.reload();
+            }
         } catch (error) {
             console.error("탈퇴 실패", error);
         }
