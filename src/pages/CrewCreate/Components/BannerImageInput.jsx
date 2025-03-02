@@ -16,10 +16,8 @@ export default function BannerImageInput({bannerImage, setBannerImage, handleIma
         fileInputRef.current?.click();
     }
     const handleBannerImageChange = (e) => {
-        console.log("handleImageChange 실행")
         const file = e.target.files[0];
         handleImageUpload(file);
-        console.log("handleImageUpload 실행")
     };
     
     return(

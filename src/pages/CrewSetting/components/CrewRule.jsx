@@ -44,6 +44,10 @@ const CrewRule = ({ crewData, onClose }) => {
         }
         try {
             const response = await crewAPI.updateCrewRestriction(crewId, submitData);
+            if (response.data.status === 200) {
+                // 성공하면 새로고침
+                window.location.reload();
+            }
         } catch (error) {
             console.log("변경 실패", error);
         }
