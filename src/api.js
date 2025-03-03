@@ -187,7 +187,14 @@ export const archiveAPI = {
     uploadArchiveImage: (crewId, file) => {
         const formData = new FormData();
         formData.append('archiveImage', file);
-        return api.post(`/crews/${crewId}/archives/images`, formData);
+
+        const token = localStorage.getItem('token');
+
+        return api.post(`/crews/${crewId}/archives/images`, formData, {
+            headers: {
+                'Authorization': token
+            }
+        });
     },
     getArchiveList: (crewId) => api.get(`/crews/${crewId}/archives`),
     getArchiveDetail: (crewId, archiveId) => api.get(`/crews/${crewId}/archives/${archiveId}`),
