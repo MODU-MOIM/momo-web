@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 export default function FloatingMenu() {
     const { crewId } = useParams();
     const navigate = useNavigate();
-    const [selectedMenu, setSelectedMenu] = useState();
+    const location = useLocation();
     
     const menu = {
         "홈": "crewHome",
@@ -15,6 +15,11 @@ export default function FloatingMenu() {
         "크루활동": "crewActivity",
         "일정": "crewSchedule"
     };
+
+    const [selectedMenu, setSelectedMenu] = useState(() => {
+        const currentPath = location.pathname.split('/').pop();
+        return Object.values(menu).includes(currentPath) ? currentPath : "홈";
+    });
     
     const handleNavigate = (path) => {
         setSelectedMenu(path);
