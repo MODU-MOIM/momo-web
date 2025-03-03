@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "../components/layout/Layout";
 import Activities from "../pages/activities/Activities";
 import Details from "../pages/activities/components/Details";
+import UpdateArchive from "../pages/activities/components/updateArchive";
 import WriteActivity from "../pages/activities/components/WriteActivity";
 import Community from "../pages/community/Community";
 import UpdateCommunity from "../pages/community/components/updateCommunity";
@@ -35,6 +36,7 @@ const Router = () => {
                     <Route path="updateNotice/:noticeId" element={<UpdateNotice />} />
                     <Route path="crewActivity" element={<Activities />} />
                     <Route path="archives/:archiveId" element={<Details />} />
+                    <Route path="updateArchive/:archiveId" element={<UpdateArchive />} />
                     <Route path="crewActivity/write" element={<WriteActivity />} />
                     <Route path="crewCommunity" element={<Community />} />
                     <Route path="crewCommunity/write" element={<WriteCommunity />} />
