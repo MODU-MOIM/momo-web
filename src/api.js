@@ -190,4 +190,10 @@ export const archiveAPI = {
     unlikeArchive: (crewId, archiveId) => api.delete(`/crews/${crewId}/archives/${archiveId}/likes`),
 };
 
+export const ChatAPI = {
+    createChatRoom: (data) => api.post('/chat-rooms', data),
+    getChatRoomList: () => api.get('/chat-rooms'),
+    getChatRoom: (roomId) => api.get(`/chat-rooms/${roomId}`)
+}
+
 export default api;

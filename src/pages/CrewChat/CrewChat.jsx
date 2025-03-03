@@ -1,9 +1,22 @@
+import { useState } from "react";
 import styled from "styled-components";
+import ChatRoomList from "./components/ChatRoomList";
 
 export default function CrewChat() {
+    const [isChattingListOpen, setIsChattingListOpen] = useState(false);
+
     return(
         <Wrapper>
-            <Text>TALK</Text>
+            <Text
+                onClick={()=>setIsChattingListOpen(true)}
+            >
+                TALK
+            </Text>
+            {isChattingListOpen && (
+                <ChatRoomList
+                    onClose={() => setIsChattingListOpen(false)}
+                />
+            )}
         </Wrapper>
     );
 }
@@ -32,4 +45,5 @@ const Wrapper = styled.div`
 
 const Text = styled.div`
     color: #352EAE;
+    padding: 20px 10px;
 `;
