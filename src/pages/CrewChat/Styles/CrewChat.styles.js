@@ -5,7 +5,7 @@ import styled from "styled-components";
 export const Panel = styled.div`
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    /* background: rgba(0, 0, 0, 0.7); */
     position: fixed;
     display: flex;
     top: 0;
@@ -16,10 +16,9 @@ export const Panel = styled.div`
 export const ChatContainer = styled.div`
     width: 256px;
     height: 410px;
-    /* width: 350px;
-    height: 610px; */
     z-index:2;
-    background: #fff;
+    background: #F5F5FF;
+    border: 1px solid #929292;
     border-radius: 15px;
     position: fixed;
     bottom: 5%;
@@ -55,7 +54,7 @@ export const RoomContainer = styled.div`
     border: 1px solid red;
 `;
 
-export const CrewProfile = styled.div`
+export const CrewProfile = styled.img`
     width: 50px;
     height: 50px;
     margin: 10px;
@@ -74,7 +73,7 @@ export const RoomName = styled.div`
 
 export const MemNums = styled.div`
     height: 20px;
-    margin: 15px 0px 0px 5px;
+    margin: 15px 0px 0px 15px;
 `;
 
 export const AddButton = styled.button`
@@ -83,4 +82,31 @@ export const AddButton = styled.button`
     right: 10%;
     padding: 5px;
     margin: 10px;
+`;
+
+// CrewChatRoom.jsx
+
+export const Name = styled.div`
+    display: flex;
+    padding-left: 30px;
+    padding-bottom: 15px;
+    background-color: aqua;
+`;
+
+export const SendMsg = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    width: 350px;
+    height: 100px;
+    background-color: aquamarine;
+    position: fixed;
+    bottom: 5%;
+`;
+
+export const InputMsg = styled.input`
+    display: block;
+    width: 100%;
+`;
+
+export const SendButton = styled.button`
 `;

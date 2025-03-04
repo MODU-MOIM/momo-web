@@ -3,18 +3,18 @@ import styled from "styled-components";
 import ChatRoomList from "./components/ChatRoomList";
 
 export default function CrewChat() {
-    const [isChattingListOpen, setIsChattingListOpen] = useState(false);
+    const [isChatListOpen, setIsChatListOpen] = useState(false);
 
     return(
         <Wrapper>
             <Text
-                onClick={()=>setIsChattingListOpen(true)}
+                onClick={()=>setIsChatListOpen(true)}
             >
                 TALK
             </Text>
-            {isChattingListOpen && (
+            {isChatListOpen && (
                 <ChatRoomList
-                    onClose={() => setIsChattingListOpen(false)}
+                    onClose={() => setIsChatListOpen(false)}
                 />
             )}
         </Wrapper>
