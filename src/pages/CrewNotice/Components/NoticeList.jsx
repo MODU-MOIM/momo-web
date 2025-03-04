@@ -57,8 +57,8 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     return(
         <Wrapper>
             {noticeList.map((notice, index)=>(
-                <React.Fragment key={notice.uniqueId}>
-                    <SubContainer>
+                <React.Fragment key={notice.id || index}>
+                    <SubContainer key={`sub-${notice.id || index}`}>
                         {notice.isOpenedMenu && 
                             <SubMenu ref={el => menuRefs.current[index] = el}>
                                 <MenuItem onClick={()=>handleUpdate({notice})}>수정</MenuItem>
@@ -66,7 +66,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                             </SubMenu>
                         }
                     </SubContainer>
-                    <Container>
+                    <Container key={`container-${notice.id || index}`}>
                         <TopContainer>
                             <UserInfoContainer>
                                 <Profile>
@@ -83,7 +83,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                                 {isManager &&
                                 <StyledBsPinAngleFill 
                                     size={20}
-                                    isPinned={notice.isPinned}
+                                    $isPinned={notice.isPinned}
                                     onClick={()=>handlePin(notice.id)}
                                 />
                                 }
@@ -193,7 +193,7 @@ const SettingContainer = styled.div`
     margin: 20px;
     `;
 const StyledBsPinAngleFill = styled(BsPinAngleFill)`
-    color: ${props=> props.isPinned ? "#000000" : "#929292"};
+    color: ${props=> props.$isPinned ? "#000000" : "#929292"};
     &:hover{
         color: black;
         cursor: pointer;
