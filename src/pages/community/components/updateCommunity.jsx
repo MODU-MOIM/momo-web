@@ -27,16 +27,16 @@ const UpdateCommunity = () => {
                 // 기존 사진 처리 및 유효성 검사
                 if (postData.photos && postData.photos.length > 0) {
                     // 유효한 URL을 가진 사진만 필터링
-                    const validPhotos = postData.photos.filter(photo => 
-                        photo.url && 
-                        typeof photo.url === 'string' && 
+                    const validPhotos = postData.photos.filter(photo =>
+                        photo.url &&
+                        typeof photo.url === 'string' &&
                         photo.url.trim() !== ''
                     );
                     
                     // 사진 포맷 변환
                     const formattedPhotos = validPhotos.map(photo => ({
                         url: photo.url,
-                        photoId: photo.id || photo.photoId, // 백엔드 응답 구조에 따라 조정
+                        photoId: photo.id || photo.photoId,
                         isExisting: true
                     }));
                     
@@ -152,18 +152,10 @@ const UpdateCommunity = () => {
             formData.append('feedReqDto', new Blob([JSON.stringify(feedData)], {
                 type: 'application/json'
             }));
-
-            // 이미지 처리 (기존 이미지와 새 이미지 모두)
+    
             const imagePromises = [];
             
-            // 새 이미지 처리 (이미 File 객체)
-            allImages.filter(img => !img.isExisting).forEach(image => {
-                if (image.file) {
-                    formData.append('photos', image.file);
-                }
-            });
-            
-            // 기존 URL 이미지를 File 객체로 변환하여 처리
+            //기존 URL 이미지를 File 객체로 변환하여 처리
             for (const image of allImages.filter(img => img.isExisting)) {
                 const promise = fetch(image.url)
                     .then(response => response.blob())
@@ -182,10 +174,17 @@ const UpdateCommunity = () => {
                 imagePromises.push(promise);
             }
             
-            // 모든 이미지 변환 작업 완료 대기
+            // 모든 기존 이미지 변환 작업 완료 대기
             await Promise.all(imagePromises);
-
-            // 서버에 전송
+            
+            //새 이미지 처리
+            allImages.filter(img => !img.isExisting).forEach(image => {
+                if (image.file) {
+                    formData.append('photos', image.file);
+                }
+            });
+    
+            //서버에 전송
             await communityAPI.updateCommunity(crewId, feedId, formData);
             alert('게시글이 성공적으로 수정되었습니다.');
             navigate(`/crews/${crewId}/crewCommunity`);
