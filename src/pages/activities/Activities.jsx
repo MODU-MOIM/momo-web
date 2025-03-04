@@ -13,7 +13,7 @@ const Activities = () => {
     const navigate = useNavigate();
     const { crewId } = useParams();
 
-    // 컴포넌트 마운트 시 및 crewId 변경 시 데이터 로드
+    // 아카이브 목록 불러오기
     useEffect(() => {
         const fetchArchives = async () => {
             try {
@@ -93,17 +93,19 @@ const Activities = () => {
             ) : (
                 <S.List>
                     {archives.length > 0 ? (
-                        archives.slice(0, visibleArchives).map((archive) => (
-                        <S.ActivityCard 
-                            key={`archive-${archive.archiveId || archive.id || Math.random()}`} 
-                            onClick={() => handleArchiveClick(archive)}
-                        >
-                            <S.ActivityImage
-                                style={{ backgroundImage: `url(${archive.thumbnailImageUrl || archive.thumbnailImage})` }}
-                            />
-                            <S.Title>{truncateTitle(archive.title)}</S.Title>
-                            <S.Date>{formatDate(archive.createdAt)}</S.Date>
-                        </S.ActivityCard>
+                        archives.slice(0, visibleArchives)
+                            .reverse()
+                            .map((archive) => (
+                            <S.ActivityCard 
+                                key={`archive-${archive.archiveId || archive.id || Math.random()}`} 
+                                onClick={() => handleArchiveClick(archive)}
+                            >
+                                <S.ActivityImage
+                                    style={{ backgroundImage: `url(${archive.thumbnailImageUrl || archive.thumbnailImage})` }}
+                                />
+                                <S.Title>{truncateTitle(archive.title)}</S.Title>
+                                <S.Date>{formatDate(archive.createdAt)}</S.Date>
+                            </S.ActivityCard>
                         ))
                     ) : (
                         <S.EmptyMessage>아직 게시물이 없습니다.</S.EmptyMessage>

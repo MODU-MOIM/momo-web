@@ -10,10 +10,8 @@ const UpdateCommunity = () => {
     const navigate = useNavigate();
     const { crewId, feedId } = useParams();
     const [content, setContent] = useState('');
+    const [allImages, setAllImages] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [initialPhotos, setInitialPhotos] = useState([]);
-    const [uploadedImages, setUploadedImages] = useState([]);
-    const [deletedPhotoIds, setDeletedPhotoIds] = useState([]);
     const quillRef = useRef();
 
     // 기존 게시물 데이터 불러오기
@@ -22,13 +20,27 @@ const UpdateCommunity = () => {
             try {
                 const response = await communityAPI.getCommunityDetail(crewId, feedId);
                 const postData = response.data.data;
-                
-                // HTML 형식의 내용 그대로 설정
+    
+                // 내용 설정
                 setContent(postData.content || '');
-                
-                // 기존 이미지들 저장
+    
+                // 기존 사진 처리 및 유효성 검사
                 if (postData.photos && postData.photos.length > 0) {
-                    setInitialPhotos(postData.photos);
+                    // 유효한 URL을 가진 사진만 필터링
+                    const validPhotos = postData.photos.filter(photo => 
+                        photo.url && 
+                        typeof photo.url === 'string' && 
+                        photo.url.trim() !== ''
+                    );
+                    
+                    // 사진 포맷 변환
+                    const formattedPhotos = validPhotos.map(photo => ({
+                        url: photo.url,
+                        photoId: photo.id || photo.photoId, // 백엔드 응답 구조에 따라 조정
+                        isExisting: true
+                    }));
+                    
+                    setAllImages(formattedPhotos);
                 }
             } catch (error) {
                 console.error('게시물 상세 정보 가져오기 실패:', error);
@@ -40,19 +52,19 @@ const UpdateCommunity = () => {
         fetchPostDetail();
     }, [crewId, feedId, navigate]);
 
-    // 이미지 업로드 핸들러
+    // 이미지 업로드 처리기
     const handleImageUpload = () => {
         const input = document.createElement('input');
         input.setAttribute('type', 'file');
         input.setAttribute('accept', 'image/*');
-        input.setAttribute('multiple', 'multiple'); // 여러 이미지 선택 가능
+        input.setAttribute('multiple', 'multiple');
         input.click();
     
         input.onchange = async (e) => {
             const files = e.target.files;
             if (files && files.length > 0) {
-                // 최대 5개까지만 업로드 허용
-                if (initialPhotos.length + uploadedImages.length + files.length > 5) {
+                // 최대 이미지 수 확인
+                if (allImages.length + files.length > 5) {
                     alert('최대 5개의 이미지만 업로드 가능합니다.');
                     return;
                 }
@@ -62,6 +74,7 @@ const UpdateCommunity = () => {
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     
+                    // 파일 크기 확인 (5MB 제한)
                     if (file.size > 5 * 1024 * 1024) {
                         alert(`이미지 ${file.name}의 크기가 5MB를 초과합니다.`);
                         continue;
@@ -75,7 +88,8 @@ const UpdateCommunity = () => {
                             reader.onload = () => {
                                 newImages.push({
                                     file: file,
-                                    preview: reader.result
+                                    url: reader.result,
+                                    isExisting: false
                                 });
                                 resolve();
                             };
@@ -87,40 +101,30 @@ const UpdateCommunity = () => {
                     }
                 }
                 
-                setUploadedImages(prev => [...prev, ...newImages]);
+                // 새 이미지를 기존 이미지 배열에 추가
+                setAllImages(prev => [...prev, ...newImages]);
             }
         };
     };
 
-    // 기존 이미지 삭제 핸들러
-    const handleRemoveInitialImage = (index) => {
-        const removedPhoto = initialPhotos[index];
-        
-        // 삭제된 이미지의 photoId 추가 (백엔드에 전달할 ID)
-        if (removedPhoto.photoId) {
-            setDeletedPhotoIds(prev => [...prev, removedPhoto.photoId]);
-        }
-        
-        // initialPhotos에서 해당 이미지 제거
-        setInitialPhotos(prev => prev.filter((_, i) => i !== index));
+    // 이미지 제거 처리기
+    const handleRemoveImage = (index) => {
+        setAllImages(prev => prev.filter((_, i) => i !== index));
     };
 
-    // 새로 추가한 이미지 삭제 핸들러
-    const handleRemoveUploadedImage = (index) => {
-        setUploadedImages(prev => prev.filter((_, i) => i !== index));
-    };
-
+    // 내용 변경 처리기
     const handleChange = (value) => {
         setContent(value);
     };
 
+    // 제출 처리기
     const handleSubmit = async () => {
         if (!content.trim()) {
             alert('내용을 입력해주세요.');
             return;
         }
         
-        // HTML 형식의 컨텐츠 그대로 사용
+        // HTML 내용 가져오기
         const htmlContent = quillRef.current.getEditor().root.innerHTML;
         
         if (!htmlContent.trim()) {
@@ -128,8 +132,8 @@ const UpdateCommunity = () => {
             return;
         }
         
-        // 이미지가 있는지 확인 (기존 이미지 + 새 이미지)
-        if (initialPhotos.length === 0 && uploadedImages.length === 0) {
+        // 최소 1개 이상의 이미지 확인
+        if (allImages.length === 0) {
             alert('최소 1개 이상의 이미지를 첨부해주세요.');
             return;
         }
@@ -138,45 +142,48 @@ const UpdateCommunity = () => {
             setIsSubmitting(true);
             const formData = new FormData();
             
-            // 피드 데이터 추가
+            // FeedReqDto에 맞는 데이터 구조 생성
             const feedData = {
                 content: htmlContent.trim(),
-                tagNames: [],
-                // 삭제된 이미지 ID 전달
-                deletedPhotoIds: deletedPhotoIds
+                tagNames: []
             };
             
+            // JSON으로 직렬화하여 feedReqDto 필드에 추가
             formData.append('feedReqDto', new Blob([JSON.stringify(feedData)], {
                 type: 'application/json'
             }));
 
-            // 이미지 처리
-            let hasPhotos = false;
+            // 이미지 처리 (기존 이미지와 새 이미지 모두)
+            const imagePromises = [];
             
-            // 남아있는 기존 이미지 재업로드
-            for (let i = 0; i < initialPhotos.length; i++) {
-                try {
-                    const response = await fetch(initialPhotos[i].url);
-                    const blob = await response.blob();
-                    formData.append('photos', blob, `existing-${i}.jpg`);
-                    hasPhotos = true;
-                } catch (error) {
-                    console.error('기존 이미지 처리 실패:', error);
+            // 새 이미지 처리 (이미 File 객체)
+            allImages.filter(img => !img.isExisting).forEach(image => {
+                if (image.file) {
+                    formData.append('photos', image.file);
                 }
+            });
+            
+            // 기존 URL 이미지를 File 객체로 변환하여 처리
+            for (const image of allImages.filter(img => img.isExisting)) {
+                const promise = fetch(image.url)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        // 파일명 생성
+                        const fileName = `existing-${image.photoId || Date.now()}.jpg`;
+                        const file = new File([blob], fileName, { type: 'image/jpeg' });
+                        formData.append('photos', file);
+                        return true;
+                    })
+                    .catch(error => {
+                        console.error('이미지 URL 변환 실패:', error);
+                        return false;
+                    });
+                
+                imagePromises.push(promise);
             }
             
-            // 새 이미지 업로드
-            for (let i = 0; i < uploadedImages.length; i++) {
-                formData.append('photos', uploadedImages[i].file, `new-image-${i}.jpg`);
-                hasPhotos = true;
-            }
-            
-            // 최소 하나의 이미지 확인
-            if (!hasPhotos) {
-                alert('최소 1개 이상의 이미지를 첨부해주세요.');
-                setIsSubmitting(false);
-                return;
-            }
+            // 모든 이미지 변환 작업 완료 대기
+            await Promise.all(imagePromises);
 
             // 서버에 전송
             await communityAPI.updateCommunity(crewId, feedId, formData);
@@ -229,33 +236,20 @@ const UpdateCommunity = () => {
                     <S.ImageUploadButton type="button" onClick={handleImageUpload}>
                         이미지 업로드 (최대 5개)
                     </S.ImageUploadButton>
-                    
-                    {/* 기존 이미지 미리보기 */}
-                    {initialPhotos.length > 0 && (
+                    {allImages.length > 0 && (
                         <S.ImagePreviewContainer>
-                            <S.SectionSubtitle>기존 이미지</S.SectionSubtitle>
                             <S.ImageGrid>
-                                {initialPhotos.map((photo, index) => (
-                                    <S.ImagePreview key={`initial-${index}`}>
-                                        <img src={photo.url} alt={`기존 이미지 ${index + 1}`} />
-                                        <S.RemoveButton onClick={() => handleRemoveInitialImage(index)}>
-                                            <AiOutlineClose />
-                                        </S.RemoveButton>
-                                    </S.ImagePreview>
-                                ))}
-                            </S.ImageGrid>
-                        </S.ImagePreviewContainer>
-                    )}
-                    
-                    {/* 새로 업로드한 이미지 미리보기 */}
-                    {uploadedImages.length > 0 && (
-                        <S.ImagePreviewContainer>
-                            {initialPhotos.length > 0 && <S.SectionSubtitle>새로 업로드한 이미지</S.SectionSubtitle>}
-                            <S.ImageGrid>
-                                {uploadedImages.map((image, index) => (
-                                    <S.ImagePreview key={`new-${index}`}>
-                                        <img src={image.preview} alt={`새 이미지 ${index + 1}`} />
-                                        <S.RemoveButton onClick={() => handleRemoveUploadedImage(index)}>
+                                {allImages.map((image, index) => (
+                                    <S.ImagePreview key={index}>
+                                        <img
+                                            src={image.url}
+                                            alt={`이미지 ${index + 1}`}
+                                            onError={(e) => {
+                                                console.warn(`이미지 로드 실패: ${image.url}`);
+                                                e.target.src = 'https://via.placeholder.com/150?text=이미지+로드+실패';
+                                            }}
+                                        />
+                                        <S.RemoveButton onClick={() => handleRemoveImage(index)}>
                                             <AiOutlineClose />
                                         </S.RemoveButton>
                                     </S.ImagePreview>
@@ -264,7 +258,6 @@ const UpdateCommunity = () => {
                         </S.ImagePreviewContainer>
                     )}
                 </S.ImageSection>
-
                 <S.WriteButton>
                     <S.CancelButton onClick={() => navigate(-1)}>
                         취소

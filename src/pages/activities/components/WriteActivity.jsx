@@ -1,8 +1,9 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { archiveAPI } from '../../../api';
+import { useImageHandling } from '../../shared/useImageHandling';
 import * as S from '../Styles/Activities.styles';
 
 const WriteActivity = () => {
@@ -12,50 +13,13 @@ const WriteActivity = () => {
     
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [thumbnailImageUrl, setThumbnailImageUrl] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    const { thumbnailImageUrl, handleImageUpload } = useImageHandling(crewId);
 
-    // 이미지 업로드 핸들러
-    const handleImageUpload = useCallback(() => {
-        const input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/*');
-        input.click();
-    
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            if (file.size > 5 * 1024 * 1024) {
-                alert('이미지 크기는 5MB를 초과할 수 없습니다.');
-                return;
-            }
-    
-            try {
-                const response = await archiveAPI.uploadArchiveImage(crewId, file);
-                const imageUrl = response.data.archiveImageUrl;
-                
-                // 첫 번째 이미지인 경우 자동으로 썸네일로 설정
-                if (!thumbnailImageUrl) {
-                    setThumbnailImageUrl(imageUrl);
-                }
-    
-                // 에디터에 이미지 삽입
-                if (quillRef.current) {
-                    const quillEditor = quillRef.current.getEditor();
-                    const range = quillEditor.getSelection(true);
-                    quillEditor.insertEmbed(range.index, 'image', imageUrl);
-                }
-            } catch (error) {
-                console.error('이미지 업로드 실패:', error);
-                alert('이미지 업로드에 실패했습니다.');
-            }
-        };
-    }, [crewId, thumbnailImageUrl]);
-
-    // 제출 핸들러
+    // 게시글 작성 함수
     const handleSubmit = async () => {
-        // 유효성 검사
+        // 제목 입력 확인
         if (!title.trim()) {
             alert('제목을 입력해주세요.');
             return;
@@ -67,18 +31,13 @@ const WriteActivity = () => {
             return;
         }
 
-        if (!thumbnailImageUrl) {
-            alert('최소 한 개 이상의 이미지를 추가해주세요. 첫 번째 이미지가 썸네일로 사용됩니다.');
-            return;
-        }
-
         try {
             setIsSubmitting(true);
 
             const archiveData = {
                 title: title.trim(),
                 content: quillRef.current?.getEditor().root.innerHTML,
-                thumbnailImageUrl: thumbnailImageUrl
+                thumbnailImageUrl: thumbnailImageUrl || null
             };
 
             await archiveAPI.createArchive(crewId, archiveData);
@@ -94,20 +53,30 @@ const WriteActivity = () => {
     };
 
     // Quill 에디터 모듈 설정
-    const modules = {
-        toolbar: {
-            container: [
-                [{ 'header': [1, 2, false] }],
-                ['bold', 'italic', 'underline'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['image'],
-                ['clean']
-            ],
-            handlers: {
-                image: handleImageUpload
+    const modules = useMemo(() => {
+        return {
+            toolbar: {
+                container: [
+                    [{ 'header': [1, 2, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['image'],
+                    ['clean']
+                ],
+                handlers: {
+                    image: () => handleImageUpload(quillRef.current?.getEditor())
+                }
+            },
+            clipboard: {
+                matchVisual: false
+            },
+            history: {
+                delay: 1000,
+                maxStack: 50,
+                userOnly: true
             }
-        }
-    };
+        };
+    }, [handleImageUpload]);
 
     const formats = [
         'header',
@@ -145,7 +114,7 @@ const WriteActivity = () => {
                     <S.CancelButton onClick={() => navigate(-1)}>
                         취소
                     </S.CancelButton>
-                    <S.SubmitButton 
+                    <S.SubmitButton
                         onClick={handleSubmit}
                         disabled={isSubmitting}
                     >

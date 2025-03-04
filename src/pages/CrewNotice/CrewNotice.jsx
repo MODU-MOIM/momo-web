@@ -1,9 +1,9 @@
-import styled from "styled-components";
-import NoticeList from "./Components/NoticeList";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useNotices } from "./NoticeProvider";
+import styled from "styled-components";
 import { noticeAPI } from "../../api";
+import NoticeList from "./Components/NoticeList";
+import { useNotices } from "./NoticeProvider";
 
 // user role 받아서 isManager 확인
 export default function CrewNotice() {
@@ -69,7 +69,7 @@ export default function CrewNotice() {
                     };
                 });
                 setNoticeList(sortNoticeList(formattedNotices));
-                console.log("loadNoticeList",noticeList);
+                // console.log("loadNoticeList",noticeList);
             }else{
                 console.log("공지가 없습니다.", response.data);
             }

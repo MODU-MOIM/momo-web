@@ -53,7 +53,6 @@ export const ActivityCard = styled.div`
 export const ActivityImage = styled(RouterNavLink)`
     width: 100%;
     height: 280px;
-    border: 1px solid red;
     display: flex;
     background-size: cover;
     background-position: center;

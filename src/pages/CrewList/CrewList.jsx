@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { crewAPI, crewMembersAPI } from "../../api";
+import { crewAPI } from "../../api";
 import Search from "../shared/Search";
 import * as S from "./Styles/CrewList.styles";
 
@@ -41,35 +41,18 @@ const CrewList = () => {
         }
     }, [location.search]);
 
-    // 모든 크루 목록 조회
     const fetchCrews = async () => {
         setLoading(true);
         try {
             const response = await crewAPI.getCrewList();
             const crewList = response.data.data || response.data;
-
-            const crewsWithMemberCount = await Promise.all(
-                crewList.map(async (crew) => {
-                    try{
-                    const memberCount = await crewMembersAPI.getMemberList(crew.crewId);
-                    const members = memberCount.data.data || memberCount.data;
-
-                    return { ...crew, memberCount: members.length };
-                    } catch (error) {
-                        console.error('크루 멤버 수 조회 실패:', error);
-                        return crew;
-                    }
-                })
-            );
-
-            setCrews(crewsWithMemberCount);
+            setCrews(crewList);
         } catch (error) {
             console.error('크루 목록 조회 실패:', error);
         } finally {
             setLoading(false);
         }
     };
-
     // 검색 처리 핸들러
     const handleSearch = async (searchParams) => {
         setLoading(true);

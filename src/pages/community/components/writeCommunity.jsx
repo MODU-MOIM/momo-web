@@ -82,9 +82,9 @@ const WriteCommunity = () => {
         }
         
         // 텍스트에서 HTML 태그 제거
-        const plainText = quillRef.current.getEditor().getText();
+        const htmlContent = quillRef.current.getEditor().root.innerHTML;
 
-        if (!plainText) {
+        if (!htmlContent.trim()) {
             alert('내용을 입력해주세요.');
             return;
         }
@@ -101,7 +101,7 @@ const WriteCommunity = () => {
             
             // 피드 데이터 추가
             const feedData = {
-                content: plainText.trim(),
+                content: htmlContent.trim(),
                 tagNames: []
             };
             
@@ -111,7 +111,7 @@ const WriteCommunity = () => {
 
             // 이미지 추가
             for (let i = 0; i < uploadedImages.length; i++) {
-                formData.append('photos', uploadedImages[i].file, `image${i}.jpg`);
+                formData.append('photos', uploadedImages[i].file);
             }
 
             // 서버에 전송
@@ -187,7 +187,7 @@ const WriteCommunity = () => {
                     <S.CancelButton onClick={() => navigate(-1)}>
                         취소
                     </S.CancelButton>
-                    <S.SubmitButton 
+                    <S.SubmitButton
                         onClick={handleSubmit}
                         disabled={isSubmitting}
                     >
