@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { noticeAPI } from "../../api";
+import { crewMembersAPI, noticeAPI } from "../../api";
+import { useAuth } from "../../AuthProvider";
 import NoticeList from "./Components/NoticeList";
 import { useNotices } from "./NoticeProvider";
 
-// user role 받아서 isManager 확인
+// 크루 공지사항 페이지
 export default function CrewNotice() {
     const {crewId} = useParams();
     const navigate = useNavigate();
     const accessToken = localStorage.getItem('token');
     const { noticeList, setNoticeList } = useNotices([]);
     const [loading, setLoading] = useState(true);
-    const [isManager, setIsManager] = useState(true);
+    const [isManager, setIsManager] = useState(false);
+    const [isMember, setIsMember] = useState(false);
+    const { userInfo } = useAuth();
     
     // 공지들 정렬
     const sortNoticeList = (noticeList) => {
@@ -50,9 +53,51 @@ export default function CrewNotice() {
             time : `${hours}:${minutes}`
         }
     }
+
+    const checkCrewMembership = async () => {
+        try {
+
+            if(!userInfo || !userInfo.nickname){
+                alert('로그인이 필요합니다.');
+                navigate('/login');
+                return false;
+            }
+
+            const response = await crewMembersAPI.getMemberList(crewId);
+            const members = response.data.data || response.data;
+
+            const isMemberOfCrew = Array.isArray(members) &&
+                members.some(member => member.nickname === userInfo.nickname);
+
+            const isAdmin = Array.isArray(members) &&
+                members.some(member => member.nickname === userInfo.nickname &&
+                    (member.role === 'LEADER' || member.role === 'SUB_LEADER')
+                );
+
+            setIsManager(isAdmin);
+
+            if(!isMemberOfCrew){
+                alert('크루 멤버만 접근할 수 있습니다.');
+                navigate(-1);
+                return false;
+            }
+
+            setIsMember(true);
+            return true;
+        } catch (error) {
+            console.error('크루 멤버십 확인 실패:', error);
+            return false;
+        }
+    }
+
+    
     
     const loadNoticeList = async() => {
         try {
+            const memberChecked = await checkCrewMembership();
+
+            if(!memberChecked) return;
+
             const response = await noticeAPI.readNoticeList(crewId);
             const noticeListData = response.data.data;
             if(noticeListData && Array.isArray(noticeListData)){
