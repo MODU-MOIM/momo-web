@@ -5,6 +5,7 @@ import { crewMembersAPI, noticeAPI } from "../../api";
 import { useAuth } from "../../AuthProvider";
 import NoticeList from "./Components/NoticeList";
 import { useNotices } from "./NoticeProvider";
+import CrewChat from "../CrewChat/CrewChat";
 
 // 크루 공지사항 페이지
 export default function CrewNotice() {
@@ -161,6 +162,7 @@ export default function CrewNotice() {
 
     return(
         <Wrapper>
+            <CrewChat/>
             {/* userid 받아서 관리자만 보이도록 수정해야 함 */}
             <AddNoticeButton onClick={linktoAddNotice} >+ 공지추가</AddNoticeButton>
             {/* 무한스크롤 적용해야 함 */}

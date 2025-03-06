@@ -91,7 +91,6 @@ export const authAPI = {
         }
     ),
 };
-
 export const noticeAPI = {
     createNotice (crewId, noticeData){
         return api.post(`/crews/${crewId}/notices`, noticeData)
@@ -211,5 +210,14 @@ export const archiveAPI = {
     likeArchive: (crewId, archiveId) => api.post(`/crews/${crewId}/archives/${archiveId}/likes`),
     unlikeArchive: (crewId, archiveId) => api.delete(`/crews/${crewId}/archives/${archiveId}/likes`),
 };
+
+export const ChatAPI = {
+    createChatRoom: (data) => api.post('/chat-rooms', data),
+    getChatRoomList: () => api.get('/chat-rooms'),
+    getChatRoom: (roomId) => api.get(`/chat-rooms/${roomId}`),
+    getMyChatRoom: () => api.get(`/chat-rooms/me`),
+    getChatRoomHistory: (roomId) => api.get(`/chat-rooms/${roomId}/history`),
+    deleteChatRoom: (roomId) => api.delete(`/chat-rooms/${roomId}`)
+}
 
 export default api;
