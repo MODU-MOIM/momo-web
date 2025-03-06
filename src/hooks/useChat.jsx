@@ -8,14 +8,14 @@ const useChat = (token, roomId) => {
     // const [token, setToken] = useState("");
     // const [roomId, setRoomId] = useState("");
 
-    // useEffect(() => {
-    //     return () => {
-    //         if (stompClient) {
-    //             stompClient.disconnect();
-    //             console.log("Disconnected");
-    //         }
-    //     };
-    // }, [stompClient]);
+    useEffect(() => {
+        return () => {
+            if (stompClient) {
+                stompClient.disconnect();
+                console.log("Disconnected");
+            }
+        };
+    }, [stompClient]);
 
     const connect = () => {
         if (!token || !roomId) {
@@ -29,6 +29,7 @@ const useChat = (token, roomId) => {
         client.connect({ Authorization: `${token}` }, (frame) => {
             console.log("Connected: " + frame);
             client.subscribe(`/room/${roomId}`, (message) => {
+                console.log("Received message:", message);
                 showMessage(JSON.parse(message.body));
             });
             setStompClient(client);
