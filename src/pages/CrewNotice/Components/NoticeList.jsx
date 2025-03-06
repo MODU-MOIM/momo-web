@@ -8,37 +8,30 @@ import * as S from "../Styles/Notice.styles";
 export default function NoticeList({noticeList, togglePin, toggleMenu, setNoticeList, isManager}) {
     const { crewId } = useParams();
     const navigate = useNavigate();
-    // const [isDetailVisible, setIsDetailVisible] = useState(false);
     const menuRefs = useRef([]);
 
     const handlePin = (id)=> togglePin(id);
     const handleMenu = (id) => toggleMenu(id);
 
     const handleUpdate = ({notice})=>{
-        // 수정페이지 이동(notice.id에 맞는)
         navigate(`/crews/${crewId}/updateNotice/${notice.id}`, {
             state: {noticeData: notice,  mode: "update"}
         });
-        // console.log("수정: ", notice.id);
     }
+
     const handleDelete = async (noticeId)=>{
         try {
             if (window.confirm("정말로 삭제하시겠습니까?")) {
-                const token = localStorage.getItem('token');
-                // console.log('Loaded token:', token);
                 await noticeAPI.deleteNotice(crewId, noticeId);
-                // 공지 삭제 후 상태 업데이트
                 setNoticeList(currentnoticeList => currentnoticeList.filter(notice => notice.id !== noticeId));
                 alert("공지가 삭제되었습니다");
             }
-            
         } catch (error) {
             console.log("공지 삭제 실패: ", error);
         }
     }
-    // 메뉴 열린 상태에서 외부영역 클릭 시 닫힘
+
     useEffect(() => {
-        // console.log(noticeList)
         function handleClickOutside(e) {
             if (noticeList.some((notice, index) => notice.isOpenedMenu && menuRefs.current[index] && !menuRefs.current[index].contains(e.target))) {
                 setNoticeList(noticeList.map(notice => ({...notice, isOpenedMenu: false})));
@@ -53,7 +46,6 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     const handleShowDetail = async (noticeId) => {
         try {
             const response = await noticeAPI.readNotice(crewId,noticeId);
-            console.log("통신 성공 : ", response);
             setNoticeList(noticeList.map(notice => 
                 notice.id === noticeId ? ({...notice, showDetail: !notice.showDetail}) : notice,
             ));
@@ -65,8 +57,8 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     return(
         <Wrapper>
             {noticeList.map((notice, index)=>(
-                <>
-                    <SubContainer key={notice.id}>
+                <React.Fragment key={notice.id || index}>
+                    <SubContainer key={`sub-${notice.id || index}`}>
                         {notice.isOpenedMenu && 
                             <SubMenu ref={el => menuRefs.current[index] = el}>
                                 <MenuItem onClick={()=>handleUpdate({notice})}>수정</MenuItem>
@@ -74,7 +66,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                             </SubMenu>
                         }
                     </SubContainer>
-                    <Container key={notice.id}>
+                    <Container key={`container-${notice.id || index}`}>
                         <TopContainer>
                             <UserInfoContainer>
                                 <Profile>
@@ -87,13 +79,11 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                                 </Profile>
                             </UserInfoContainer>
 
-                            {/* 관리자만 보이도록 */}
-                            {/* 버튼 기능 추가하기 */}
                             <SettingContainer>
                                 {isManager &&
                                 <StyledBsPinAngleFill 
                                     size={20}
-                                    isPinned={notice.isPinned}
+                                    $isPinned={notice.isPinned}
                                     onClick={()=>handlePin(notice.id)}
                                 />
                                 }
@@ -107,39 +97,32 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                         <NoticeContainer
                             onClick={()=>{
                                 handleShowDetail(notice.id)
-                                // toggleDetailVisibility(id)
                             }}
                         >
                             <Notice showDetail={notice.showDetail}>
                                 {notice.content.includes('\n') ?
-                                    notice.content.split('\n').map((item)=>(
-                                        <div>{item}<br/></div>
+                                    notice.content.split('\n').map((item, index)=>(
+                                        <div key={index}>{item}<br/></div>
                                     )) :
                                     <div>{notice.content}<br/></div>
                                 }
                             </Notice>
-                            {/* 투표 */}
-                        {notice.vote?.isEnabled && notice.showDetail ? 
-                            <Vote>
-                                <S.VoteContainer style={{margin: "0"}}>
-                                    <S.VoteBox style={{fontSize: "small"}}>
-                                        <S.VoteTitleText>정모 참여 투표</S.VoteTitleText>
-                                        <S.SelectBox>
-                                                <S.SelectList 
-                                                    userVote
-                                                >참여</S.SelectList>
-                                                <S.SelectList 
-                                                    userVote
-                                                >미참여</S.SelectList>
-                                        </S.SelectBox>
-                                    </S.VoteBox>
-                                </S.VoteContainer>
-                            </Vote>
-                        : null
-                        }
+                            {notice.vote?.isEnabled && notice.showDetail ? 
+                                <Vote>
+                                    <S.VoteContainer style={{margin: "0"}}>
+                                        <S.VoteBox style={{fontSize: "small"}}>
+                                            <S.VoteTitleText>정모 참여 투표</S.VoteTitleText>
+                                            <S.SelectBox>
+                                                <S.SelectList userVote>참여</S.SelectList>
+                                                <S.SelectList userVote>미참여</S.SelectList>
+                                            </S.SelectBox>
+                                        </S.VoteBox>
+                                    </S.VoteContainer>
+                                </Vote>
+                            : null}
                         </NoticeContainer>
                     </Container>
-                </>
+                </React.Fragment>
             ))}
         </Wrapper>
     );
@@ -210,7 +193,7 @@ const SettingContainer = styled.div`
     margin: 20px;
     `;
 const StyledBsPinAngleFill = styled(BsPinAngleFill)`
-    color: ${props=> props.isPinned ? "#000000" : "#929292"};
+    color: ${props=> props.$isPinned ? "#000000" : "#929292"};
     &:hover{
         color: black;
         cursor: pointer;

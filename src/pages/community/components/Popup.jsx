@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { communityAPI } from '../../../api';
 import { useAuth } from "../../../AuthProvider";
-import EditDeleteMenu from "../../shared/EditDeleteMenu";
 import LikeButton from '../../shared/CommunityLikeButton';
+import EditDeleteMenu from "../../shared/EditDeleteMenu";
 import * as S from '../Styles/Community.styles';
 import { getTimeAgo } from './getTimeAgo';
 
@@ -24,6 +24,7 @@ function Popup({ isOpen, onClose, feedId, crewId }){
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editCommentContent, setEditCommentContent] = useState('');
     
+    // 스크롤 고정 효과 설정
     useEffect(() => {
         if (isOpen) {
             // 현재 스크롤 위치 저장
@@ -52,12 +53,16 @@ function Popup({ isOpen, onClose, feedId, crewId }){
         const fetchPostDetail = async () => {
             if (feedId) {
                 try {
+                    // 백엔드 API 경로: /crews/{crewId}/feeds/{feedId}
                     const response = await communityAPI.getCommunityDetail(crewId, feedId);
-                    setPost(response.data.data);
                     
-                    // 댓글 데이터가 있는지 확인하고 설정
-                    if (response.data.data.comments) {
-                        setComments(response.data.data.comments);
+                    // FeedDetailResDto 형식에 맞게 데이터 처리
+                    const feedData = response.data.data;
+                    setPost(feedData);
+                    
+                    // 댓글 데이터 설정 - 백엔드에서는 comments 필드에 담김
+                    if (feedData.comments) {
+                        setComments(feedData.comments);
                     }
                     
                     setCurrentImageIndex(0); // 팝업이 열릴 때마다 첫 번째 이미지부터 보여주기
@@ -95,13 +100,14 @@ function Popup({ isOpen, onClose, feedId, crewId }){
         setNewComment(e.target.value);
     };
 
-    // 댓글 제출 핸들러
+    // 댓글 제출 핸들러 - 백엔드 API 형식에 맞게 수정
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
         if (!newComment.trim() || isSubmitting) return;
 
         setIsSubmitting(true);
         try {
+            // 백엔드 API 경로: /crews/{crewId}/feeds/{feedId}/comments
             const commentData = {
                 content: newComment
             };
@@ -138,13 +144,14 @@ function Popup({ isOpen, onClose, feedId, crewId }){
         setNewReply(e.target.value);
     };
     
-    // 대댓글 제출 핸들러
+    // 대댓글 제출 핸들러 - 백엔드 API 형식에 맞게 수정
     const handleReplySubmit = async (e) => {
         e.preventDefault();
         if (!newReply.trim() || isSubmitting || !replyToId) return;
 
         setIsSubmitting(true);
         try {
+            // 백엔드 API 경로: /crews/{crewId}/feeds/{feedId}/comments/{parentId}/replies
             const replyData = {
                 content: newReply
             };
@@ -167,12 +174,14 @@ function Popup({ isOpen, onClose, feedId, crewId }){
     // 데이터 새로고침 함수
     const refreshData = async () => {
         try {
+            // 백엔드 API 경로: /crews/{crewId}/feeds/{feedId}
             const response = await communityAPI.getCommunityDetail(crewId, feedId);
-            setPost(response.data.data);
+            const feedData = response.data.data;
+            setPost(feedData);
             
             // 댓글 데이터 설정
-            if (response.data.data.comments) {
-                setComments(response.data.data.comments);
+            if (feedData.comments) {
+                setComments(feedData.comments);
             }
         } catch (error) {
             console.error('데이터 새로고침 실패:', error);
@@ -204,12 +213,13 @@ function Popup({ isOpen, onClose, feedId, crewId }){
         setEditCommentContent('');
     };
     
-    // 댓글 수정 저장
+    // 댓글 수정 저장 - 백엔드 API 형식에 맞게 수정
     const saveEditComment = async (commentId) => {
         if (!editCommentContent.trim() || isSubmitting) return;
         
         setIsSubmitting(true);
         try {
+            // 백엔드 API 경로: /crews/{crewId}/feeds/{feedId}/comments/{commentId}
             const commentData = {
                 content: editCommentContent
             };
@@ -228,10 +238,11 @@ function Popup({ isOpen, onClose, feedId, crewId }){
         }
     };
     
-    // 댓글 삭제
+    // 댓글 삭제 - 백엔드 API 형식에 맞게 수정
     const handleDeleteComment = async (commentId) => {
         if (window.confirm('정말 삭제하시겠습니까?')) {
             try {
+                // 백엔드 API 경로: /crews/{crewId}/feeds/{feedId}/comments/{commentId}
                 await communityAPI.deleteComment(crewId, feedId, commentId);
                 
                 // 댓글 삭제 후 데이터 다시 가져오기
@@ -245,11 +256,13 @@ function Popup({ isOpen, onClose, feedId, crewId }){
 
     if (!isOpen || !post) return null;
 
+    // 현재 사용자가 게시물 작성자인지 확인
     const isOwner = post.writer === userInfo?.nickname;
 
     return (
         <S.PopupContainer onClick={onClose}>
             <S.PopupContent onClick={(e) => e.stopPropagation()}>
+                {/* 이미지 갤러리 - 백엔드의 PhotoResDto 형식에 맞게 조정 */}
                 {post.photos && post.photos.length > 0 && (
                     <S.ImageGallery>
                         <S.SlideContainer>
@@ -287,17 +300,18 @@ function Popup({ isOpen, onClose, feedId, crewId }){
                     </S.ImageGallery>
                 )}
                 <S.ContentContainer>
-                        {isOwner && (
-                            <S.PopupButton>
-                                <BsThreeDotsVertical onClick={toggleMenu}/>
-                                {showMenu && (
-                                    <EditDeleteMenu
-                                        crewId={crewId}
-                                        feedId={feedId}
-                                    />
-                                )}
-                            </S.PopupButton>
-                        )}
+                    {/* 게시물 수정/삭제 메뉴 - 작성자만 볼 수 있음 */}
+                    {isOwner && (
+                        <S.PopupButton>
+                            <BsThreeDotsVertical onClick={toggleMenu}/>
+                            {showMenu && (
+                                <EditDeleteMenu
+                                    crewId={crewId}
+                                    feedId={feedId}
+                                />
+                            )}
+                        </S.PopupButton>
+                    )}
                     <S.PopupTitle>
                         <S.ProfileImage
                             src={post.profileImage}
@@ -311,16 +325,17 @@ function Popup({ isOpen, onClose, feedId, crewId }){
                             dangerouslySetInnerHTML={{ __html: post.content }}
                         />
                         <S.ContentButtonContainer>
-                        <LikeButton
-                            crewId={crewId}
-                            feedId={post.feedId}
-                            initialLiked={post.isLiked}
-                            initialCount={post.likeCount}
-                        />
+                            <LikeButton
+                                crewId={crewId}
+                                feedId={post.feedId}
+                                initialLiked={post.isLiked}
+                                initialCount={post.likeCount}
+                            />
                         </S.ContentButtonContainer>
                     </S.Content>
                     <S.CommentContainer>
                         <S.CommentList>
+                            {/* 댓글 목록 - 백엔드의 CommentResDto 형식에 맞게 조정 */}
                             {comments && comments.length > 0 ? (
                                 comments.map((comment) => (
                                     <div key={comment.commentId}>
@@ -333,7 +348,7 @@ function Popup({ isOpen, onClose, feedId, crewId }){
                                                 <S.CommentWriter>{comment.writer}</S.CommentWriter>
                                                 <S.CommentTimeAgo>{getTimeAgo(comment.createdAt)}</S.CommentTimeAgo>
                                                 
-                                                {/* 댓글 작성자 확인 후 수정/삭제 메뉴 추가 */}
+                                                {/* 댓글 작성자 확인 후 수정/삭제 메뉴 */}
                                                 {comment.writer === userInfo?.nickname && (
                                                     <S.CommentMenuWrapper>
                                                         <BsThreeDotsVertical onClick={(e) => toggleCommentMenu(e, comment.commentId)} />
@@ -395,7 +410,7 @@ function Popup({ isOpen, onClose, feedId, crewId }){
                                                         <S.CommentWriter>{reply.writer}</S.CommentWriter>
                                                         <S.CommentTimeAgo>{getTimeAgo(reply.createdAt)}</S.CommentTimeAgo>
                                                         
-                                                        {/* 대댓글 작성자 확인 후 수정/삭제 메뉴 추가 */}
+                                                        {/* 대댓글 작성자 확인 후 수정/삭제 메뉴 */}
                                                         {reply.writer === userInfo?.nickname && (
                                                             <S.CommentMenuWrapper>
                                                                 <BsThreeDotsVertical onClick={(e) => toggleCommentMenu(e, reply.commentId)} />

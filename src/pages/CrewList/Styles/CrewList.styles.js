@@ -81,3 +81,22 @@ export const CrewMemberCount = styled.p`
     color: #352EAE;
     font-weight: 500;
 `;
+
+export const CrewListContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    margin: -15px; // CrewCard의 margin을 상쇄
+`;
+
+export const LoadingMessage = styled.div`
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #666;
+`;
+
+export const CrewGrid = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    margin: -15px; // 카드 마진 상쇄
+`;

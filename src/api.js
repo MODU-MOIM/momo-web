@@ -123,7 +123,21 @@ export const crewAPI = {
     getReqJoinUserList: (crewId) => api.get(`/crews/${crewId}/join-requests`),
     acceptJoinReq: (crewId, joinRequestId) => api.post(`/crews/${crewId}/join-requests/${joinRequestId}/accept`),
     rejectJoinReq: (crewId, joinRequestId) => api.post(`/crews/${crewId}/join-requests/${joinRequestId}/reject`),
+
+    //크루 검색 api
+    searchCrews: (params) => {
+        const queryParams = new URLSearchParams();
+
+        if (params.name) queryParams.append('name', params.name);
+        if (params.region) queryParams.append('region', params.region);
+        if (params.category) queryParams.append('category', params.category);
+        if (params.ageGroup) queryParams.append('age-group', params.ageGroup);
+
+        const queryString = queryParams.toString();
+        return api.get(`/crews/type?${queryString ? `${queryString}&` : ''}`);
+    },
 };
+
 export const crewMembersAPI = {
     getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),
     kickoutMember: (crewId, memberId) => api.delete(`/crews/${crewId}/members/${memberId}`),
@@ -172,7 +186,14 @@ export const archiveAPI = {
     uploadArchiveImage: (crewId, file) => {
         const formData = new FormData();
         formData.append('archiveImage', file);
-        return api.post(`/crews/${crewId}/archives/images`, formData);
+
+        const token = localStorage.getItem('token');
+
+        return api.post(`/crews/${crewId}/archives/images`, formData, {
+            headers: {
+                'Authorization': token
+            }
+        });
     },
     getArchiveList: (crewId) => api.get(`/crews/${crewId}/archives`),
     getArchiveDetail: (crewId, archiveId) => api.get(`/crews/${crewId}/archives/${archiveId}`),
