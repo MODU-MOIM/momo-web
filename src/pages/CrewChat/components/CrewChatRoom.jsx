@@ -8,7 +8,7 @@ export default function CrewChatRoom({chatRoom, onClose}) {
     const roomId = chatRoom.roomId;
     const [message, setMessage] = useState('');
     const token = localStorage.getItem('token');
-    const { messages, connect, disconnect, enterChatRoom, sendMessage } = useChat(token, roomId);
+    const { messages, connect, disconnect, enterChatRoom, sendMessage, stompClient } = useChat(token, roomId);
 
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
@@ -28,10 +28,14 @@ export default function CrewChatRoom({chatRoom, onClose}) {
     useEffect(() => {
         async function JoinChat() {
             await connect();
-            enterChatRoom();
         }
         JoinChat();
     },[]);
+    useEffect(() => {
+        if (stompClient) {
+            enterChatRoom();
+        }
+    }, [stompClient]);
 
     useEffect(() => {
         async function ChatHistory() {

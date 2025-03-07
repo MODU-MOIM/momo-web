@@ -15,7 +15,7 @@ const useChat = (token, roomId) => {
                 console.log("Disconnected");
             }
         };
-    }, [stompClient]);
+    }, []);
 
     const connect = () => {
         if (!token || !roomId) {
@@ -74,7 +74,7 @@ const useChat = (token, roomId) => {
         setMessages((prevMessages) => [...prevMessages, msg]);
     };
 
-    return { messages, connect, disconnect, enterChatRoom, sendMessage };
+    return { messages, connect, disconnect, enterChatRoom, sendMessage, stompClient };
 };
 
 export default useChat;
