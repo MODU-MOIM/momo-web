@@ -33,7 +33,7 @@ export default function ChatRoomList({onClose}) {
     const createRoom = async() => {
         const SubmitData = {
             crewId: crewId,
-            name: '채팅방이름길이테스트하는중입니다'
+            name: '채팅방생성테스트'
         }
         try {
             const response = await ChatAPI.createChatRoom(SubmitData);

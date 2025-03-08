@@ -7,7 +7,8 @@ import { ChatAPI } from "../../../api";
 export default function CrewChatRoom({chatRoom, onClose}) {
     const roomId = chatRoom.roomId;
     const [message, setMessage] = useState('');
-    const token = localStorage.getItem('token');
+    const [messageList, setMessageList] = useState([]);
+    const token = localStorage.getItem('token')?.replace('Bearer ', '');    // 저장된 토큰에서 'Bearer ' 제거
     const { messages, connect, disconnect, enterChatRoom, sendMessage, stompClient } = useChat(token, roomId);
 
     const handlePanelClick = (e) => {
@@ -23,7 +24,6 @@ export default function CrewChatRoom({chatRoom, onClose}) {
             // setMessage('');
         }
     }
-    console.log(messages);
 
     useEffect(() => {
         async function JoinChat() {
@@ -40,8 +40,9 @@ export default function CrewChatRoom({chatRoom, onClose}) {
     useEffect(() => {
         async function ChatHistory() {
             try {
-                const response = await ChatAPI.getMyChatRoom(roomId);
-                console.log(response);
+                const response = await ChatAPI.getChatRoomHistory(roomId);
+                console.log(response.data.data);
+                setMessageList(response.data.data);
             } catch (error) {
                 console.error("채팅 히스토리 불러오기 실패", error);
             }
@@ -76,7 +77,7 @@ export default function CrewChatRoom({chatRoom, onClose}) {
                     overflowY: 'auto',
                     padding: '10px'
                 }}>
-                    {messages.map((msg, index) => (
+                    {messageList.map((msg, index) => (
                         <div key={index}>
                         [{msg.sendAt}] {msg.writerName} ({msg.role}): {msg.message}
                         </div>

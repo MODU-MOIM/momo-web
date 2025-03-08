@@ -5,8 +5,6 @@ import { Stomp } from "@stomp/stompjs";
 const useChat = (token, roomId) => {
     const [stompClient, setStompClient] = useState(null);
     const [messages, setMessages] = useState([]);
-    // const [token, setToken] = useState("");
-    // const [roomId, setRoomId] = useState("");
 
     useEffect(() => {
         return () => {
