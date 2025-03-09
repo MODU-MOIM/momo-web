@@ -139,8 +139,6 @@ export const SendButton = styled.button`
 `;
 
 export const MessagesContainer = styled.div`
-    display: flex;
-    flex-direction: column-reverse;
     height: 410px;
     overflow: scroll;
     padding: 0px 20px;

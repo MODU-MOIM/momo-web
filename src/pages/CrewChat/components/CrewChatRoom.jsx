@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useChat from "../../../hooks/useChat";
 import * as S from "../Styles/CrewChat.styles";
 import { AiOutlineClose } from "react-icons/ai";
@@ -7,6 +7,7 @@ import BadgeImage from "../../../assets/badge.png"
 
 export default function CrewChatRoom({chatRoom, onClose}) {
     const roomId = chatRoom.roomId;
+    const endMsgRef = useRef(null);
     const [message, setMessage] = useState('');
     const [messageList, setMessageList] = useState([]);
     const [myNickname, setMyNickname] = useState('');
@@ -42,7 +43,7 @@ export default function CrewChatRoom({chatRoom, onClose}) {
         async function ChatHistory() {
             try {
                 const response = await ChatAPI.getChatRoomHistory(roomId);
-                console.log(response.data.data);
+                // console.log(response.data.data);
                 setMessageList(response.data.data);
             } catch (error) {
                 console.error("채팅 히스토리 불러오기 실패", error);
@@ -76,6 +77,13 @@ export default function CrewChatRoom({chatRoom, onClose}) {
         else if (role === 'ADMIN') return '관리자';
         else return '멤버';
     }
+
+    useEffect(() => {
+        // setTimeout을 사용하여 메시지리스트 렌더링이 된 후의 속도에 맞추어 스크롤바를 아래로 이동
+        setTimeout(() => {
+            endMsgRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 1000);
+    }, [messages]);
 
     return(
         <S.Panel onClick={handlePanelClick}>
@@ -139,6 +147,7 @@ export default function CrewChatRoom({chatRoom, onClose}) {
                             </S.BoxContainer>
                         </S.MessageContainer>
                     ))}
+                    <div ref={endMsgRef} disabled/> {/* 스크롤바 기능이 있는 태그 안에 ref 적용 */}
                 </S.MessagesContainer>
                 <S.SendMsg>
                     <S.InputMsg
