@@ -46,7 +46,9 @@ export const CloseButton = styled.button`
 `;
 
 export const ListContainer = styled.div`
-    
+    width: 100%;
+    height: 85%;
+    overflow: scroll;
 `;
 
 export const RoomContainer = styled.div`
@@ -74,12 +76,13 @@ export const RoomName = styled.div`
 export const MemNums = styled.div`
     height: 20px;
     margin: 15px 0px 0px 15px;
+    color: #929292;
 `;
 
 export const AddButton = styled.button`
     position: fixed;
-    bottom: 5%;
-    right: 10%;
+    bottom: 43%;
+    right: 20%;
     padding: 5px;
     margin: 10px;
 `;
@@ -88,17 +91,14 @@ export const AddButton = styled.button`
 
 export const Name = styled.div`
     display: flex;
-    padding-left: 30px;
-    padding-bottom: 15px;
-    background-color: aqua;
+    padding: 0px 0px 20px 30px;
 `;
 
 export const SendMsg = styled.div`
     display: flex;
     justify-content: flex-end;
-    width: 350px;
+    width: 400px;
     height: 100px;
-    background-color: aquamarine;
     position: fixed;
     bottom: 5%;
 `;
@@ -109,4 +109,82 @@ export const InputMsg = styled.input`
 `;
 
 export const SendButton = styled.button`
+`;
+
+export const MessagesContainer = styled.div`
+    height: 410px;
+    overflow: scroll;
+    padding: 0px 20px;
+`;
+
+export const MessageContainer = styled.div`
+    display: flex;
+    margin: 20px 0px;
+`;
+
+export const ProfileWrapper = styled.div`
+    position: relative;  // 배지 위치 설정 기준
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    margin-right: 5px;
+`;
+
+export const ProfileImage = styled.img`
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid red;
+    margin: 5px 10px 0px 0px;
+    position: relative;
+`;
+
+export const Badge = styled.img`
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    /* border: 1px solid red; */
+
+    position: absolute;
+    bottom: 0;
+    right: 5%;
+`;
+
+export const Profile = styled.div`
+    display: flex;
+    align-items: flex-end;
+`;
+
+export const Role = styled.div`
+    margin-left: 5px;
+    font-size: 12px;
+    color: #352EAE;
+`;
+
+export const BoxContainer = styled.div`
+`;
+
+export const MessageBox = styled.div`
+    display: flex;
+    align-items: flex-end;
+`;
+
+export const Message = styled.div`
+    max-width: 230px;
+    /* width: auto; */
+    /* height: 40px; */
+    width: fit-content;
+    margin-top: 10px;
+    padding: 7px 10px;
+    border-radius: 10px;
+    border: 3px solid #352EAE;
+    background-color: #fff;
+    box-shadow: 0px 2px 5px 0px gray;
+    font-size: 14px;
+`;
+
+export const MessageTime = styled.div`
+    margin-left: 5px;
+    font-size: 12px;
+    color: #797979;
 `;

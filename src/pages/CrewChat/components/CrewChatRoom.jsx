@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import useChat from "../../../hooks/useChat";
 import * as S from "../Styles/CrewChat.styles";
 import { AiOutlineClose } from "react-icons/ai";
-import { ChatAPI } from "../../../api";
+import { authAPI, ChatAPI } from "../../../api";
+import BadgeImage from "../../../assets/badge.png"
 
 export default function CrewChatRoom({chatRoom, onClose}) {
     const roomId = chatRoom.roomId;
     const [message, setMessage] = useState('');
     const [messageList, setMessageList] = useState([]);
+    const [myNickname, setMyNickname] = useState('');
     const token = localStorage.getItem('token')?.replace('Bearer ', '');    // 저장된 토큰에서 'Bearer ' 제거
     const { messages, connect, disconnect, enterChatRoom, sendMessage, stompClient } = useChat(token, roomId);
 
@@ -21,7 +23,6 @@ export default function CrewChatRoom({chatRoom, onClose}) {
     const handleSendMsg = () => {
         if(message.trim()){
             sendMessage(message, setMessage);
-            // setMessage('');
         }
     }
 
@@ -48,14 +49,40 @@ export default function CrewChatRoom({chatRoom, onClose}) {
             }
         }
         ChatHistory();
-    },[messages])
+    },[messages]);
+
+    useEffect(() => {
+        async function fetchMyName() {
+            try {
+                const response = await authAPI.getUserInfo();
+                setMyNickname(response.data.data.nickname);
+            } catch (error) {
+                console.error("유저 정보 불러오기 실패", error);
+            }
+        }
+        fetchMyName();
+    },[]);
+
+    const formatSendAt = (sendat) => {
+        const SendAt = new Date(sendat);
+        const hours = SendAt.getHours().toString().padStart(2, '0');
+        const minutes = SendAt.getMinutes().toString().padStart(2, '0');
+        return {
+            time: `${hours}:${minutes}`
+        }
+    }
+    const formatRole = (role) => {
+        if (role == 'LEADER') return '리더';
+        else if (role == 'ADMIN') return '관리자';
+        else return '멤버';
+    }
 
     return(
         <S.Panel onClick={handlePanelClick}>
             <S.ChatContainer
                 onClick={(e) => e.stopPropagation()}
                 style={{
-                    width: '350px',
+                    width: '400px',
                     height: '610px'
                 }}
             >
@@ -67,22 +94,52 @@ export default function CrewChatRoom({chatRoom, onClose}) {
                 <S.Name>
                     <S.RoomName
                         style={{
-                            width:'auto'
+                            width:'auto',
+                            marginTop: '0px',
                         }}
-                    >{chatRoom.name}</S.RoomName>
-                    <S.MemNums>{chatRoom.chatMemberNumbers}</S.MemNums>
+                    >
+                        {chatRoom.name}
+                    </S.RoomName>
+                    <S.MemNums
+                        style={{
+                            marginTop: '0px',
+                        }}
+                    >
+                        {chatRoom.chatMemberNumbers}
+                    </S.MemNums>
                 </S.Name>
-                <div style={{
-                    height: '450px',
-                    overflowY: 'auto',
-                    padding: '10px'
-                }}>
+                <S.MessagesContainer>
                     {messageList.map((msg, index) => (
-                        <div key={index}>
-                        [{msg.sendAt}] {msg.writerName} ({msg.role}): {msg.message}
-                        </div>
+                        <S.MessageContainer key={index}>
+                            <S.ProfileWrapper>
+                                <S.ProfileImage/>
+                                {msg.role !== 'MEMBER' ? (
+                                    <S.Badge src={BadgeImage}/>
+                                    ):(
+                                        null
+                                    )}
+                            </S.ProfileWrapper>
+                            <S.BoxContainer>
+                                <S.Profile>
+                                    {msg.writerName}
+                                    {msg.role !== 'MEMBER' ? (
+                                        <S.Role>{formatRole(msg.role)}</S.Role>
+                                    ):(
+                                        null
+                                    )}
+                                </S.Profile>
+                                <S.MessageBox>
+                                    <S.Message
+                                        style={msg.writerName == myNickname ? {backgroundColor: '#CFCDEF'}:null}
+                                    >
+                                        {msg.message}
+                                    </S.Message>
+                                    <S.MessageTime>{formatSendAt(msg.sendAt).time}</S.MessageTime>
+                                </S.MessageBox>
+                            </S.BoxContainer>
+                        </S.MessageContainer>
                     ))}
-                </div>
+                </S.MessagesContainer>
                 <S.SendMsg>
                     <S.InputMsg
                         placeholder="메시지 입력"
