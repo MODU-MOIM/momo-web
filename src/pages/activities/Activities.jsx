@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { archiveAPI } from '../../api';
 import * as S from "./Styles/Activities.styles";
+import CrewChat from '../CrewChat/CrewChat';
 
 const Activities = () => {
     // 상태 관리
@@ -82,6 +83,7 @@ const Activities = () => {
 
     return(
         <S.Container>
+            <CrewChat/>
             <S.FloatingButton onClick={() => navigate(`/crews/${crewId}/crewActivity/write`)}>
                 글작성
             </S.FloatingButton>

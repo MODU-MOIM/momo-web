@@ -7,6 +7,7 @@ import { getTimeAgo } from './components/getTimeAgo';
 import Popup from './components/Popup';
 import striptHtmlAndTruncate from './components/textUtils';
 import * as S from "./Styles/Community.styles";
+import CrewChat from '../CrewChat/CrewChat';
 
 const Community = () => {
     const navigate = useNavigate();
@@ -121,6 +122,7 @@ const Community = () => {
 
     return (
         <S.Container>
+            <CrewChat/>
             {isMember && (
                 <S.List>
                     <S.FloatingButton onClick={() => navigate(`/crews/${crewId}/crewCommunity/write`)}>
