@@ -72,8 +72,8 @@ export default function CrewChatRoom({chatRoom, onClose}) {
         }
     }
     const formatRole = (role) => {
-        if (role == 'LEADER') return '리더';
-        else if (role == 'ADMIN') return '관리자';
+        if (role === 'LEADER') return '리더';
+        else if (role === 'ADMIN') return '관리자';
         else return '멤버';
     }
 
@@ -130,7 +130,7 @@ export default function CrewChatRoom({chatRoom, onClose}) {
                                 </S.Profile>
                                 <S.MessageBox>
                                     <S.Message
-                                        style={msg.writerName == myNickname ? {backgroundColor: '#CFCDEF'}:null}
+                                        style={msg.writerName === myNickname ? {backgroundColor: '#CFCDEF'}:null}
                                     >
                                         {msg.message}
                                     </S.Message>
@@ -148,6 +148,8 @@ export default function CrewChatRoom({chatRoom, onClose}) {
                         onKeyUp={(e) => e.key === "Enter" && handleSendMsg}
                     />
                     <S.SendButton
+                        isMessage={message !== ''}
+                        disabled={message === ''}
                         onClick={handleSendMsg}
                     >전송</S.SendButton>
                 </S.SendMsg>

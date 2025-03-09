@@ -95,23 +95,44 @@ export const Name = styled.div`
 `;
 
 export const SendMsg = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    width: 400px;
-    height: 100px;
+    width: 398px;
+    height: 110px;
     position: fixed;
-    bottom: 5%;
+    bottom: 5.1%;
+    right: 10.05%;
+    background-color: #fff;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 `;
 
-export const InputMsg = styled.input`
+export const InputMsg = styled.textarea`
     display: block;
     width: 100%;
+    height: 60%;
+    margin-top: 15px;
+    padding: 0px 20px;
+    resize: none;
+    border: none;
+    outline: none;
+    /* background-color: aqua; */
 `;
 
 export const SendButton = styled.button`
+    margin-left: 330px;
+    padding: 3px 10px;
+    border: none;
+    color: ${(props) => (props.isMessage ? "#fff" : "#8C8C8C")};
+    background-color: ${(props) => (props.isMessage ? "#5E58B4" : "#F0F0F0")};
+    cursor: ${(props) => (props.isMessage ? "pointer" : "auto")};
+
+    &:hover{
+        background-color: ${(props) => (props.isMessage ? "#352EAE" : "#F0F0F0")}
+    }
 `;
 
 export const MessagesContainer = styled.div`
+    display: flex;
+    flex-direction: column-reverse;
     height: 410px;
     overflow: scroll;
     padding: 0px 20px;
