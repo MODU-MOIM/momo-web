@@ -79,10 +79,18 @@ export const MemNums = styled.div`
     color: #929292;
 `;
 
+export const NewName = styled.input`
+    width: 190px;
+    padding: 5px;
+    position: fixed;
+    bottom: 49%;
+    right: 14%;
+`;
+
 export const AddButton = styled.button`
     position: fixed;
-    bottom: 43%;
-    right: 20%;
+    bottom: 48%;
+    right: 10%;
     padding: 5px;
     margin: 10px;
 `;
