@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { FaTrashAlt } from "react-icons/fa";
 
 // ChattingList.jsx
 
@@ -97,9 +98,22 @@ export const AddButton = styled.button`
 
 // CrewChatRoom.jsx
 
+export const TopContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
 export const Name = styled.div`
     display: flex;
     padding: 0px 0px 20px 30px;
+`;
+
+export const DeleteButton = styled(FaTrashAlt)`
+    margin-right: 30px;
+    color: red;
+    &:hover{
+        color: purple;
+    }
 `;
 
 export const SendMsg = styled.div`

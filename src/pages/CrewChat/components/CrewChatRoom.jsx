@@ -17,7 +17,7 @@ export default function CrewChatRoom({chatRoom, onClose}) {
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
             onClose();
-            disconnect();
+            disconnect();  // 채팅방 나가면 웹소켓 연결도 끊김
         }
     }
 
@@ -27,12 +27,23 @@ export default function CrewChatRoom({chatRoom, onClose}) {
         }
     }
 
+    const handleDelete = async() => {
+        try {
+            const response = await ChatAPI.deleteChatRoom(roomId);
+            console.log(response);
+        } catch (error) {
+            console.error("채팅방 삭제 실패", error);
+        }
+    }
+
+    // 웹소켓 연결 (채팅방 연결 및 구독)
     useEffect(() => {
         async function JoinChat() {
             await connect();
         }
         JoinChat();
     },[]);
+    // 채팅방 입장
     useEffect(() => {
         if (stompClient) {
             enterChatRoom();
@@ -52,6 +63,7 @@ export default function CrewChatRoom({chatRoom, onClose}) {
         ChatHistory();
     },[messages]);
 
+    // 내 닉네임 설정
     useEffect(() => {
         async function fetchMyName() {
             try {
@@ -64,6 +76,7 @@ export default function CrewChatRoom({chatRoom, onClose}) {
         fetchMyName();
     },[]);
 
+    // 메시지 senAt 시간 데이터 포맷
     const formatSendAt = (sendat) => {
         const SendAt = new Date(sendat);
         const hours = SendAt.getHours().toString().padStart(2, '0');
@@ -72,6 +85,7 @@ export default function CrewChatRoom({chatRoom, onClose}) {
             time: `${hours}:${minutes}`
         }
     }
+    // 영어로 적힌 role 한국어로 변경
     const formatRole = (role) => {
         if (role === 'LEADER') return '리더';
         else if (role === 'ADMIN') return '관리자';
@@ -99,23 +113,26 @@ export default function CrewChatRoom({chatRoom, onClose}) {
                         <AiOutlineClose size={18}/>
                     </S.CloseButton>
                 </S.DeleteContainer>
-                <S.Name>
-                    <S.RoomName
-                        style={{
-                            width:'auto',
-                            marginTop: '0px',
-                        }}
-                    >
-                        {chatRoom.name}
-                    </S.RoomName>
-                    <S.MemNums
-                        style={{
-                            marginTop: '0px',
-                        }}
-                    >
-                        {chatRoom.chatMemberNumbers}
-                    </S.MemNums>
-                </S.Name>
+                <S.TopContainer>
+                    <S.Name>
+                        <S.RoomName
+                            style={{
+                                width:'auto',
+                                marginTop: '0px',
+                            }}
+                        >
+                            {chatRoom.name}
+                        </S.RoomName>
+                        <S.MemNums
+                            style={{
+                                marginTop: '0px',
+                            }}
+                        >
+                            {chatRoom.chatMemberNumbers}
+                        </S.MemNums>
+                    </S.Name>
+                    <S.DeleteButton onClick={handleDelete}/>
+                </S.TopContainer>
                 <S.MessagesContainer>
                     {messageList.map((msg, index) => (
                         <S.MessageContainer key={index}>
