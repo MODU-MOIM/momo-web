@@ -31,6 +31,9 @@ export default function CrewChatRoom({chatRoom, onClose}) {
         try {
             const response = await ChatAPI.deleteChatRoom(roomId);
             console.log(response);
+            if(response.data.status === 200){
+                onClose();
+            }
         } catch (error) {
             console.error("채팅방 삭제 실패", error);
         }
@@ -120,24 +123,27 @@ export default function CrewChatRoom({chatRoom, onClose}) {
                                 width:'auto',
                                 marginTop: '0px',
                             }}
-                        >
+                            >
                             {chatRoom.name}
                         </S.RoomName>
                         <S.MemNums
                             style={{
                                 marginTop: '0px',
                             }}
-                        >
+                            >
                             {chatRoom.chatMemberNumbers}
                         </S.MemNums>
                     </S.Name>
-                    <S.DeleteButton onClick={handleDelete}/>
+                    {/* 리더에게만 채팅방 삭제 버튼 보이도록 */}
+                    {chatRoom.leaderNickname == myNickname ? (
+                        <S.DeleteButton onClick={handleDelete}/>
+                    ) : null}
                 </S.TopContainer>
                 <S.MessagesContainer>
                     {messageList.map((msg, index) => (
                         <S.MessageContainer key={index}>
                             <S.ProfileWrapper>
-                                <S.ProfileImage/>
+                                <S.ProfileImage src={msg.profileImage}/>
                                 {msg.role !== 'MEMBER' ? (
                                     <S.Badge src={BadgeImage}/>
                                     ):(
