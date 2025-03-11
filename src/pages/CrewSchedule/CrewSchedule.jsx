@@ -6,6 +6,7 @@ import moment from "moment";
 import ViewScheduleBox from "./components/ViewScheduleBox";
 import { crewAPI, scheduleAPI } from "../../api";
 import { useParams } from "react-router-dom";
+import CrewChat from "../CrewChat/CrewChat";
 
 
 export default function CrewSchedule() {
@@ -111,6 +112,7 @@ export default function CrewSchedule() {
     },[isClickedAddButton]);
     return(
         <Wrapper>
+            <CrewChat/>
             <FloatingMenu/>
             <CalendarContainer 
                 // onClick={handlePanelClick}

@@ -311,7 +311,7 @@ const MyPage = ({ closeModal }) => {
                                             {crew.name}
                                         </S.CrewName>
                                         <S.CrewMember>
-                                            {crew.minMembers} / {crew.maxMembers}
+                                            {crew.memberCount} / {crew.maxMembers}
                                         </S.CrewMember>
                                     </S.CrewItem>
                                 ))}

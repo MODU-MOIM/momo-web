@@ -5,8 +5,6 @@ import { Stomp } from "@stomp/stompjs";
 const useChat = (token, roomId) => {
     const [stompClient, setStompClient] = useState(null);
     const [messages, setMessages] = useState([]);
-    // const [token, setToken] = useState("");
-    // const [roomId, setRoomId] = useState("");
 
     useEffect(() => {
         return () => {
@@ -15,7 +13,7 @@ const useChat = (token, roomId) => {
                 console.log("Disconnected");
             }
         };
-    }, [stompClient]);
+    }, []);
 
     const connect = () => {
         if (!token || !roomId) {
@@ -74,7 +72,7 @@ const useChat = (token, roomId) => {
         setMessages((prevMessages) => [...prevMessages, msg]);
     };
 
-    return { messages, connect, disconnect, enterChatRoom, sendMessage };
+    return { messages, connect, disconnect, enterChatRoom, sendMessage, stompClient };
 };
 
 export default useChat;

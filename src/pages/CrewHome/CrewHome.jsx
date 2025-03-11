@@ -69,7 +69,7 @@ export default function CrewHome() {
                 const regions = resCrewData.regions.map(region => region.regionDepth2).join(', ');
                 setCrewData({
                     region: regions,
-                    currentNum: members.length,
+                    currentNum: resCrewData.memberCount,
                     maxMembers: resCrewData.maxMembers,
                     crewIntro: resCrewData.description
                 });
