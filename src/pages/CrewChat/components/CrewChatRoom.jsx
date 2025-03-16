@@ -5,7 +5,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { authAPI, ChatAPI } from "../../../api";
 import BadgeImage from "../../../assets/badge.png"
 
-export default function CrewChatRoom({chatRoom, onClose}) {
+export default function CrewChatRoom({chatRoom, fetchChatRooms,onClose}) {
     const roomId = chatRoom.roomId;
     const endMsgRef = useRef(null);
     const [message, setMessage] = useState('');
@@ -30,9 +30,10 @@ export default function CrewChatRoom({chatRoom, onClose}) {
     const handleDelete = async() => {
         try {
             const response = await ChatAPI.deleteChatRoom(roomId);
-            console.log(response);
+            // console.log(response);
             if(response.data.status === 200){
                 onClose();
+                fetchChatRooms();
             }
         } catch (error) {
             console.error("채팅방 삭제 실패", error);
@@ -180,7 +181,7 @@ export default function CrewChatRoom({chatRoom, onClose}) {
                         onKeyUp={(e) => e.key === "Enter" && handleSendMsg}
                     />
                     <S.SendButton
-                        isMessage={message !== ''}
+                        $isMessage={message !== ''}
                         disabled={message === ''}
                         onClick={handleSendMsg}
                     >전송</S.SendButton>
