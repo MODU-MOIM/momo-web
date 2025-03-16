@@ -143,12 +143,12 @@ export const SendButton = styled.button`
     margin-left: 330px;
     padding: 3px 10px;
     border: none;
-    color: ${(props) => (props.isMessage ? "#fff" : "#8C8C8C")};
-    background-color: ${(props) => (props.isMessage ? "#5E58B4" : "#F0F0F0")};
-    cursor: ${(props) => (props.isMessage ? "pointer" : "auto")};
+    color: ${(props) => (props.$isMessage ? "#fff" : "#8C8C8C")};
+    background-color: ${(props) => (props.$isMessage ? "#5E58B4" : "#F0F0F0")};
+    cursor: ${(props) => (props.$isMessage ? "pointer" : "auto")};
 
     &:hover{
-        background-color: ${(props) => (props.isMessage ? "#352EAE" : "#F0F0F0")}
+        background-color: ${(props) => (props.$isMessage ? "#352EAE" : "#F0F0F0")}
     }
 `;
 

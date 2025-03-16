@@ -43,23 +43,23 @@ export default function ChatRoomList({onClose}) {
             const response = await ChatAPI.createChatRoom(SubmitData);
             if(response.data.status == 200){
                 setNewChatName('');
+                fetchChatRooms();
             }
         } catch (error) {
             console.error("채팅방 생성 실패", error);
         }
     }
 
-    useEffect(() => {
-        async function fetchChatRooms(){
-            try {
-                const response = await ChatAPI.getMyChatRoom();
-                setChatRooms(response.data.data);
-            } catch (error) {
-                console.error("채팅방 목록 불러오기 실패", error);
-            }
+    // 크루 채팅방 목록 불러오기
+    // 크루 생성(ChatRoomList.jsx) 및 크루 삭제(CrewChatRoom.jsx)할 때만 실행할 수 있도록 useEffect 외부로 빼주었음.
+        const fetchChatRooms = async() => {
+        try {
+            const response = await ChatAPI.getMyChatRoom();
+            setChatRooms(response.data.data);
+        } catch (error) {
+            console.error("채팅방 목록 불러오기 실패", error);
         }
-        fetchChatRooms();
-    },[chatRooms]);
+    }
 
     useEffect(() => {
         // 멤버 목록
@@ -82,6 +82,8 @@ export default function ChatRoomList({onClose}) {
         }
         fetchMembers();
         fetchMyName();
+        // 처음 렌더링될 때 채팅방 리스트 불러오기
+        fetchChatRooms();
     },[]);
 
     return(
@@ -107,6 +109,7 @@ export default function ChatRoomList({onClose}) {
                     {isChatRoomOpen && (
                         <CrewChatRoom
                             chatRoom={chatRoom}
+                            fetchChatRooms={fetchChatRooms}
                             onClose={() => setIsChatRoomOpen(false)}
                         />
                     )}

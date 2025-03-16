@@ -21,7 +21,7 @@ const useChat = (token, roomId) => {
             return;
         }
 
-        const socket = new SockJS("/stomp/chat");
+        const socket = new SockJS(`${process.env.REACT_APP_BASE_URL}/stomp/chat`);
         const client = Stomp.over(socket);
         
         client.connect({ Authorization: `${token}` }, (frame) => {
