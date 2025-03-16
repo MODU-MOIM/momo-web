@@ -94,6 +94,7 @@ export default function CrewIntroEditor({setInfoContent}) {
             // console.log('최종 srcArray: ',srcArray);
             // console.log('최종 urlArray', urlArray);
             setInfoContent(updateContent);
+            alert("저장되었습니다.");
 
         } catch (error) {
             console.error('Error details:', {

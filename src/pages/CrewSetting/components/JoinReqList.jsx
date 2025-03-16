@@ -19,6 +19,10 @@ const JoinReqList = ({ onClose }) => {
     const handleAccept = async(userId) => {
         try {
             const response = crewAPI.acceptJoinReq(crewId, userId);
+            if (response.data.status === 200) {
+                // 성공하면 새로고침
+                window.location.reload();
+            }
         } catch (error) {
             console.error("수락 실패", error);
         }
@@ -26,6 +30,10 @@ const JoinReqList = ({ onClose }) => {
     const handleReject = async(userId) => {
         try {
             const response = crewAPI.rejectJoinReq(crewId, userId);
+            if (response.data.status === 200) {
+                // 성공하면 새로고침
+                window.location.reload();
+            }
         } catch (error) {
             console.error("거절 실패", error);
         }
@@ -37,16 +45,12 @@ const JoinReqList = ({ onClose }) => {
                 const response = await crewAPI.getReqJoinUserList(crewId);
                 const joinReqList = response.data.data;
                 setReqMembers(joinReqList || []);
-                if (response.data.status === 200) {
-                    // 성공하면 새로고침
-                    window.location.reload();
-                }
             } catch (error) {
                 console.error("요청 불러오기 실패", error);
             }
         }
         fetchJoinUserList();
-    },[reqMembers]);
+    },[]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
