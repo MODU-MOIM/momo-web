@@ -9,6 +9,7 @@ const CrewActivity = ({ onClose }) => {
     const [members, setMembers] = useState([]);
     const [visibleMembers, setVisibleMembers] = useState(3);
     const observerRef = useRef();
+
     const handlePanelClick = (e) => {
         if(e.target === e.currentTarget){
             onClose();
@@ -19,25 +20,25 @@ const CrewActivity = ({ onClose }) => {
         try {
             const response = await crewMembersAPI.kickoutMember(crewId, memberId);
             if (response.data.status === 200) {
-                // 성공하면 새로고침
-                window.location.reload();
+                // 성공하면 멤버 목록 새로고침
+                fetchMembers()
             }
         } catch (error) {
             console.error("탈퇴 실패", error);
         }
     }
-
-    useEffect(() => {
-        async function fetchMembers() {
-            try {
-                const response = await crewMembersAPI.getMemberList(crewId);
-                setMembers(response.data.data);
-            } catch (error) {
-                console.error("크루 멤버 읽기 실패", error);
-            }
+    const fetchMembers = async() => {
+        try {
+            const response = await crewMembersAPI.getMemberList(crewId);
+            setMembers(response.data.data);
+        } catch (error) {
+            console.error("크루 멤버 읽기 실패", error);
         }
+    }
+    
+    useEffect(() => {
         fetchMembers();
-    },[members]);
+    },[]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(

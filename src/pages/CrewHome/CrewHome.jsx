@@ -24,6 +24,9 @@ export default function CrewHome() {
             const userId = userResponse.data.data.id;
             // requestJoin
             const requestJoin = await crewAPI.requestsCrewJoin(crewId, userId);
+            if (requestJoin.data.status === 200) {
+                alert("가입 요청이 되었습니다");
+            }
         } catch (error) {
             switch (error.response.data.code) {
                 case "CM002":
