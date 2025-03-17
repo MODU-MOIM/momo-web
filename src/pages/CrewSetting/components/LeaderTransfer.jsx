@@ -18,6 +18,10 @@ const LeaderTransfer = ({ onClose }) => {
     const handleDelegate = async(memberId) => {
         try {
             const response = crewMembersAPI.delegateLeader(crewId, memberId);
+            if (response.data.status === 200) {
+                // 성공하면 새로고침
+                window.location.reload();
+            }
         } catch (error) {
             console.error("리더 위임 실패", error);
         }
@@ -28,10 +32,6 @@ const LeaderTransfer = ({ onClose }) => {
             try {
                 const response = await crewMembersAPI.getMemberList(crewId);
                 setMembers(response.data.data);
-                if (response.data.status === 200) {
-                    // 성공하면 새로고침
-                    window.location.reload();
-                }
             } catch (error) {
                 console.error("크루 멤버 읽기 실패", error);
             }
