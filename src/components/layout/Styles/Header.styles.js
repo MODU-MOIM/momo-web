@@ -210,18 +210,44 @@ export const CrewContent = styled.div`
 `;
 
 export const CrewList = styled.div`
+    display: flex;
+    flex-direction: column;
     width:100%;
+    gap: 10px;
+    max-height:400px;
+    overflow-y: auto;
+    padding-right: 10px;
+    overscroll-behavior: contain; // 스크롤 propagation 방지
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+  
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
 `;
 
 export const CrewItem = styled.div`
     width:100%;
-    height: 80px;
+    min-height: 80px;
     border-bottom:1px solid #797979;
     position: relative;
     display: flex;
     align-items: center;
-    padding:0 35px;
+    padding:10px 35px;
 `;
+
 
 export const CreateCrewButton = styled(RouterNavLink)`
     display: flex;
