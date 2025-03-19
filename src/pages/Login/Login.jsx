@@ -17,7 +17,7 @@ const handleKakaoLogin = () => {
 }
 
 function handleNaverLogin() {
-    window.location.href = `${process.env.REACT_APP_BASE_URL}/login/oauth2/code/naver`;
+    window.location.href = `${process.env.REACT_APP_BASE_URL}/oauth2/authorization/naver`;
 }
 
 const Login = () => {
