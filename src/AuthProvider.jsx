@@ -1,6 +1,6 @@
 // AuthProvider.jsx
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { authAPI, communityAPI } from './api';
+import { authAPI, communityAPI, crewMembersAPI } from './api';
 
 // 인증 관련 전역 상태를 관리할 Context 생성
 export const AuthContext = createContext();
@@ -116,6 +116,65 @@ export const AuthProvider = ({ children }) => {
             [feedId]: { isLiked, likeCount }
         }));
     }, []);
+
+    const [crewMemberShip, setCrewMemberShip] = useState({});
+
+    
+    const checkCrewMembership = useCallback(async (crewId) => {
+        if(crewMemberShip[crewId] !== undefined){
+            return crewMemberShip[crewId];
+        }
+
+        try{
+            if(!userInfo || !userInfo.nickname){
+                setCrewMemberShip(prev => ({
+                    ...prev,
+                    [crewId]: false
+                }));
+                return false;
+            }
+
+            const response = await crewMembersAPI.getMemberList(crewId);
+            const members = response.data.data || response.data;
+
+            const isMember = Array.isArray(members) && members.some(member => member.nickname === userInfo.nickname);
+
+            setCrewMemberShip(prev => ({
+                ...prev,
+                [crewId]: isMember
+            }));
+
+            return isMember;
+        } catch (error) {
+            console.error("크루 멤버 확인 중 에러 발생", error);
+            setCrewMemberShip(prev => ({
+                ...prev,
+                [crewId]: false
+            }));
+
+            return false;
+        }
+    }, [userInfo, crewMemberShip])
+
+    //
+    const clearCrewMembershipCache = useCallback((crewId) => {
+        if (crewId) {
+            // 특정 크루 ID만 캐시 초기화
+            setCrewMemberShip(prev => {
+                const newMap = { ...prev };
+                delete newMap[crewId];
+                return newMap;
+            });
+        } else {
+            // 전체 캐시 초기화
+            setCrewMemberShip({});
+        }
+    }, []);
+
+    // 사용자 정보 변경시 크루 멤버십 캐시 초기화
+    useEffect(() => {
+        clearCrewMembershipCache();
+    }, [userInfo, clearCrewMembershipCache]);
     
     return (
         <AuthContext.Provider value={{
@@ -129,7 +188,12 @@ export const AuthProvider = ({ children }) => {
             // 좋아요
             likeStates,
             toggleLike,
-            initializeLikeState
+            initializeLikeState,
+
+            // 크루 멤버
+            checkCrewMembership,
+            crewMemberShip,
+            clearCrewMembershipCache
         }}>
             {children}
         </AuthContext.Provider>
