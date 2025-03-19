@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { FaCog } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import { crewAPI } from "../../../api";
+import { crewAPI, crewMembersAPI } from "../../../api";
+import { useAuth } from "../../../AuthProvider";
 import Camper from "../../../assets/category/Camper.png";
 import Coin from "../../../assets/category/Coin.png";
 import Easel from "../../../assets/category/Easel.png";
@@ -25,10 +26,12 @@ const activityCategories = [
 
 const Banner = () => {
     const { crewId } = useParams();
+    const { userInfo } = useAuth();
     const [crewInfoData, setCrewInfoData] = useState();
     // const [category, setCategory] = useState();
     const [categoryImage, setCategoryImage] = useState();
     const [categoryAlt, setCategoryAlt] = useState("");
+    const [userRole, setUserRole] = useState(null);
 
     const fetchCrewInfo = async () => {
         try {
@@ -47,9 +50,43 @@ const Banner = () => {
         }
     }
 
+    // 사용자의 크루 내 역할을 확인하는 함수
+    const checkUserRole = async () => {
+        try {
+            // 로그인 상태가 아니면 진행하지 않음
+            if (!userInfo || !userInfo.nickname) {
+                setUserRole(null);
+                return;
+            }
+
+            const response = await crewMembersAPI.getMemberList(crewId);
+            const members = response.data.data || response.data;
+            
+            if (Array.isArray(members)) {
+                // 현재 사용자의 정보 찾기
+                const currentUser = members.find(member => member.nickname === userInfo.nickname);
+                
+                if (currentUser) {
+                    setUserRole(currentUser.role);
+                } else {
+                    setUserRole(null);
+                }
+            }
+        } catch (error) {
+            console.error("사용자 역할 확인 실패", error);
+            setUserRole(null);
+        }
+    };
+
+    // 리더와 관리자만 설정 아이콘을 출력
+    const ShowSetting = () => {
+        return userRole === 'LEADER' || userRole === 'ADMIN';
+    };
+
     useEffect(() => {
         fetchCrewInfo();
-    }, [crewId]);
+        checkUserRole();
+    }, [crewId, userInfo]);
 
     return(
         <S.Banner>
@@ -65,12 +102,14 @@ const Banner = () => {
             </S.BannerTop>
             {/* Banner Image */}
             <S.BannerImage src={crewInfoData?.bannerImage}/>
+            {ShowSetting() && (
             <S.Setting>
                 <S.Link to={`/crews/${crewId}/crewSetting`}>
                 {/* 관리자만 볼 수 있도록 */}
                     <FaCog size={20}/>
                 </S.Link>
             </S.Setting>
+            )}
         </S.Banner>
     );
 }
