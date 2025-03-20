@@ -17,7 +17,6 @@ export default function CrewCreate() {
     const [category, setCategory] = useState({});
     const [region, setRegion] = useState([]);
     const [regionData, setRegionData] = useState([]);
-    const [minNumber, setMinNumber] = useState(2);
     const [maxNumber, setMaxNumber] = useState(2);
     const [gender, setGender] = useState('noLimit');
     const [minAge, setMinAge] = useState('noLimit');
@@ -30,7 +29,6 @@ export default function CrewCreate() {
     
     const handleCrewName = (e) => setCrewName(e.target.value);
     const handleCategory = (selectedCategory) => setCategory(selectedCategory);
-    const handleMinNumber = (e) => setMinNumber(e.target.value);
     const handleMaxNumber = (e) => setMaxNumber(e.target.value);
     const handleGender = (slectedGender) => setGender(slectedGender);
     const handleMinAge = (selectedMinAge) => setMinAge(selectedMinAge);
@@ -47,12 +45,12 @@ export default function CrewCreate() {
     }
     // 버튼 활성화
     useEffect(()=>{
-        if(crewName && regionData.length>0 && minNumber && maxNumber && infoContent.length>=20 && category){
+        if(crewName && regionData.length>0 && maxNumber && infoContent.length>=20 && category){
             setAllow(true);
         }else{
             setAllow(false);
         }
-    },[crewName, regionData, minNumber, maxNumber, infoContent, category]);
+    },[crewName, regionData, maxNumber, infoContent, category]);
 
     // 이미지 파일을 URL로 변환하는 로직을 추가
     useEffect(() => {
@@ -77,7 +75,6 @@ export default function CrewCreate() {
             name: crewName,
             category: category.title,
             description: infoContent,
-            minMembers: Number(minNumber),
             maxMembers: Number(maxNumber),
             regions: regionData,
         };
@@ -168,17 +165,6 @@ export default function CrewCreate() {
                     <ItemContainer>
                         <ItemTitle>참여인원(호스트 포함)</ItemTitle>
                         <NumberSetting>
-                            <NumberContainer>
-                                <TextItem>최소 </TextItem>
-                                <SetNumber 
-                                    type="number" 
-                                    min={2}
-                                    value={minNumber}
-                                    onChange={handleMinNumber}
-                                />
-                                <TextItem>명</TextItem>
-                            </NumberContainer>
-                            <TextItem>~</TextItem>
                             <NumberContainer>
                                 <TextItem>최대 </TextItem>
                                 <SetNumber
