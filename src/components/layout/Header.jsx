@@ -9,7 +9,15 @@ const Header = () => {
     const { isLoggedIn, logout } = useAuth();
 
     const togglePopup = () => {
-        setIsPopupOpen(!isPopupOpen);
+        const newisPopupOpen = !isPopupOpen;
+        setIsPopupOpen(newisPopupOpen);
+
+        // 모달이 열릴때 body에 hidden 적용
+        if(newisPopupOpen){
+            document.body.style.overflow = 'hidden';
+        }else{
+            document.body.style.overflow = 'auto';
+        }
     };
 
     const handleLogout = async () => {
@@ -23,6 +31,7 @@ const Header = () => {
     
     const closeModal = () => {
         setIsPopupOpen(false);
+        document.body.style.overflow = 'auto';
     }
 
     return (
