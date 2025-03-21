@@ -62,7 +62,7 @@ export const CrewProfile = styled.img`
     height: 50px;
     margin: 10px;
     border-radius: 50%;
-    border: 1px solid red;
+    border: 1px solid #DEDFE7;
 `;
 
 export const RoomName = styled.div`
@@ -241,7 +241,7 @@ export const Wrapper = styled.div`
 
 export const TabBarContainer = styled.div`
     background-color: #fff;
-    border: none;
+    border: 1px solid #DEDFE7;
     display: flex;
     border-radius: 50px;
     margin: 20px 0px 40px 0px;
@@ -249,7 +249,6 @@ export const TabBarContainer = styled.div`
 
 export const TabBarItem = styled.div`
     padding: 10px 40px;
-    border: 1px solid red;
     border-radius: 50px;
     &:hover{
         color: #fff;
@@ -267,7 +266,6 @@ export const RoomListContainer = styled.div`
     margin-bottom: 100px;
 `;
 
-// export const CrewProfile
 export const ChatRoomContainer = styled.div`
     display: flex;
     margin: 10px 50px;
@@ -291,7 +289,6 @@ export const ChatMemNumbers = styled.div`
 export const EnterButton = styled.div`
     height: 40px;
     padding: 10px 40px;
-    border: 1px solid red;
     border-radius: 50px;
     color: #fff;
     background-color: #352EAE;

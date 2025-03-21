@@ -60,14 +60,6 @@ export default function ChatRoomList({onClose}) {
             console.error("채팅방 목록 불러오기 실패", error);
         }
     }
-    const fetchCrewChatRooms = async() => {
-        try {
-            const response = await ChatAPI.getCrewChatRoomList(crewId);
-            console.log("크루 채팅방 목록", response.data.data);
-        } catch (error) {
-            console.error("해당 크루 채팅방 목록 불러오기 실패", error);
-        }
-    }
 
     useEffect(() => {
         // 멤버 목록
@@ -92,7 +84,6 @@ export default function ChatRoomList({onClose}) {
         fetchMyName();
         // 처음 렌더링될 때 채팅방 리스트 불러오기
         fetchChatRooms();
-        fetchCrewChatRooms();
     },[]);
 
     return(
