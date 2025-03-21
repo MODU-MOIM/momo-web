@@ -5,13 +5,12 @@ import { ChatAPI } from "../../api";
 
 export default function CrewChatList() {
     const { crewId } = useParams();
-    const [chatRoomList, setCrewChatRoomList] = useState([]);
+    const [myAllChatRoom, setMyAllChatRoom] = useState([]);
+    const [crewChatRoomList, setCrewChatRoomList] = useState([]);
+    const [myChatRoomList, setMyChatRoomList] = useState([]);
+    const [notMyChatRoomList, setNotMyChatRoomList] = useState([]);
     const [isEnterRoomsClick, setIsEnterRoomsClick] = useState(false);
 
-    const handleTab = () => {
-        setIsEnterRoomsClick(true);
-        console.log("tlfgod")
-    }
     const fetchCrewChatRooms = async() => {
         try {
             const response = await ChatAPI.getCrewChatRoomList(crewId);
@@ -21,10 +20,45 @@ export default function CrewChatList() {
             console.error("해당 크루 채팅방 목록 불러오기 실패", error);
         }
     }
+    // 내가 가입한(입장한) 채팅방 목록 불러오기
+    const fetchChatRooms = async() => {
+        try {
+            const response = await ChatAPI.getMyChatRoom();
+            console.log("내 채팅방", response.data.data);
+            setMyAllChatRoom(response.data.data);
+        } catch (error) {
+            console.error("채팅방 목록 불러오기 실패", error);
+        }
+    }
     
+    const filterIsEnterRoom = () => {
+        // 입장한 채팅방
+        // 내가 가입한 모든 크루의 채팅방과 현재 크루에 존재하는 모든 채팅방과 비교 
+        // => 같은 것만을 반환( 현재 크루에서 내가 가입한 채팅방만 필터링 )
+        const enteredCrewChatRoom = myAllChatRoom.filter(
+            myRoom => crewChatRoomList.some(crewRoom => myRoom.roomId == crewRoom.roomId)
+        );
+        console.log("enteredCrewChatRoom...", enteredCrewChatRoom);
+        setMyChatRoomList(enteredCrewChatRoom);
+        
+        // 입장하지 않은 채팅방
+        // 내가 가입한 현재 크루의 채팅방과 현재 크루에 존재하는 모든 채팅방과 비교
+        // => 다른 것만을 반환
+        const isntCrewChatRoom = crewChatRoomList.filter(
+            crewRoom => !myChatRoomList.some(myRoom => myRoom.roomId == crewRoom.roomId)
+        );
+        console.log("notMyChatRoomList...", isntCrewChatRoom);
+        setNotMyChatRoomList(isntCrewChatRoom);
+
+    }
+
     useEffect(()=>{
         fetchCrewChatRooms();
+        fetchChatRooms();
     },[]);
+    useEffect(()=>{
+        filterIsEnterRoom();
+    },[myAllChatRoom]);
 
     return(
         <S.Wrapper>
@@ -49,7 +83,7 @@ export default function CrewChatList() {
                 </S.TabBarItem>
             </S.TabBarContainer>
             <S.RoomListContainer>
-                {!isEnterRoomsClick && chatRoomList.map(room => (
+                {!isEnterRoomsClick && notMyChatRoomList.map(room => (
                     <S.ChatRoomContainer>
                         {/* 채팅방 프로필 */}
                         <S.ProfileContainer>
@@ -59,6 +93,16 @@ export default function CrewChatList() {
                         </S.ProfileContainer>
                         {/* 입장버튼 */}
                         <S.EnterButton>입장하기</S.EnterButton>
+                    </S.ChatRoomContainer>
+                ))}
+                {isEnterRoomsClick && myChatRoomList.map(room => (
+                    <S.ChatRoomContainer>
+                        {/* 채팅방 프로필 */}
+                        <S.ProfileContainer>
+                            <S.CrewProfile src={room.bannerImage}/>
+                            <S.ChatRoomName>{room.name}</S.ChatRoomName>
+                            <S.ChatMemNumbers>{room.chatMemberNumbers}</S.ChatMemNumbers>
+                        </S.ProfileContainer>
                     </S.ChatRoomContainer>
                 ))}
             </S.RoomListContainer>
