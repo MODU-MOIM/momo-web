@@ -297,3 +297,7 @@ export const EnterButton = styled.div`
         background-color: #D4E3FB;
     }
 `;
+
+export const DetailMsg = styled.div`
+    margin: 20px 50px;
+`;

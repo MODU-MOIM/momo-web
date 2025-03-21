@@ -83,28 +83,47 @@ export default function CrewChatList() {
                 </S.TabBarItem>
             </S.TabBarContainer>
             <S.RoomListContainer>
-                {!isEnterRoomsClick && notMyChatRoomList.map(room => (
-                    <S.ChatRoomContainer>
-                        {/* 채팅방 프로필 */}
-                        <S.ProfileContainer>
-                            <S.CrewProfile src={room.bannerImage}/>
-                            <S.ChatRoomName>{room.name}</S.ChatRoomName>
-                            <S.ChatMemNumbers>{room.chatMemberNumbers}</S.ChatMemNumbers>
-                        </S.ProfileContainer>
-                        {/* 입장버튼 */}
-                        <S.EnterButton>입장하기</S.EnterButton>
-                    </S.ChatRoomContainer>
-                ))}
-                {isEnterRoomsClick && myChatRoomList.map(room => (
-                    <S.ChatRoomContainer>
-                        {/* 채팅방 프로필 */}
-                        <S.ProfileContainer>
-                            <S.CrewProfile src={room.bannerImage}/>
-                            <S.ChatRoomName>{room.name}</S.ChatRoomName>
-                            <S.ChatMemNumbers>{room.chatMemberNumbers}</S.ChatMemNumbers>
-                        </S.ProfileContainer>
-                    </S.ChatRoomContainer>
-                ))}
+                {/* 크루 채팅방이 아예 없으면 => 아직 채팅방이 개설되지 않았습니다! */}
+                {crewChatRoomList.length > 0 ? (
+                    !isEnterRoomsClick ? (
+                        // 노가입 채팅방 없으면 => 모든 채팅방에 입장하였습니다!
+                        notMyChatRoomList.length > 0 ? (
+                            notMyChatRoomList.map(room => (
+                                <S.ChatRoomContainer>
+                                    {/* 채팅방 프로필 */}
+                                    <S.ProfileContainer>
+                                        <S.CrewProfile src={room.bannerImage}/>
+                                        <S.ChatRoomName>{room.name}</S.ChatRoomName>
+                                        <S.ChatMemNumbers>{room.chatMemberNumbers}</S.ChatMemNumbers>
+                                    </S.ProfileContainer>
+                                    {/* 입장버튼 */}
+                                    <S.EnterButton>입장하기</S.EnterButton>
+                                </S.ChatRoomContainer>
+                            ))
+                        ):(
+                            <S.DetailMsg>모든 채팅방에 입장하였습니다!</S.DetailMsg>
+                        )
+                        
+                    ):(
+                        // 가입 채팅방 없으면 => 입장한 채팅방이 없습니다!
+                        myChatRoomList.length > 0 ? (
+                            myChatRoomList.map(room => (
+                                <S.ChatRoomContainer>
+                                    {/* 채팅방 프로필 */}
+                                    <S.ProfileContainer>
+                                        <S.CrewProfile src={room.bannerImage}/>
+                                        <S.ChatRoomName>{room.name}</S.ChatRoomName>
+                                        <S.ChatMemNumbers>{room.chatMemberNumbers}</S.ChatMemNumbers>
+                                    </S.ProfileContainer>
+                                </S.ChatRoomContainer>
+                            ))
+                        ):(
+                            <S.DetailMsg>입장한 채팅방이 없습니다!</S.DetailMsg>
+                        )
+                    )
+                ):(
+                    <S.DetailMsg>아직 채팅방이 개설되지 않았습니다!</S.DetailMsg>
+                )}
             </S.RoomListContainer>
         </S.Wrapper>
     );
