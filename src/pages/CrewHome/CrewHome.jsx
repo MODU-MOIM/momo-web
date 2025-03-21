@@ -7,8 +7,6 @@ import { authAPI, crewAPI, crewMembersAPI } from "../../api";
 
 export default function CrewHome() {
     const { crewId } = useParams();
-    const [members, setMembers] = useState({});
-    const [leader, setLeader] = useState({});
     const [isMember, setIsMember] = useState(false);
     const [crewData, setCrewData] = useState({
         region: '',
@@ -71,29 +69,17 @@ export default function CrewHome() {
                 const resCrewData = response.data.data;
                 const regions = resCrewData.regions.map(region => region.regionDepth2).join(', ');
                 setCrewData({
+                    ...resCrewData,
                     region: regions,
                     currentNum: resCrewData.memberCount,
-                    maxMembers: resCrewData.maxMembers,
                     crewIntro: resCrewData.description
                 });
-                
+                console.log(resCrewData);
             } catch (error) {
                 console.error("크루 읽기 실패", error);
             }
         }
-        // 크루 멤버 확인
-        async function fetchMembers() {
-            try {
-                const response = await crewMembersAPI.getMemberList(crewId);
-                const resMem = (response.data.data);
-                setMembers(resMem);
-                setLeader(resMem.find(member => member.role == "LEADER"));
-            } catch (error) {
-                console.error("크루 멤버 데이터 가져오기 실패");
-            }
-        }
         fetchCrewData();
-        fetchMembers();
     }, [crewId]);
 
     return(
@@ -103,10 +89,10 @@ export default function CrewHome() {
                     <CrewInfo>
                         <UserInfoContainer>
                             <Profile>
-                                <ProfileImage src={leader?.profileImage}/>
+                                <ProfileImage src={crewData.profileImage}/>
                                 <ProfileText>
                                     <UserPosition>리더</UserPosition>
-                                    <UserName>{leader?.nickname}</UserName>
+                                    <UserName>{crewData.leader}</UserName>
                                 </ProfileText>
                             </Profile>
                         </UserInfoContainer>
