@@ -229,3 +229,74 @@ export const MessageTime = styled.div`
     font-size: 12px;
     color: #797979;
 `;
+
+// CrewChatList.jsx(플로팅 메뉴로 채팅리스트 이동)
+export const Wrapper = styled.div`
+    /* background-color: aqua; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const TabBarContainer = styled.div`
+    background-color: #fff;
+    border: none;
+    display: flex;
+    border-radius: 50px;
+    margin: 20px 0px 40px 0px;
+`;
+
+export const TabBarItem = styled.div`
+    padding: 10px 40px;
+    border: 1px solid red;
+    border-radius: 50px;
+    &:hover{
+        color: #fff;
+        background-color: #352EAE;
+    }
+`;
+
+export const RoomListContainer = styled.div`
+    width: 768px;
+    min-height: 300px;
+    background-color: #fff;
+    border: 1px solid #DEDFE7;
+    border-radius: 15px;
+    padding: 20px 0px;
+    margin-bottom: 100px;
+`;
+
+// export const CrewProfile
+export const ChatRoomContainer = styled.div`
+    display: flex;
+    margin: 10px 50px;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+export const ProfileContainer = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+export const ChatRoomName = styled.div`
+    margin: 0px 15px;
+`;
+
+export const ChatMemNumbers = styled.div`
+    color: #929292;
+`;
+
+export const EnterButton = styled.div`
+    height: 40px;
+    padding: 10px 40px;
+    border: 1px solid red;
+    border-radius: 50px;
+    color: #fff;
+    background-color: #352EAE;
+    &:hover{
+        color: black;
+        background-color: #D4E3FB;
+    }
+`;

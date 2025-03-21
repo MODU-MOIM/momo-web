@@ -214,6 +214,7 @@ export const archiveAPI = {
 export const ChatAPI = {
     createChatRoom: (data) => api.post('/chat-rooms', data),
     getChatRoomList: () => api.get('/chat-rooms'),
+    getCrewChatRoomList: (crewId) => api.get(`chat-rooms?crewId=${crewId}`),
     getChatRoom: (roomId) => api.get(`/chat-rooms/${roomId}`),
     getMyChatRoom: () => api.get(`/chat-rooms/me`),
     getChatRoomHistory: (roomId) => api.get(`/chat-rooms/${roomId}/history`),

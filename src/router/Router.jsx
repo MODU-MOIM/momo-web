@@ -20,6 +20,7 @@ import Setting from "../pages/CrewSetting/CrewSetting";
 import Home from "../pages/home/Home";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
+import CrewChatList from "../pages/CrewChat/CrewChatList";
 
 const Router = () => {
     return(
@@ -41,6 +42,7 @@ const Router = () => {
                     <Route path="crewCommunity" element={<Community />} />
                     <Route path="crewCommunity/write" element={<WriteCommunity />} />
                     <Route path="crewCommunity/update/:feedId" element={<UpdateCommunity />} />
+                    <Route path="crewChatList" element={<CrewChatList />} />
                     <Route path="crewSetting" element={<Setting />} />
                 </Route>
                 <Route path="/crews/:crewId/crewSchedule" element={<CrewSchedule />} />
