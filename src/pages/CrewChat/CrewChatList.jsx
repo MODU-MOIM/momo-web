@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import * as S from "./Styles/CrewChat.styles";
 import { useEffect, useState } from "react";
 import { ChatAPI } from "../../api";
+import useChat from "../../hooks/useChat";
 
 export default function CrewChatList() {
     const { crewId } = useParams();
@@ -10,6 +11,18 @@ export default function CrewChatList() {
     const [myChatRoomList, setMyChatRoomList] = useState([]);
     const [notMyChatRoomList, setNotMyChatRoomList] = useState([]);
     const [isEnterRoomsClick, setIsEnterRoomsClick] = useState(false);
+    const token = localStorage.getItem('token')?.replace('Bearer ', ''); 
+    const { connect, disconnect, enterChatRoom } = useChat(token);
+    
+    const handleEnterRoom = async(roomId) => {
+        try {
+            connect(roomId);
+            enterChatRoom(roomId);
+            disconnect();
+        } catch (error) {
+            console.error("채팅방 입장 중 오류 발생", error);
+        }
+    }
 
     const fetchCrewChatRooms = async() => {
         try {
@@ -56,6 +69,7 @@ export default function CrewChatList() {
         fetchCrewChatRooms();
         fetchChatRooms();
     },[]);
+
     useEffect(()=>{
         filterIsEnterRoom();
     },[myAllChatRoom]);
@@ -97,7 +111,11 @@ export default function CrewChatList() {
                                         <S.ChatMemNumbers>{room.chatMemberNumbers}</S.ChatMemNumbers>
                                     </S.ProfileContainer>
                                     {/* 입장버튼 */}
-                                    <S.EnterButton>입장하기</S.EnterButton>
+                                    <S.EnterButton
+                                        onClick={() => handleEnterRoom(room.roomId)}
+                                    >
+                                        입장하기
+                                    </S.EnterButton>
                                 </S.ChatRoomContainer>
                             ))
                         ):(

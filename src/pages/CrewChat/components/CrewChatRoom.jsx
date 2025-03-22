@@ -50,7 +50,7 @@ export default function CrewChatRoom({chatRoom, fetchChatRooms,onClose}) {
     // 채팅방 입장
     useEffect(() => {
         if (stompClient) {
-            enterChatRoom();
+            enterChatRoom(roomId);
         }
     }, [stompClient]);
 
