@@ -52,7 +52,7 @@ export default function ChatRoomList({onClose}) {
 
     // 크루 채팅방 목록 불러오기
     // 크루 생성(ChatRoomList.jsx) 및 크루 삭제(CrewChatRoom.jsx)할 때만 실행할 수 있도록 useEffect 외부로 빼주었음.
-        const fetchChatRooms = async() => {
+    const fetchChatRooms = async() => {
         try {
             const response = await ChatAPI.getMyChatRoom();
             setChatRooms(response.data.data);
