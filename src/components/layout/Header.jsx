@@ -40,7 +40,7 @@ const Header = () => {
             <S.Container>
                 <S.Nav>
                     <S.StyledNavLink to="/crewList">크루</S.StyledNavLink>
-                    <S.StyledNavLink to="">피드</S.StyledNavLink>
+                    <S.StyledNavLink to="/popularArchives">트렌딩</S.StyledNavLink>
                     <S.StyledNavLink>핫 플레이스</S.StyledNavLink>
                 </S.Nav>
                 <S.AuthButtons>
