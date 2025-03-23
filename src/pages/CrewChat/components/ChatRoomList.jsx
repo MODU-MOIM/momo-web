@@ -55,7 +55,19 @@ export default function ChatRoomList({onClose}) {
     const fetchChatRooms = async() => {
         try {
             const response = await ChatAPI.getMyChatRoom();
-            setChatRooms(response.data.data);
+            const resData = response.data.data;
+            const appendedMsgData = await Promise.all(
+                resData.map(async room => {
+                    try {
+                        const resMsg = await ChatAPI.getRoomRecentChat(room.roomId);
+                        // console.log(resMsg);
+                        return{...room, recentMsg: resMsg.data.data.message}
+                    } catch (error) {
+                        console.error(`${room.roomId} : 가장 최신 메시지 불러오기 실패`, error);
+                    }
+                })
+            );
+            setChatRooms(appendedMsgData);
         } catch (error) {
             console.error("채팅방 목록 불러오기 실패", error);
         }
@@ -102,8 +114,13 @@ export default function ChatRoomList({onClose}) {
                             onClick={() => goToChatRoom(room.roomId)}
                         >
                             <S.CrewProfile src={room.bannerImage}/>
-                            <S.RoomName>{room.name}</S.RoomName>
-                            <S.MemNums>{room.chatMemberNumbers}</S.MemNums>
+                            <S.TextContainer>
+                                <S.DetailContainer>
+                                    <S.RoomName>{room.name}</S.RoomName>
+                                    <S.MemNums>{room.chatMemberNumbers}</S.MemNums>
+                                </S.DetailContainer>
+                                <S.RecentMsg>{room.recentMsg}</S.RecentMsg>
+                            </S.TextContainer>
                         </S.RoomContainer>
                     ))}
                     {isChatRoomOpen && (

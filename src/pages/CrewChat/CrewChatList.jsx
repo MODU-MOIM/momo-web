@@ -3,6 +3,7 @@ import * as S from "./Styles/CrewChat.styles";
 import { useEffect, useState } from "react";
 import { ChatAPI } from "../../api";
 import useChat from "../../hooks/useChat";
+import CrewChat from "./CrewChat";
 
 export default function CrewChatList() {
     const { crewId } = useParams();
@@ -19,6 +20,10 @@ export default function CrewChatList() {
             connect(roomId);
             enterChatRoom(roomId);
             disconnect();
+            // 내 채팅방 불러오기 -> myAllChatRoom데이터 리로드
+            // useEffect로 인해 filterIsEnterRoom함수 실행
+            // 화면에 뜨는 목록 변경!
+            fetchChatRooms();
         } catch (error) {
             console.error("채팅방 입장 중 오류 발생", error);
         }
@@ -27,7 +32,7 @@ export default function CrewChatList() {
     const fetchCrewChatRooms = async() => {
         try {
             const response = await ChatAPI.getCrewChatRoomList(crewId);
-            console.log("크루 채팅방 목록", response.data.data);
+            // console.log("크루 채팅방 목록", response.data.data);
             setCrewChatRoomList(response.data.data);
         } catch (error) {
             console.error("해당 크루 채팅방 목록 불러오기 실패", error);
@@ -37,7 +42,7 @@ export default function CrewChatList() {
     const fetchChatRooms = async() => {
         try {
             const response = await ChatAPI.getMyChatRoom();
-            console.log("내 채팅방", response.data.data);
+            // console.log("내 채팅방", response.data.data);
             setMyAllChatRoom(response.data.data);
         } catch (error) {
             console.error("채팅방 목록 불러오기 실패", error);
@@ -51,7 +56,7 @@ export default function CrewChatList() {
         const enteredCrewChatRoom = myAllChatRoom.filter(
             myRoom => crewChatRoomList.some(crewRoom => myRoom.roomId == crewRoom.roomId)
         );
-        console.log("enteredCrewChatRoom...", enteredCrewChatRoom);
+        // console.log("enteredCrewChatRoom...", enteredCrewChatRoom);
         setMyChatRoomList(enteredCrewChatRoom);
         
         // 입장하지 않은 채팅방
@@ -60,7 +65,7 @@ export default function CrewChatList() {
         const isntCrewChatRoom = crewChatRoomList.filter(
             crewRoom => !myChatRoomList.some(myRoom => myRoom.roomId == crewRoom.roomId)
         );
-        console.log("notMyChatRoomList...", isntCrewChatRoom);
+        // console.log("notMyChatRoomList...", isntCrewChatRoom);
         setNotMyChatRoomList(isntCrewChatRoom);
 
     }
@@ -76,6 +81,7 @@ export default function CrewChatList() {
 
     return(
         <S.Wrapper>
+            <CrewChat/>
             <S.TabBarContainer>
                 <S.TabBarItem
                     onClick={()=>setIsEnterRoomsClick(false)}

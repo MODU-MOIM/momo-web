@@ -217,8 +217,9 @@ export const ChatAPI = {
     getCrewChatRoomList: (crewId) => api.get(`chat-rooms?crewId=${crewId}`),
     getChatRoom: (roomId) => api.get(`/chat-rooms/${roomId}`),
     getMyChatRoom: () => api.get(`/chat-rooms/me`),
-    getChatRoomHistory: (roomId) => api.get(`/chat-rooms/${roomId}/history`),
-    deleteChatRoom: (roomId) => api.delete(`/chat-rooms/${roomId}`)
+    getChatRoomHistory: (roomId) => api.get(`/chat-rooms/${roomId}/chat`),
+    deleteChatRoom: (roomId) => api.delete(`/chat-rooms/${roomId}`),
+    getRoomRecentChat: (roomId) => api.get(`/chat-rooms/${roomId}/chat/recent`),
 }
 
 export default api;

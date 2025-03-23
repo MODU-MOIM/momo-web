@@ -74,7 +74,7 @@ export default function CrewHome() {
                     currentNum: resCrewData.memberCount,
                     crewIntro: resCrewData.description
                 });
-                console.log(resCrewData);
+                // console.log(resCrewData);
             } catch (error) {
                 console.error("크루 읽기 실패", error);
             }

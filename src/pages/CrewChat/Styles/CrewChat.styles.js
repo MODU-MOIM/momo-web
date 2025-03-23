@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { FaTrashAlt } from "react-icons/fa";
 
-// ChattingList.jsx
+// ChatRoomList.jsx
 
 export const Panel = styled.div`
     width: 100%;
@@ -65,8 +65,17 @@ export const CrewProfile = styled.img`
     border: 1px solid #DEDFE7;
 `;
 
+export const TextContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+export const DetailContainer = styled.div`
+    display: flex;
+`;
+
 export const RoomName = styled.div`
-    width: 40%;
+    width: 120px;
     height: 20px;
     margin-top: 15px;
     white-space: nowrap;
@@ -78,6 +87,13 @@ export const MemNums = styled.div`
     height: 20px;
     margin: 15px 0px 0px 15px;
     color: #929292;
+`;
+
+export const RecentMsg = styled.div`
+    width: 120px;
+    color: #929292;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 export const NewName = styled.input`
