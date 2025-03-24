@@ -13,6 +13,18 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     const handlePin = (id)=> togglePin(id);
     const handleMenu = (id) => toggleMenu(id);
 
+    const handleVote = async(noticeId, voteId, status) => {
+        try {
+            const submitStatus = {
+                voteStatus: status
+            }
+            const response = await noticeAPI.selectVote(crewId, noticeId, voteId, submitStatus);
+            // console.log(response);
+        } catch (error) {
+            console.error("투표 실패", error);
+        }
+    }
+
     const handleUpdate = ({notice})=>{
         navigate(`/crews/${crewId}/updateNotice/${notice.id}`, {
             state: {noticeData: notice,  mode: "update"}
@@ -23,7 +35,8 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
         try {
             if (window.confirm("정말로 삭제하시겠습니까?")) {
                 await noticeAPI.deleteNotice(crewId, noticeId);
-                setNoticeList(currentnoticeList => currentnoticeList.filter(notice => notice.id !== noticeId));
+                setNoticeList(currentnoticeList =>
+                    currentnoticeList.filter(notice => notice.id !== noticeId));
                 alert("공지가 삭제되었습니다");
             }
         } catch (error) {
@@ -32,8 +45,10 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     }
 
     useEffect(() => {
+        // console.log(noticeList);
         function handleClickOutside(e) {
-            if (noticeList.some((notice, index) => notice.isOpenedMenu && menuRefs.current[index] && !menuRefs.current[index].contains(e.target))) {
+            if (noticeList.some((notice, index) => notice.isOpenedMenu &&
+            menuRefs.current[index] && !menuRefs.current[index].contains(e.target))) {
                 setNoticeList(noticeList.map(notice => ({...notice, isOpenedMenu: false})));
             }   
         }
@@ -48,7 +63,9 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
             const response = await noticeAPI.readNotice(crewId,noticeId);
             const updateNoticeData = response.data.data;
             setNoticeList(noticeList.map(notice => 
-                notice.id === noticeId ? ({...notice, ...updateNoticeData, showDetail: !notice.showDetail}) : notice,
+                notice.id === noticeId ? ({
+                    ...notice, ...updateNoticeData, showDetail: !notice.showDetail
+                }) : notice,
             ));
         } catch (error) {
             console.log("통신 실패 : ", error);
@@ -115,13 +132,41 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                                             <S.VoteTitleText>{notice.vote?.title}</S.VoteTitleText>
                                             {notice.vote?.voteType === "GENERAL" ? (
                                                 <S.SelectBox>
-                                                    <S.SelectList userVote>찬성</S.SelectList>
-                                                    <S.SelectList userVote>반대</S.SelectList>
+                                                    <S.SelectList
+                                                        userVote
+                                                        onClick={() => handleVote(
+                                                            notice.noticeId, notice.vote?.voteId, "POSITIVE"
+                                                        )}
+                                                    >
+                                                        찬성
+                                                    </S.SelectList>
+                                                    <S.SelectList
+                                                        userVote
+                                                        onClick={() => handleVote(
+                                                            notice.noticeId, notice.vote?.voteId, "NEGATIVE"
+                                                        )}
+                                                    >
+                                                        반대
+                                                    </S.SelectList>
                                                 </S.SelectBox>
                                             ):(
                                                 <S.SelectBox>
-                                                    <S.SelectList userVote>참석</S.SelectList>
-                                                    <S.SelectList userVote>미참석</S.SelectList>
+                                                    <S.SelectList
+                                                        userVote
+                                                        onClick={() => handleVote(
+                                                            notice.noticeId, notice.vote?.voteId, "POSITIVE"
+                                                        )}
+                                                    >
+                                                        참석
+                                                    </S.SelectList>
+                                                    <S.SelectList
+                                                        userVote
+                                                        onClick={() => handleVote(
+                                                            notice.noticeId, notice.vote?.voteId, "NEGATIVE"
+                                                        )}
+                                                    >
+                                                        미참석
+                                                    </S.SelectList>
                                                 </S.SelectBox>
                                             )}
                                         </S.VoteBox>

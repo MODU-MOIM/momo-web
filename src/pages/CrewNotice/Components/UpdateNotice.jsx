@@ -50,8 +50,8 @@ export default function UpdateNotice() {
                     isEnabled: isEnabled,
                 }
             }
-            console.log("noticeId",noticeId);
-            console.log("noticeData",noticeData);
+            // console.log("noticeId",noticeId);
+            // console.log("noticeData",noticeData);
             await noticeAPI.updateNotice(crewId, noticeId, noticeData);
             alert("공지가 수정되었습니다");
             navigate(`/crews/${crewId}/crewNotice`);
