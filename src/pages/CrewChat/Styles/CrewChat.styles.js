@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { FaTrashAlt } from "react-icons/fa";
 
-// ChattingList.jsx
+// ChatRoomList.jsx
 
 export const Panel = styled.div`
     width: 100%;
@@ -62,11 +62,20 @@ export const CrewProfile = styled.img`
     height: 50px;
     margin: 10px;
     border-radius: 50%;
-    border: 1px solid red;
+    border: 1px solid #DEDFE7;
+`;
+
+export const TextContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+export const DetailContainer = styled.div`
+    display: flex;
 `;
 
 export const RoomName = styled.div`
-    width: 40%;
+    width: 120px;
     height: 20px;
     margin-top: 15px;
     white-space: nowrap;
@@ -78,6 +87,13 @@ export const MemNums = styled.div`
     height: 20px;
     margin: 15px 0px 0px 15px;
     color: #929292;
+`;
+
+export const RecentMsg = styled.div`
+    width: 120px;
+    color: #929292;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 export const NewName = styled.input`
@@ -228,4 +244,76 @@ export const MessageTime = styled.div`
     margin-left: 5px;
     font-size: 12px;
     color: #797979;
+`;
+
+// CrewChatList.jsx(플로팅 메뉴로 채팅리스트 이동)
+export const Wrapper = styled.div`
+    /* background-color: aqua; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const TabBarContainer = styled.div`
+    background-color: #fff;
+    border: 1px solid #DEDFE7;
+    display: flex;
+    border-radius: 50px;
+    margin: 20px 0px 40px 0px;
+`;
+
+export const TabBarItem = styled.div`
+    padding: 10px 40px;
+    border-radius: 50px;
+    &:hover{
+        color: #fff;
+        background-color: #352EAE;
+    }
+`;
+
+export const RoomListContainer = styled.div`
+    width: 768px;
+    min-height: 300px;
+    background-color: #fff;
+    border: 1px solid #DEDFE7;
+    border-radius: 15px;
+    padding: 20px 0px;
+    margin-bottom: 100px;
+`;
+
+export const ChatRoomContainer = styled.div`
+    display: flex;
+    margin: 10px 50px;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+export const ProfileContainer = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+export const ChatRoomName = styled.div`
+    margin: 0px 15px;
+`;
+
+export const ChatMemNumbers = styled.div`
+    color: #929292;
+`;
+
+export const EnterButton = styled.div`
+    height: 40px;
+    padding: 10px 40px;
+    border-radius: 50px;
+    color: #fff;
+    background-color: #352EAE;
+    &:hover{
+        color: black;
+        background-color: #D4E3FB;
+    }
+`;
+
+export const DetailMsg = styled.div`
+    margin: 20px 50px;
 `;

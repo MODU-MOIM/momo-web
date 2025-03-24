@@ -15,7 +15,7 @@ const useChat = (token, roomId) => {
         };
     }, []);
 
-    const connect = () => {
+    const connect = (roomId) => {
         if (!token || !roomId) {
             alert("토큰과 채팅방 ID를 입력하세요!");
             return;
@@ -44,7 +44,7 @@ const useChat = (token, roomId) => {
         }
     };
 
-    const enterChatRoom = () => {
+    const enterChatRoom = (roomId) => {
         if (!stompClient || !stompClient.connected) {
             alert("WebSocket에 먼저 연결하세요!");
             return;

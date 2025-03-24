@@ -20,7 +20,8 @@ export default function FloatingMenu() {
         "공지사항": "crewNotice",
         "커뮤니티": "crewCommunity",
         "크루활동": "crewActivity",
-        "일정": "crewSchedule"
+        "일정": "crewSchedule",
+        "채팅": "crewChatList"
     };
 
     // 접근 가능한 메뉴 (멤버가 아닌 경우 홈과 크루활동만 가능)

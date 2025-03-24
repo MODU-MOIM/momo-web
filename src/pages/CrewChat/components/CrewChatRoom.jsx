@@ -43,14 +43,14 @@ export default function CrewChatRoom({chatRoom, fetchChatRooms,onClose}) {
     // 웹소켓 연결 (채팅방 연결 및 구독)
     useEffect(() => {
         async function JoinChat() {
-            await connect();
+            await connect(roomId);
         }
         JoinChat();
     },[]);
     // 채팅방 입장
     useEffect(() => {
         if (stompClient) {
-            enterChatRoom();
+            enterChatRoom(roomId);
         }
     }, [stompClient]);
 
