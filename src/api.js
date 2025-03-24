@@ -138,6 +138,7 @@ export const crewAPI = {
     },
 };
 
+//
 export const crewMembersAPI = {
     getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),
     kickoutMember: (crewId, memberId) => api.delete(`/crews/${crewId}/members/${memberId}`),
@@ -146,6 +147,7 @@ export const crewMembersAPI = {
     delegateLeader: (crewId, memberId) => api.patch(`/crews/${crewId}/members/${memberId}/leader`),
 }
 
+// 일정 api
 export const scheduleAPI = {
     createSchedule: (crewId, scheduleData) => api.post(`/crews/${crewId}/schedules`, scheduleData),
     readSchedule: (crewId, scheduleId) => api.get(`/crews/${crewId}/schedules/${scheduleId}`),
@@ -155,6 +157,7 @@ export const scheduleAPI = {
     readDailySchedule: (crewId, date) => api.get(`/crews/${crewId}/schedules/daily?date=${date}`),
 };
 
+// 커뮤니티 api
 export const communityAPI = {
     createCommunity: (crewId, formData) =>
         api.post(`/crews/${crewId}/feeds`, formData, {
@@ -181,6 +184,7 @@ export const communityAPI = {
     unlikeCommunity: (crewId, feedId) => api.delete(`/crews/${crewId}/feeds/${feedId}/likes`),
 };
 
+// 아카이브 api
 export const archiveAPI = {
     createArchive: (crewId, archiveData) => api.post(`/crews/${crewId}/archives`, archiveData),
     uploadArchiveImage: (crewId, file) => {
@@ -211,6 +215,7 @@ export const archiveAPI = {
     unlikeArchive: (crewId, archiveId) => api.delete(`/crews/${crewId}/archives/${archiveId}/likes`),
 };
 
+// 채팅 api
 export const ChatAPI = {
     createChatRoom: (data) => api.post('/chat-rooms', data),
     getChatRoomList: () => api.get('/chat-rooms'),
@@ -221,5 +226,12 @@ export const ChatAPI = {
     deleteChatRoom: (roomId) => api.delete(`/chat-rooms/${roomId}`),
     getRoomRecentChat: (roomId) => api.get(`/chat-rooms/${roomId}/chat/recent`),
 }
+
+// 추천 api
+export const recommendAPI = {
+    getPopularArchives: (limit = 50) => api.get(`/archives/popular?limit=${limit}`),
+    getPopularCrews: (limit = 10) => api.get(`/crews/popular?limit=${limit}`)
+}
+
 
 export default api;

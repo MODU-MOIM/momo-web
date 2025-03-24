@@ -20,6 +20,8 @@ import Setting from "../pages/CrewSetting/CrewSetting";
 import Home from "../pages/home/Home";
 import AddInfo from "../pages/Login/AddInfo";
 import Login from "../pages/Login/Login";
+import PopularCrewsPage from "../pages/PopularCrews/PopularCrewsPage";
+import PopularArchivesPage from "../pages/PopularArchives/PopularArchives";
 import CrewChatList from "../pages/CrewChat/CrewChatList";
 
 const Router = () => {
@@ -47,6 +49,8 @@ const Router = () => {
                 </Route>
                 <Route path="/crews/:crewId/crewSchedule" element={<CrewSchedule />} />
                 <Route path="/crewList" element={<CrewList />} />
+                <Route path="/popularCrews" element={<PopularCrewsPage />} />
+                <Route path="/popularArchives" element={<PopularArchivesPage />} />
             </Route>
         </Routes>
 

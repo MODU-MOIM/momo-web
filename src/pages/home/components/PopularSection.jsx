@@ -1,21 +1,25 @@
 import React from "react";
 import Fire from "../../../assets/Fire.png";
 import * as S from "../Styles/Home.styles";
+import { useNavigate } from "react-router-dom";
+
 
 const PopularSection = () => {
+    const navigate = useNavigate();
+
     return (
         <S.PopularSection>
-            <S.PopularItem>
+            <S.PopularItem onClick={() => navigate('/popularCrews')}>
                 <S.PopularTitle>
                     <S.Fire src={Fire} alt="fire" />
                     인기크루
                 </S.PopularTitle>
                 <S.PopularContent>이달의 인기 크루</S.PopularContent>
             </S.PopularItem>
-            <S.PopularItem>
+            <S.PopularItem onClick={() => navigate('/popularArchives')}>
                 <S.PopularTitle>
                     <S.Fire src={Fire} alt="fire" />
-                    인기피드
+                    트렌딩
                 </S.PopularTitle>
                 <S.PopularContent>인기 피드를 보고 소통해봐요</S.PopularContent>
             </S.PopularItem>
