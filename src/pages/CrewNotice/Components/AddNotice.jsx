@@ -7,8 +7,8 @@ import { useNotices } from "../NoticeProvider";
 export default function AddNotice() {
     const { crewId } = useParams(); //crewId 받기
     const navigate = useNavigate();
-    const { noticeList, setNoticeList } = useNotices();
     const [isEnabled, setIsEnabled] = useState(true);
+    const [isGeneral, setIsGenral] = useState(true);
     const [voteInfo, setVoteInfo] = useState({});
     const [notice, setNotice] = useState("");
 
@@ -16,7 +16,7 @@ export default function AddNotice() {
     useEffect(()=>{
         const initialVoteInfo = {
             title: "정모 참여 여부 투표",
-            selectList: ["참여", "미참여"]
+            selectList: isGeneral ? ["찬성", "반대"] : ["참석", "미참석"]
         }
         setVoteInfo(initialVoteInfo);
     },[]);
@@ -30,6 +30,7 @@ export default function AddNotice() {
                 content: notice,
                 vote: {
                     isEnabled: isEnabled,
+                    voteType: isGeneral ? "GENERAL" : "ATTENDANCE",
                     title: voteInfo.title,
                 }
             }:{
