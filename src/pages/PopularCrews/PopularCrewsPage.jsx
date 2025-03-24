@@ -111,7 +111,7 @@ export default function PopularCrewsPage() {
                         <S.CrewInfo>
                             <S.CrewName>{crew.name}</S.CrewName>
                             {crew.category && <S.CrewCategory>{crew.category}</S.CrewCategory>}
-                            <S.CrewMembers>멤버 {crew.currentMembers || 0}/{crew.maxMembers || 0}</S.CrewMembers>
+                            <S.CrewMembers>멤버 {crew.memberCount || 0}/{crew.maxMembers || 0}</S.CrewMembers>
                             {crew.description && (
                                 <S.CrewDescription dangerouslySetInnerHTML={{ __html: crew.description }} />
                             )}
