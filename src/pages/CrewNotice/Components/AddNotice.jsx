@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import * as S from "../Styles/Notice.styles";
 import { noticeAPI } from "../../../api";
 import { useNavigate, useParams } from "react-router-dom";
-import { useNotices } from "../NoticeProvider";
 
 export default function AddNotice() {
     const { crewId } = useParams(); //crewId 받기
@@ -12,14 +11,13 @@ export default function AddNotice() {
     const [voteInfo, setVoteInfo] = useState({});
     const [notice, setNotice] = useState("");
 
-    // voteInfo 직접 수정 기능 만들기
     useEffect(()=>{
         const initialVoteInfo = {
-            title: "정모 참여 여부 투표",
+            title: "투표명 설정해주세요",
             selectList: isGeneral ? ["찬성", "반대"] : ["참석", "미참석"]
         }
         setVoteInfo(initialVoteInfo);
-    },[]);
+    },[isGeneral]);
 
     const handleTitle = (e) => setVoteInfo((prev)=>({...prev, title: e.target.value}));
     const handleNotice = (e) => setNotice(e.target.value);
@@ -64,6 +62,19 @@ export default function AddNotice() {
                         onChange={handleNotice}
                     />
                     <S.VoteContainer>
+                        {isEnabled && <S.TopContainer>
+                            {isGeneral ? (
+                                <div style={{display: "flex"}}>
+                                    <S.VoteTypeText>* 찬반투표 *</S.VoteTypeText>
+                                    <S.ChangeVoteType onClick={()=>setIsGenral(!isGeneral)}/>
+                                </div>
+                            ):(
+                                <div style={{display: "flex"}}>
+                                    <S.VoteTypeText>* 참석여부투표 *</S.VoteTypeText>
+                                    <S.ChangeVoteType onClick={()=>setIsGenral(!isGeneral)}/>
+                                </div>
+                            )}
+                        </S.TopContainer>}
                         <S.VoteBox shouldHide={!isEnabled}>
                             <S.VoteTitle
                                 value={voteInfo.title}
