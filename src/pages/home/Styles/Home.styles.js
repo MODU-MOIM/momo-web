@@ -67,6 +67,7 @@ export const PopularItem = styled.div`
     align-items: center;
     justify-content: center;
     border-right: 1px solid #D9D9D9;
+    cursor: pointer;
 
     &:nth-child(4n) {
         border-right: none;
@@ -177,13 +178,21 @@ export const SlideItem = styled.div`
     border-radius: 10px;
     min-width: 260px;
     margin-right: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    
+    &:hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
 `;
-
 export const SlideItemContent = styled.div`
     height: 340px;
     background: white;
     border-radius: 10px;
     border: 1px solid #eee;
+    position: relative;
+    overflow: hidden;
 `;
 
 export const MoreWrapper = styled.div`
@@ -202,4 +211,108 @@ export const MoreLink = styled.a`
     text-decoration: none;
     font-weight: bold;
     bottom: 0;
+`;
+
+export const CrewCard = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+`;
+
+export const CrewImage = styled.img`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+`;
+
+export const CrewInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    width: 100%;
+`;
+
+export const CrewName = styled.p`
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+`;
+
+export const CrewCategory = styled.p`
+    font-size: 14px;
+`;
+
+export const CrewMembers = styled.p`
+    font-size: 14px;
+`;
+
+export const CrewHoverInfo = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(53, 46, 174, 0.9);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    text-align: center;
+    z-index: 10;
+    
+    ${SlideItem}:hover & {
+        opacity: 1;
+    }
+`;
+
+export const CrewDescription = styled.p`
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 15px;
+  max-height: 180px;
+  overflow-y: auto;
+  transition: opacity 0.3s ease;
+  
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+  }
+`;
+
+export const CrewJoinButton = styled.a`
+  padding: 8px 16px;
+  background-color: white;
+  color: #352EAE;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 10px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: #f0f0f0;
+  }
 `;
