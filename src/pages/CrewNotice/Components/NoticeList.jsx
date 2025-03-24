@@ -112,11 +112,18 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                                 <Vote>
                                     <S.VoteContainer style={{margin: "0"}}>
                                         <S.VoteBox style={{fontSize: "small"}}>
-                                            <S.VoteTitleText>정모 참여 투표</S.VoteTitleText>
-                                            <S.SelectBox>
-                                                <S.SelectList userVote>참여</S.SelectList>
-                                                <S.SelectList userVote>미참여</S.SelectList>
-                                            </S.SelectBox>
+                                            <S.VoteTitleText>{notice.vote?.title}</S.VoteTitleText>
+                                            {notice.vote?.voteType === "GENERAL" ? (
+                                                <S.SelectBox>
+                                                    <S.SelectList userVote>찬성</S.SelectList>
+                                                    <S.SelectList userVote>반대</S.SelectList>
+                                                </S.SelectBox>
+                                            ):(
+                                                <S.SelectBox>
+                                                    <S.SelectList userVote>참석</S.SelectList>
+                                                    <S.SelectList userVote>미참석</S.SelectList>
+                                                </S.SelectBox>
+                                            )}
                                         </S.VoteBox>
                                     </S.VoteContainer>
                                 </Vote>

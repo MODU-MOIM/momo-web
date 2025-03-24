@@ -23,7 +23,6 @@ export default function UpdateNotice() {
         // // 다른 notice 선택으로 인해 location.state변하기 때문에 의존성 배열로 설정
     }, [location.state]);
     
-    // voteInfo 초기화
     useEffect(()=>{
         const initialVoteInfo = {
             title: NoticeData.vote.title,
