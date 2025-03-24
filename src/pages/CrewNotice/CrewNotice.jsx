@@ -72,7 +72,7 @@ export default function CrewNotice() {
 
             const isAdmin = Array.isArray(members) &&
                 members.some(member => member.nickname === userInfo.nickname &&
-                    (member.role === 'LEADER' || member.role === 'SUB_LEADER')
+                    (member.role === 'LEADER' || member.role === 'ADMIN')
                 );
 
             setIsManager(isAdmin);
