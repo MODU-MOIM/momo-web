@@ -46,8 +46,9 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     const handleShowDetail = async (noticeId) => {
         try {
             const response = await noticeAPI.readNotice(crewId,noticeId);
+            const updateNoticeData = response.data.data;
             setNoticeList(noticeList.map(notice => 
-                notice.id === noticeId ? ({...notice, showDetail: !notice.showDetail}) : notice,
+                notice.id === noticeId ? ({...notice, ...updateNoticeData, showDetail: !notice.showDetail}) : notice,
             ));
         } catch (error) {
             console.log("통신 실패 : ", error);
