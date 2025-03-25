@@ -20,6 +20,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
             }
             const response = await noticeAPI.selectVote(crewId, noticeId, voteId, submitStatus);
             // console.log(response);
+            //NOT_VOTED 
         } catch (error) {
             console.error("투표 실패", error);
         }
@@ -45,7 +46,7 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
     }
 
     useEffect(() => {
-        // console.log(noticeList);
+        console.log(noticeList);
         function handleClickOutside(e) {
             if (noticeList.some((notice, index) => notice.isOpenedMenu &&
             menuRefs.current[index] && !menuRefs.current[index].contains(e.target))) {
@@ -118,11 +119,19 @@ export default function NoticeList({noticeList, togglePin, toggleMenu, setNotice
                             }}
                         >
                             <Notice showDetail={notice.showDetail}>
-                                {notice.content.includes('\n') ?
-                                    notice.content.split('\n').map((item, index)=>(
-                                        <div key={index}>{item}<br/></div>
-                                    )) :
-                                    <div>{notice.content}<br/></div>
+                                {notice.noticeType === "GENERAL" ? (
+                                    notice.content.includes('\n') ?
+                                        notice.content.split('\n').map((item, index)=>(
+                                            <div key={index}>{item}<br/></div>
+                                        )) :
+                                        <div>{notice.content}<br/></div>
+                                    ):(
+                                        notice.content?.description.includes('\n') ?
+                                            notice.content.description.split('\n').map((item, index)=>(
+                                                <div key={index}>{item}<br/></div>
+                                            )) :
+                                            <div>{notice.content.description}<br/></div>
+                                    )
                                 }
                             </Notice>
                             {notice.vote?.isEnabled && notice.showDetail ? 
