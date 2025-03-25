@@ -35,7 +35,7 @@ const Router = () => {
                 <Route path="/crews/:crewId" element={<CrewMain />}>
                     <Route path="crewHome" element={<CrewHome />} />
                     <Route path="crewNotice" element={<NoticeProvider><CrewNotice /></NoticeProvider>} />
-                    <Route path="addNotice" element={<NoticeProvider><AddNotice /></NoticeProvider>} />
+                    <Route path="addNotice" element={<AddNotice />} />
                     <Route path="updateNotice/:noticeId" element={<UpdateNotice />} />
                     <Route path="crewActivity" element={<Activities />} />
                     <Route path="archives/:archiveId" element={<Details />} />

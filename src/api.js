@@ -100,6 +100,12 @@ export const noticeAPI = {
     updateNotice: (crewId, noticeId,noticeData)=> api.put(`/crews/${crewId}/notices/${noticeId}`, noticeData),
     deleteNotice: (crewId, noticeId) => api.delete(`/crews/${crewId}/notices/${noticeId}`),
     noticePinToggle: (crewId, noticeId) => api.patch(`/crews/${crewId}/notices/${noticeId}/pin-toggle`),
+    // 투표 API
+    selectVote: (crewId, noticeId, voteId, voteStatus) =>
+        api.post(`/crews/${crewId}/notices/${noticeId}/vote/${voteId}`, voteStatus),
+    reSelectVote: (crewId, noticeId, voteId, voteStatus) =>
+        api.put(`/crews/${crewId}/notices/${noticeId}/vote/${voteId}`, voteStatus),
+
 };
 
 export const crewAPI = {

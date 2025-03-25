@@ -72,7 +72,7 @@ export default function CrewNotice() {
 
             const isAdmin = Array.isArray(members) &&
                 members.some(member => member.nickname === userInfo.nickname &&
-                    (member.role === 'LEADER' || member.role === 'SUB_LEADER')
+                    (member.role === 'LEADER' || member.role === 'ADMIN')
                 );
 
             setIsManager(isAdmin);
@@ -163,8 +163,9 @@ export default function CrewNotice() {
     return(
         <Wrapper>
             <CrewChat/>
-            {/* userid 받아서 관리자만 보이도록 수정해야 함 */}
-            <AddNoticeButton onClick={linktoAddNotice} >+ 공지추가</AddNoticeButton>
+            {isManager &&
+                <AddNoticeButton onClick={linktoAddNotice} >+ 공지추가</AddNoticeButton>
+            }
             {/* 무한스크롤 적용해야 함 */}
             <NoticeContainer>
                 {noticeList.length > 0 ? (

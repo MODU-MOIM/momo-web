@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { FaArrowsRotate } from "react-icons/fa6";
 
 export const Wrapper = styled.div`
     display: flex;
@@ -8,6 +9,7 @@ export const Wrapper = styled.div`
     margin-top: 30px;
     margin-bottom: 100px;
 `;
+
 export const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -20,16 +22,36 @@ export const Container = styled.div`
     border: 1px solid #DEDFE7;
     border-radius: 15px;
 `;
+
 export const MainContainer = styled.div`
     display: flex;
-    
+    height: 300px;
 `;
+
 export const VoteContainer = styled.div`
     margin: 50px 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    `;
+    position: relative;
+`;
+
+export const TopContainer = styled.div`
+`;
+
+export const VoteTypeText = styled.div`
+    margin-bottom: 5px;
+`;
+
+export const ChangeVoteType = styled(FaArrowsRotate)`
+    color: #352EAE;
+    cursor: pointer;
+
+    position: absolute;
+    top: 1px;
+    right: 10px;
+`;
+
 export const VoteBox = styled.div`
     width: 200px;
     margin-bottom: 20px;
@@ -39,14 +61,18 @@ export const VoteBox = styled.div`
     border-radius: 5px;
     display: ${props => props.shouldHide ? 'none' : 'inline-block'};
 `;
+
 export const VoteTitle = styled.input`
     margin: 10px 0px 0px 10px;
 `;
+
 export const VoteTitleText = styled.div`
     margin: 10px 0px 0px 10px;
 `;
-export const SelectBox = styled.div`
-`;
+
+
+export const SelectBox = styled.div``;
+
 export const SelectList = styled.li`
     margin: 10px;
     padding: 5px;
@@ -60,8 +86,9 @@ export const SelectList = styled.li`
         background-color: ${props => props.userVote ? '#D4E3FB' : 'transparent'};
     }
 `;
-export const ButtonContainer = styled.div`
-`;
+
+export const ButtonContainer = styled.div``;
+
 export const VoteButton = styled.button`
     width: 200px;
     padding: 10px;
@@ -75,6 +102,7 @@ export const VoteButton = styled.button`
         cursor: pointer;
     }
 `;
+
 export const InputText = styled.textarea`
     margin: 40px 0px 20px 40px;
     padding: 20px;
@@ -85,10 +113,12 @@ export const InputText = styled.textarea`
     border: none;
     border-radius: 15px;
 `;
+
 export const SubContainer = styled.div`
     display: flex;
     justify-content: center;
 `;
+
 export const PostNotice = styled.button`
     padding: 10px;
     width: 15%;

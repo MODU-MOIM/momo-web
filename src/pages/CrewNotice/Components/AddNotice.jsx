@@ -2,24 +2,22 @@ import { useEffect, useState } from "react";
 import * as S from "../Styles/Notice.styles";
 import { noticeAPI } from "../../../api";
 import { useNavigate, useParams } from "react-router-dom";
-import { useNotices } from "../NoticeProvider";
 
 export default function AddNotice() {
     const { crewId } = useParams(); //crewId 받기
     const navigate = useNavigate();
-    const { noticeList, setNoticeList } = useNotices();
     const [isEnabled, setIsEnabled] = useState(true);
+    const [isGeneral, setIsGenral] = useState(true);
     const [voteInfo, setVoteInfo] = useState({});
     const [notice, setNotice] = useState("");
 
-    // voteInfo 직접 수정 기능 만들기
     useEffect(()=>{
         const initialVoteInfo = {
-            title: "정모 참여 여부 투표",
-            selectList: ["참여", "미참여"]
+            title: "투표명 설정해주세요",
+            selectList: isGeneral ? ["찬성", "반대"] : ["참석", "미참석"]
         }
         setVoteInfo(initialVoteInfo);
-    },[]);
+    },[isGeneral]);
 
     const handleTitle = (e) => setVoteInfo((prev)=>({...prev, title: e.target.value}));
     const handleNotice = (e) => setNotice(e.target.value);
@@ -30,6 +28,7 @@ export default function AddNotice() {
                 content: notice,
                 vote: {
                     isEnabled: isEnabled,
+                    voteType: isGeneral ? "GENERAL" : "ATTENDANCE",
                     title: voteInfo.title,
                 }
             }:{
@@ -63,6 +62,19 @@ export default function AddNotice() {
                         onChange={handleNotice}
                     />
                     <S.VoteContainer>
+                        {isEnabled && <S.TopContainer>
+                            {isGeneral ? (
+                                <div style={{display: "flex"}}>
+                                    <S.VoteTypeText>* 찬반투표 *</S.VoteTypeText>
+                                    <S.ChangeVoteType onClick={()=>setIsGenral(!isGeneral)}/>
+                                </div>
+                            ):(
+                                <div style={{display: "flex"}}>
+                                    <S.VoteTypeText>* 참석여부투표 *</S.VoteTypeText>
+                                    <S.ChangeVoteType onClick={()=>setIsGenral(!isGeneral)}/>
+                                </div>
+                            )}
+                        </S.TopContainer>}
                         <S.VoteBox shouldHide={!isEnabled}>
                             <S.VoteTitle
                                 value={voteInfo.title}
