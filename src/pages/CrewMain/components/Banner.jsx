@@ -11,6 +11,8 @@ import Activity from '../../../assets/category/Running.png';
 import SausageBarbeque from '../../../assets/category/SausageBarbeque.png';
 import SelfDev from "../../../assets/category/SelfDev.png";
 import Star from "../../../assets/category/Star.png";
+import noProfile from "../../../assets/noProfile.png"
+import noMem from "../../../assets/noMem.png"
 import * as S from "../Styles/Banner.styles";
 
 const activityCategories = [
@@ -28,10 +30,10 @@ const Banner = () => {
     const { crewId } = useParams();
     const { userInfo } = useAuth();
     const [crewInfoData, setCrewInfoData] = useState();
-    // const [category, setCategory] = useState();
     const [categoryImage, setCategoryImage] = useState();
     const [categoryAlt, setCategoryAlt] = useState("");
     const [userRole, setUserRole] = useState(null);
+    const [membersProfile, setMembersProfile] = useState();
 
     const fetchCrewInfo = async () => {
         try {
@@ -78,6 +80,19 @@ const Banner = () => {
         }
     };
 
+    const CrewMemberProfile = async() => {
+        try {
+            const response = await crewMembersAPI.getMemberList(crewId);
+            const resMemList = response.data.data;
+            console.log("memberlist: ", resMemList);
+            // 멤버 프로필 이미지만 반환
+            const memProfile = resMemList.map(({profileImage, ...rest}) => profileImage);
+            setMembersProfile(memProfile);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     // 리더와 관리자만 설정 아이콘을 출력
     const ShowSetting = () => {
         return userRole === 'LEADER' || userRole === 'ADMIN';
@@ -88,6 +103,10 @@ const Banner = () => {
         checkUserRole();
     }, [crewId, userInfo]);
 
+    useEffect(() => {
+        CrewMemberProfile();
+    },[crewId])
+
     return(
         <S.Banner>
             <S.BannerTop>
@@ -97,7 +116,29 @@ const Banner = () => {
                 <S.CategoryImage src={categoryImage} alt={categoryAlt}/>
                 <S.CrewCategory>{categoryAlt}</S.CrewCategory>
                 <S.CrewMember>
-                    {/* member profile image, crew 인원 수 */}
+                    {/* crew mems profileImg */}
+                    {membersProfile?.slice(0,5).map((profile,index) => (
+                        <S.MemberProfile
+                            key={index}
+                            style={{
+                                backgroundImage: `url(${profile || noProfile})`,
+                                backgroundSize: "cover",
+                            }}
+                        />
+                    ))}
+                    {Array((5 - (membersProfile?.length) > 0) ? 5 - (membersProfile?.length) : 0)
+                    .fill(null).map((_, index) => (
+                        <S.MemberProfile
+                            key={`empty-${index}`}
+                            style={{
+                                backgroundImage: `url(${noMem})`,
+                                backgroundSize: "cover",
+                            }}
+                        />
+                    ))}
+                    <S.MemberProfile style={{backgroundColor: "#808080", opacity: "50%"}}>
+                        <S.ThreeDots/>
+                    </S.MemberProfile>
                 </S.CrewMember>
             </S.BannerTop>
             {/* Banner Image */}

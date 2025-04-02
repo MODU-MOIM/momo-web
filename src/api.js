@@ -144,7 +144,7 @@ export const crewAPI = {
     },
 };
 
-//
+// 크루 멤버 api
 export const crewMembersAPI = {
     getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),
     kickoutMember: (crewId, memberId) => api.delete(`/crews/${crewId}/members/${memberId}`),

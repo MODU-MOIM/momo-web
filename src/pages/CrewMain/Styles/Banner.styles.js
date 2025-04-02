@@ -1,5 +1,6 @@
 import { NavLink as RouterNavLink } from "react-router-dom";
 import styled from "styled-components";
+import { BsThreeDots } from "react-icons/bs";
 
 export const Banner = styled.div`
     width:100%;
@@ -51,11 +52,30 @@ export const CrewMember = styled.div`
     height:100%;
     border:1px solid red;
     float: right;
+
+    display: flex;
+`;
+
+export const MemberProfile = styled.div`
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid red;
+    border: 1px solid #c3c3c3;
+    margin-right: -8px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const ThreeDots = styled(BsThreeDots)`
+    color: white;
 `;
 
 export const Setting = styled.div`
     width: 100%;
-    height:50px;
+    height: 50px;
 
     & > * {
         float:right;
