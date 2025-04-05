@@ -14,6 +14,7 @@ import Star from "../../../assets/category/Star.png";
 import noProfile from "../../../assets/noProfile.png"
 import noMem from "../../../assets/noMem.png"
 import * as S from "../Styles/Banner.styles";
+import MemList from "./MemList"
 
 const activityCategories = [
     { image: Activity, alt: "액티비티", title: "ACTIVITY", subtitle: "다양한 활동을 즐겨보세요" },
@@ -34,6 +35,21 @@ const Banner = () => {
     const [categoryAlt, setCategoryAlt] = useState("");
     const [userRole, setUserRole] = useState(null);
     const [membersProfile, setMembersProfile] = useState();
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+    const togglePopup = () => {
+        setIsPopupOpen(!isPopupOpen);
+        // // 모달이 열릴때 body에 hidden 적용
+        // if(!isPopupOpen){
+        //     document.body.style.overflow = 'hidden';
+        // }else{
+        //     document.body.style.overflow = 'auto';
+        // }
+    }
+    const closeModal = () => {
+        setIsPopupOpen(false);
+        // document.body.style.overflow = 'auto';
+    }
 
     const fetchCrewInfo = async () => {
         try {
@@ -136,7 +152,15 @@ const Banner = () => {
                             }}
                         />
                     ))}
-                    <S.MemberProfile style={{backgroundColor: "#808080", opacity: "50%"}}>
+                    {/* profile List showButton */}
+                    <S.MemberProfile
+                        onClick={togglePopup}
+                        style={{
+                            backgroundColor: "#808080",
+                            opacity: "50%",
+                            cursor: "pointer"
+                        }}
+                    >
                         <S.ThreeDots/>
                     </S.MemberProfile>
                 </S.CrewMember>
@@ -151,6 +175,7 @@ const Banner = () => {
                 </S.Link>
             </S.Setting>
             )}
+            {isPopupOpen && <MemList closeModal={closeModal}/>}
         </S.Banner>
     );
 }

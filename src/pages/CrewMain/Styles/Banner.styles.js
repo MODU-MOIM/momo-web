@@ -87,3 +87,30 @@ export const Setting = styled.div`
 
 export const Link = styled(RouterNavLink)`
 `;
+
+// MemList.jsx
+
+export const Panel = styled.div`
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    display: flex;
+    top: 0;
+    left: 0;
+    z-index:1;
+`;
+
+export const Container = styled.div`
+    /* top: 20%;
+    right: 15%; */
+    width: 400px;
+    height: 500px;
+    background-color: white;
+    z-index:2;
+    position: fixed;
+    top: 20%;
+    right: 25%;
+    background: #fff;
+    border-radius: 15px;
+`;
