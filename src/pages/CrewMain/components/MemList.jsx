@@ -2,10 +2,12 @@ import { AiOutlineClose } from "react-icons/ai";
 import * as S from "../Styles/Banner.styles";
 import { crewMembersAPI } from "../../../api";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import noProfile from "../../../assets/noProfile.png"
 
 const MemList = ({ closeModal }) => {
     const { crewId } = useParams();
+    const navigator = useNavigate();
     const [members, setMembers] = useState();
 
     const handlePanelClick = (e) => {
@@ -13,10 +15,16 @@ const MemList = ({ closeModal }) => {
             closeModal();
         }
     }
+
+    const toMemReview = () => {
+        navigator(`/crews/${crewId}/review`);
+        closeModal();
+    }
+
     const fetchMembers = async() => {
         try {
             const response = await crewMembersAPI.getMemberList(crewId);
-            console.log(response.data.data);
+            // console.log(response.data.data);
             setMembers(response.data.data);
         } catch (error) {
             console.error("크루 멤버 읽기 실패", error);
@@ -35,8 +43,8 @@ const MemList = ({ closeModal }) => {
                 </S.CloseButton>
                 <S.MemberList>
                     {members?.map(member => (
-                        <S.MemberItem key={member.memberId}>
-                            <S.MemberImage src={member.profileImage}/>
+                        <S.MemberItem key={member.memberId} onClick={toMemReview}>
+                            <S.MemberImage src={member.profileImage || noProfile}/>
                             <S.MemberName>{member.nickname}</S.MemberName>
                             <S.MemberRole>{member.role}</S.MemberRole>
                         </S.MemberItem>

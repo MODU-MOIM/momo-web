@@ -145,7 +145,14 @@ export const MemberList = styled.div`
 export const MemberItem = styled.div`
     display: flex;
     align-items: center;
-    padding: 5px 0px;
+    padding: 10px;
+
+    &:hover{
+        cursor: pointer;
+        border-radius: 15px;
+        background-color: #DEDFE7;
+        transition-duration: 0.1s;
+    }
 `;
 
 export const MemberImage = styled.img`

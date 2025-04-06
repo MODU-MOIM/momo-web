@@ -100,7 +100,7 @@ const Banner = () => {
         try {
             const response = await crewMembersAPI.getMemberList(crewId);
             const resMemList = response.data.data;
-            console.log("memberlist: ", resMemList);
+            // console.log("memberlist: ", resMemList);
             // 멤버 프로필 이미지만 반환
             const memProfile = resMemList.map(({profileImage, ...rest}) => profileImage);
             setMembersProfile(memProfile);
