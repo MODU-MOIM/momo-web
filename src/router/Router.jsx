@@ -23,6 +23,7 @@ import Login from "../pages/Login/Login";
 import PopularCrewsPage from "../pages/PopularCrews/PopularCrewsPage";
 import PopularArchivesPage from "../pages/PopularArchives/PopularArchives";
 import CrewChatList from "../pages/CrewChat/CrewChatList";
+import Review from "../pages/Review/Review";
 
 const Router = () => {
     return(
@@ -46,8 +47,9 @@ const Router = () => {
                     <Route path="crewCommunity/update/:feedId" element={<UpdateCommunity />} />
                     <Route path="crewChatList" element={<CrewChatList />} />
                     <Route path="crewSetting" element={<Setting />} />
+                    <Route path="review" element={<Review />} />
+                    <Route path="crewSchedule" element={<CrewSchedule />} />
                 </Route>
-                <Route path="/crews/:crewId/crewSchedule" element={<CrewSchedule />} />
                 <Route path="/crewList" element={<CrewList />} />
                 <Route path="/popularCrews" element={<PopularCrewsPage />} />
                 <Route path="/popularArchives" element={<PopularArchivesPage />} />
