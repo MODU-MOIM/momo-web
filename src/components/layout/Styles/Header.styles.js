@@ -185,6 +185,27 @@ export const Manners = styled.p`
     }
 `;
 
+export const StdManner = styled.span`
+    font-size: 8px;
+    position: absolute;
+    top: -20px;
+    left: 36.5%; /* 왼쪽 36.5% 지점에 위치 */
+    transform: translateX(-50%); /* 자신의 너비 절반만큼 왼쪽으로 이동 */
+    &::after{
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 50%; /* 부모 기준 중간 지점에 위치(36.5가 됨) */
+        transform: translateX(-50%); /* 자신의 너비 절반만큼 왼쪽으로 이동 */
+
+        /* 역삼각형 모양 설정 */
+        border-bottom: 3px solid transparent;
+        border-top: 5px solid #EAEAEA;
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+    }
+`;
+
 export const SelectButton = styled.div`
 `;
 
