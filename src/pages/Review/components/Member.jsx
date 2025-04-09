@@ -6,6 +6,15 @@ import { useEffect, useState } from "react";
 export default function Member() {
     const { crewId } = useParams();
     const [members, setMembers] = useState();
+    const [reviews, setReveiws] = useState({});
+
+    const handleTextReview = (e, memberId) => {
+        setReveiws(prev => ({
+            ...prev,
+            // memberId를 키값으로 설정해서 각 멤버들의 리뷰를 따로 저장
+            [memberId]: e.target.value
+        }));
+    }
 
     const fetchMembers = async() => {
         try {
@@ -16,6 +25,19 @@ export default function Member() {
         }
     }
 
+    const SubmitReview = async(memberId) => {
+        try{
+            const review = {
+                comment: reviews[memberId],
+                rating: 5.0,
+            }
+            const resoponse = await crewMembersAPI.postMemberReview(crewId, memberId, review);
+            console.log(resoponse);
+        } catch (error) {
+            console.error("멤버 리뷰 실패", error);
+        }
+    }
+
     useEffect(() => {
         fetchMembers();
     },[]);
@@ -23,20 +45,28 @@ export default function Member() {
     return (
         <S.Wrapper>
             {members?.map(mem => (
-                <S.MemReviewItem>
+                <S.MemReviewItem key={mem.memberId}>
                     <S.MemProfile src={mem.profileImage}/>
                     <S.ContainerWrapper>
                         {/* 위쪽 컨테이너 */}
                         <S.MRTopContainer>
                             <S.MemName>{mem.nickname}</S.MemName>
+                            {/* rating */}
                             <S.StarReview>12345</S.StarReview>
                         </S.MRTopContainer>
                         {/* 아래쪽 컨테이너 */}
                         <S.MRBottomContainer>
                             <S.SingleLineReview
                                 placeholder="한 줄 평가"
+                                // 속성(키) 이름이 변수이므로 대괄호 표기법 사용
+                                value={reviews[mem.memberId]}
+                                onChange={(e) => handleTextReview(e, mem.memberId)}
                             />
-                            <S.SubmitButton>저장</S.SubmitButton>
+                            <S.SubmitButton
+                                onClick={() => SubmitReview(mem.memberId)}
+                            >
+                                저장
+                            </S.SubmitButton>
                         </S.MRBottomContainer>
                     </S.ContainerWrapper>
                 </S.MemReviewItem>

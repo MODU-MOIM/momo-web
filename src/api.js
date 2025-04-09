@@ -151,6 +151,9 @@ export const crewMembersAPI = {
     manageSchPermission: (crewId, data) => api.patch(`/crews/${crewId}/schedules/permissions`, data),
     manageMemberRole: (crewId, memberId, data) => api.patch(`/crews/${crewId}/members/${memberId}/role`, data),
     delegateLeader: (crewId, memberId) => api.patch(`/crews/${crewId}/members/${memberId}/leader`),
+
+    // 멤버 평가 api
+    postMemberReview: (crewId, memberId, review) => api.post(`/crews/${crewId}/members/${memberId}/reviews`, review),
 }
 
 // 일정 api
