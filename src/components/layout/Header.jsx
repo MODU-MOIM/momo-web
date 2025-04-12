@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { AiOutlineUser } from "react-icons/ai";
+import { AiOutlineUser, AiOutlineBell } from "react-icons/ai"; // 알림 아이콘 추가
 import { useAuth } from "../../AuthProvider";
 import Mypage from "./MyPage";
+import NotificationCenter from "../../pages/Notification/NotificationCenter"; // 알림 센터 컴포넌트 import
 import * as S from "./Styles/Header.styles";
 
 const Header = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false); // 알림 표시 상태
+    const [notificationCount, setNotificationCount] = useState(0); // 알림 개수
     const { isLoggedIn, logout } = useAuth();
 
     const togglePopup = () => {
@@ -18,6 +21,21 @@ const Header = () => {
         }else{
             document.body.style.overflow = 'auto';
         }
+    };
+
+    // 알림 토글 함수
+    const toggleNotifications = () => {
+        setShowNotifications(!showNotifications);
+        
+        // 알림을 열면 알림 카운트 초기화
+        if (!showNotifications) {
+            setNotificationCount(0);
+        }
+    };
+    
+    // 새 알림이 도착하면 카운트 증가
+    const handleNewNotification = () => {
+        setNotificationCount(prev => prev + 1);
     };
 
     const handleLogout = async () => {
@@ -46,6 +64,13 @@ const Header = () => {
                 <S.AuthButtons>
                     {isLoggedIn ? (
                         <>
+                            {/* 알림 버튼 추가 */}
+                            <S.NotificationButton onClick={toggleNotifications}>
+                                <AiOutlineBell size={21} />
+                                {notificationCount > 0 && (
+                                    <S.NotificationCount>{notificationCount > 9 ? '9+' : notificationCount}</S.NotificationCount>
+                                )}
+                            </S.NotificationButton>
                             <S.UserButton onClick={togglePopup}>
                                 <AiOutlineUser size={21} />
                             </S.UserButton>
@@ -60,6 +85,13 @@ const Header = () => {
                 </S.AuthButtons>
             </S.Container>
             {isPopupOpen && <Mypage closeModal={closeModal}/>}
+            
+            {/* 알림 드롭다운 */}
+            {showNotifications && (
+                <S.NotificationsDropdown>
+                    <NotificationCenter onNewNotification={handleNewNotification} />
+                </S.NotificationsDropdown>
+            )}
         </S.HeaderContainer>
     );
 }
