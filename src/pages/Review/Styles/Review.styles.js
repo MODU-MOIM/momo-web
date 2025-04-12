@@ -1,40 +1,37 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const ReviewContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 60%;
-    margin: 0 auto;
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 24px 16px;
 `;
 
 export const ButtonContainer = styled.div`
-    width: 40%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 8px;
 `;
 
 export const ToggleButton = styled.button`
-    width: 50%;
-    border-radius: 20px;
-    background-color: #fff;
-    border:none;
-    padding: 10px;
-    cursor: pointer;
-    font-weight: 500;
-    ${({ $active }) => $active && `
-        background-color: #352EAE;
-        color: #fff;
-    `}
-    margin: 5px;
+  padding: 12px 24px;
+  background-color: ${(props) => (props.$active ? '#4B44B6' : 'white')};
+  color: ${(props) => (props.$active ? 'white' : '#666')};
+  border: 1px solid ${(props) => (props.$active ? '#4B44B6' : '#e0e0e0')};
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: ${(props) => (props.$active ? '#3D3799' : '#f5f5f5')};
+  }
 `;
 
 export const ReviewContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  min-height: 500px;
 `;
-
