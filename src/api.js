@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { EventSourcePolyfill } from 'event-source-polyfill';
 
 const api = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
@@ -42,7 +43,7 @@ api.interceptors.response.use(
             
             try {
                 // 저장된 토큰에서 'Bearer ' 제거
-                const token = localStorage.getItem('token')?.replace('Bearer ', '');
+                const token = localStorage.getItem('token');
                 
                 // 토큰 재발급 요청
                 const response = await authAPI.reissue(token);
@@ -53,7 +54,6 @@ api.interceptors.response.use(
                     localStorage.setItem('token', newToken);
                     originalRequest.headers['Authorization'] = newToken;
                     
-                    // 토큰 재발급 후 원래 요청이 GET 메서드가 아닌 경우 재시도
                     return api(originalRequest);
                 }
             } catch (error) {
@@ -70,6 +70,31 @@ api.interceptors.response.use(
         return new Promise(() => {});
     }
 );
+
+export const connectSSE = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        console.error('토큰이 없습니다.');
+        return null;
+    }
+
+    const baseURL = process.env.REACT_APP_BASE_URL || 'https://modumoim.site';
+    // "Bearer " 접두사를 제거하여 쿼리 파라미터로 전달
+    const tokenWithoutBearer = token.replace('Bearer ', '');
+    const url = `${baseURL}/sse/subscribe?token=${tokenWithoutBearer}`;
+
+    const eventSource = new EventSourcePolyfill(url, {
+        withCredentials: true,
+        headers: {
+            'Authorization': token,
+            'Accept': 'text/event-stream',
+            'Cache-Control': 'no-cache'
+        }
+    });
+
+    return eventSource;
+};
+
 
 export const authAPI = {
     signUp: data => api.post('/auth/sign-up', data),
@@ -161,6 +186,8 @@ export const scheduleAPI = {
     deleteSchedule: (crewId, scheduleId) => api.delete(`/crews/${crewId}/schedules/${scheduleId}`),
     readMonthlySchedule: (crewId, yearMonth) => api.get(`/crews/${crewId}/schedules/monthly?yearMonth=${yearMonth}`),
     readDailySchedule: (crewId, date) => api.get(`/crews/${crewId}/schedules/daily?date=${date}`),
+    getUserAttendedSchedules: (crewId) => api.get(`/crews/${crewId}/schedules/attended`),
+    getScheduleByScheduleId: (crewId, scheduleId) => api.get(`/crews/${crewId}/schedules/${scheduleId}`)
 };
 
 // 커뮤니티 api
@@ -239,5 +266,54 @@ export const recommendAPI = {
     getPopularCrews: (limit = 10) => api.get(`/crews/popular?limit=${limit}`)
 }
 
+// 평가 api
+export const reviewAPI = {
+    getCrewReviews: (crewId) => api.get(`/crews/${crewId}/reviews`),
+    getCrewReviewDetail: (crewId, reviewId) => api.get(`/crews/${crewId}/reviews/${reviewId}`),
+    createCrewReview: (crewId, reviewData) => api.post(`/crews/${crewId}/reviews`, reviewData),
+    updateCrewReview: (crewId, reviewId, reviewData) => api.put(`/crews/${crewId}/reviews/${reviewId}`, reviewData),
+    deleteCrewReview: (crewId, reviewId) => api.delete(`/crews/${crewId}/reviews/${reviewId}`),
+}
+
+export const sseAPI = {
+    subscribe: () => {
+        const eventSource = connectSSE();
+        if (!eventSource) {
+            return null;
+        }
+        eventSource.onopen = () => {
+            console.log('SSE 연결 성공');
+        };
+        eventSource.addEventListener('review', (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('리뷰 알림 수신:', data);
+            } catch (err) {
+                console.error('리뷰 이벤트 처리 오류:', err);
+            }
+        });
+        eventSource.addEventListener('heartbeat', (event) => {
+            console.log('하트비트 수신:', event.data);
+        });
+        eventSource.addEventListener('sse', (event) => {
+            console.log('SSE 첫 구독 이벤트:', event.data);
+        });
+        eventSource.onmessage = (event) => {
+            console.log('일반 메시지 수신:', event.data);
+        };
+        eventSource.onerror = (error) => {
+            console.error('SSE 연결 오류:', error);
+            eventSource.close();
+        };
+        return eventSource;
+    },
+
+    closeConnection: (eventSource) => {
+        if (eventSource) {
+            eventSource.close();
+            console.log('SSE 연결 종료');
+        }
+    }
+};
 
 export default api;
