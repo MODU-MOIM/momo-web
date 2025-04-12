@@ -371,3 +371,33 @@ export const CancelButton = styled.button`
         background-color: #da190b;
     }
 `;
+
+export const NotificationButton = styled.button`
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+`;
+
+export const NotificationCount = styled.span`
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 50%;
+`;
+
+export const NotificationsDropdown = styled.div`
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+`;
+
+
+
+
