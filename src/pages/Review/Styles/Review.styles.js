@@ -119,22 +119,39 @@ export const SubmitButton = styled.div`
 `;
 
 // StarRating.jsx
-// export const RatingContainer = styled.div`
-//     width: 100px;
-//     /* display: flex; */
+export const StarWrapper = styled.div`
+    width: 100px;
+    display: flex;
+`;
 
-// `;
+export const RatingContainer = styled.div`
+    cursor: pointer;
+`;
 
-// export const halfStarLabel = styled.label``;
-// export const halfStarInput = styled.input``;
-// export const fullStarLabel = styled.label``;
-// export const fullStarInput = styled.input``;
+export const LeftHalfStar = styled.div`
+  width: 10px;
+  overflow: hidden;
+  display: inline-block;
+`;
 
+export const RightHalfStar = styled.div`
+  width: 10px;
+  overflow: hidden;
+  display: inline-block;
+`;
 
 export const FullStar = styled(FaStar)`
+    font-size: 20px;
 	color: orange;
     opacity: ${props => props.$ishovered ? '0.5' : '1'};
+    position: relative;
+    left: ${props => props.$right ? '-10px' : '0'};
+    transition: 0.2s;
 `;
 export const EmptyStar = styled(FaRegStar)`
+    font-size: 20px;
 	color: orange;
+    position: relative;
+    left: ${props => props.$right ? '-10px' : '0'};
+    transition: 0.2s;
 `;
