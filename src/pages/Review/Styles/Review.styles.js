@@ -131,17 +131,10 @@ export const SubmitButton = styled.div`
 // export const fullStarInput = styled.input``;
 
 
-export const EmptyStar = styled(FaRegStar)`
-	color: orange;
-
-	&:hover{
-		opacity: 50%;
-	}
-`;
 export const FullStar = styled(FaStar)`
 	color: orange;
-
-	&:hover{
-		opacity: 50%;
-	}
+    opacity: ${props => props.$ishovered ? '0.5' : '1'};
+`;
+export const EmptyStar = styled(FaRegStar)`
+	color: orange;
 `;
