@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { FaRegStar, FaStar } from 'react-icons/fa';
 
 export const ReviewContainer = styled.div`
     display: flex;
@@ -115,4 +116,32 @@ export const SubmitButton = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+`;
+
+// StarRating.jsx
+// export const RatingContainer = styled.div`
+//     width: 100px;
+//     /* display: flex; */
+
+// `;
+
+// export const halfStarLabel = styled.label``;
+// export const halfStarInput = styled.input``;
+// export const fullStarLabel = styled.label``;
+// export const fullStarInput = styled.input``;
+
+
+export const EmptyStar = styled(FaRegStar)`
+	color: orange;
+
+	&:hover{
+		opacity: 50%;
+	}
+`;
+export const FullStar = styled(FaStar)`
+	color: orange;
+
+	&:hover{
+		opacity: 50%;
+	}
 `;

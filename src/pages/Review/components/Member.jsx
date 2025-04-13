@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { crewMembersAPI } from "../../../api";
 import * as S from "../Styles/Review.styles";
 import { useEffect, useState } from "react";
+import StarRating from "./StarRating";
 
 export default function Member() {
     const { crewId } = useParams();
@@ -53,6 +54,7 @@ export default function Member() {
                             <S.MemName>{mem.nickname}</S.MemName>
                             {/* rating */}
                             <S.StarReview>12345</S.StarReview>
+                            <StarRating/>
                         </S.MRTopContainer>
                         {/* 아래쪽 컨테이너 */}
                         <S.MRBottomContainer>
