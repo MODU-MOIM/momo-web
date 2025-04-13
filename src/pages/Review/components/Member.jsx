@@ -8,6 +8,7 @@ export default function Member() {
     const { crewId } = useParams();
     const [members, setMembers] = useState();
     const [reviews, setReveiws] = useState({});
+    const [ratings, setRatings] = useState({});
 
     const handleTextReview = (e, memberId) => {
         setReveiws(prev => ({
@@ -30,7 +31,7 @@ export default function Member() {
         try{
             const review = {
                 comment: reviews[memberId],
-                rating: 5.0,
+                rating: ratings[memberId],
             }
             const resoponse = await crewMembersAPI.postMemberReview(crewId, memberId, review);
             console.log(resoponse);
@@ -53,8 +54,12 @@ export default function Member() {
                         <S.MRTopContainer>
                             <S.MemName>{mem.nickname}</S.MemName>
                             {/* rating */}
-                            <S.StarReview>12345</S.StarReview>
-                            <StarRating/>
+                            <StarRating
+                                score={ratings[mem.memberId] || 0}
+                                setScore={(score) => setRatings(prev => ({
+                                    ...prev, [mem.memberId]: score}))
+                                }
+                            />
                         </S.MRTopContainer>
                         {/* 아래쪽 컨테이너 */}
                         <S.MRBottomContainer>

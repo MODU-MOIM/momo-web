@@ -1,8 +1,7 @@
 import { useState } from "react";
 import * as S from "../Styles/Review.styles"
 
-export default function StarRating() {
-    const[score, setScore] = useState(0);
+export default function StarRating({score, setScore}) {
     const [hoverScore, setHoverScore] = useState(0); // 기존 선택 점수 유지하며 hover 별점 표시를 위해 새로 선언
 
     const ratingStarHandler = () => {
