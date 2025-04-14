@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const ReviewContainer = styled.div`
   max-width: 768px;
@@ -35,3 +35,4 @@ export const ReviewContent = styled.div`
   border-radius: 8px;
   min-height: 500px;
 `;
+

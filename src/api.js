@@ -169,13 +169,16 @@ export const crewAPI = {
     },
 };
 
-//
+// 크루 멤버 api
 export const crewMembersAPI = {
     getMemberList: (crewId) => api.get(`/crews/${crewId}/members`),
     kickoutMember: (crewId, memberId) => api.delete(`/crews/${crewId}/members/${memberId}`),
     manageSchPermission: (crewId, data) => api.patch(`/crews/${crewId}/schedules/permissions`, data),
     manageMemberRole: (crewId, memberId, data) => api.patch(`/crews/${crewId}/members/${memberId}/role`, data),
     delegateLeader: (crewId, memberId) => api.patch(`/crews/${crewId}/members/${memberId}/leader`),
+
+    // 멤버 평가 api
+    postMemberReview: (crewId, memberId, review) => api.post(`/crews/${crewId}/members/${memberId}/reviews`, review),
 }
 
 // 일정 api

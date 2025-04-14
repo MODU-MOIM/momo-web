@@ -214,7 +214,9 @@ const MyPage = ({ closeModal }) => {
                     {/* 사용자 정보 표시 */}
                     <S.UserInfo>
                         <S.Name>{nickname}</S.Name>
-                        <S.Manners $score={25.1}/>
+                        <S.Manners $score={25.1}>
+                            <S.StdManner>첫 온도 36.5℃</S.StdManner>
+                        </S.Manners>
                     </S.UserInfo>
                 </S.UserPanel>
                 {/* 메뉴 선택 버튼 */}
