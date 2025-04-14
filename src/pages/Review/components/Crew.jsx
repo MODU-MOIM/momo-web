@@ -3,6 +3,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import * as S from './Styles/Crew.styles';
 import { reviewAPI, crewAPI, scheduleAPI } from '../../../api';
 import { useAuth } from '../../../AuthProvider';
+import StarRating from './StarRating';
 
 const keywordMapping = {
   MANAGEMENT: '체계적인 모임 운영',
@@ -21,7 +22,7 @@ export default function Crew({ crewIdFromUrl, scheduleIdFromUrl, notificationDat
     const { crewId: paramCrewId } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
-    const { userInfo } = useAuth(); // AuthProvider에서 사용자 정보 가져오기
+    const { userInfo } = useAuth();
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -32,7 +33,7 @@ export default function Crew({ crewIdFromUrl, scheduleIdFromUrl, notificationDat
     const [showRecentCrews, setShowRecentCrews] = useState(false);
     const [recentCrews, setRecentCrews] = useState([]);
     
-    // crewId 결정: URL 파라미터 > 부모 컴포넌트에서 전달된 파라미터 > URL 경로 파라미터
+    // crewId는 URL 파라미터나 알림 데이터에서 가져옴
     const effectiveCrewId = crewIdFromUrl || paramCrewId || notificationData?.crewId;
     
     // scheduleId는 URL 파라미터나 알림 데이터에서 가져옴
@@ -124,19 +125,6 @@ export default function Crew({ crewIdFromUrl, scheduleIdFromUrl, notificationDat
         review.scheduleInfo && review.scheduleInfo.id === parseInt(effectiveScheduleId)
     );
 
-    const renderStars = (rating) => {
-        const safeRating = rating || 0;
-        
-        return (
-            <S.StarRating>
-                {[1, 2, 3, 4, 5].map((star) => (
-                    <S.Star key={star} $filled={star <= Math.round(safeRating)}>★</S.Star>
-                ))}
-                <S.RatingText>{safeRating.toFixed(1)}</S.RatingText>
-            </S.StarRating>
-        );
-    };
-    
     const handleRatingChange = (rating) => {
         setFormData({
             ...formData,
@@ -162,9 +150,30 @@ export default function Crew({ crewIdFromUrl, scheduleIdFromUrl, notificationDat
         });
     };
 
-    const handleCrewSelect = (crewId) => {
-        navigate(`/review?tab=crew&crewId=${crewId}`);
+    const handleDeleteReview = async (reviewId) => {
+        try {
+            await reviewAPI.deleteCrewReview(effectiveCrewId, reviewId);
+
+            const response = await reviewAPI.getCrewReviews(effectiveCrewId);
+            const { data } = response.data;
+            setReviews(data.crewReviewList || []);
+            setKeywordStats(data.keywordCount || []);
+            setMannersRating(data.mannersRating || 0);
+
+            alert('평가가 삭제되었습니다.');
+            setLoading(false);
+        } catch (err) {
+            console.error('평가 삭제 에러:', err);
+            alert('평가 삭제 중 오류가 발생했습니다.');
+            setLoading(false);
+        }
     };
+
+    const isReviewAuthor = (review) => {
+        if(!userInfo) return false;
+        return review.writer === userInfo.nickname;
+    };
+
 
     const handleSubmit = async () => {
         try {
@@ -191,7 +200,7 @@ export default function Crew({ crewIdFromUrl, scheduleIdFromUrl, notificationDat
             
             setLoading(true);
             
-            // 백엔드 API 형식에 맞게 데이터 변환
+            // 평가 데이터 생성
             const reviewData = {
                 comment: formData.comment,
                 rating: formData.rating,
@@ -199,6 +208,7 @@ export default function Crew({ crewIdFromUrl, scheduleIdFromUrl, notificationDat
                 scheduleId: parseInt(effectiveScheduleId)
             };
             
+            // 평가 등록
             await reviewAPI.createCrewReview(effectiveCrewId, reviewData);
             
             // 폼 초기화
@@ -221,7 +231,21 @@ export default function Crew({ crewIdFromUrl, scheduleIdFromUrl, notificationDat
             
         } catch (err) {
             console.error('평가 등록 에러:', err);
-            alert('평가 등록 중 오류가 발생했습니다.');
+            
+            // 409 Conflict 에러 처리 추가
+            if (err.response && err.response.status === 409) {
+                alert('이미 해당 일정에 대한 평가를 작성하셨습니다. 크루 평가는 한 번만 작성 가능합니다.');
+                
+                // 서버에서 이미 리뷰가 존재한다고 알려준 경우, UI 상태도 업데이트
+                const reviewResponse = await reviewAPI.getCrewReviews(effectiveCrewId);
+                const { data } = reviewResponse.data;
+                setReviews(data.crewReviewList || []);
+                setKeywordStats(data.keywordCount || []);
+                setMannersRating(data.mannersRating || 0);
+            } else {
+                alert('평가 등록 중 오류가 발생했습니다.');
+            }
+            
             setLoading(false);
         }
     };
@@ -240,139 +264,54 @@ export default function Crew({ crewIdFromUrl, scheduleIdFromUrl, notificationDat
 
     if (loading) return <S.LoadingMessage>정보를 불러오는 중입니다...</S.LoadingMessage>;
 
-    // 크루 선택 없이 페이지 접근한 경우
-    if (!effectiveCrewId) {
-        return (
-            <S.CrewReviewContainer>
-                <S.ReviewHeader>
-                    <S.TabContainer>
-                        <S.Tab $active={true}>크루 평가 작성</S.Tab>
-                        <S.Tab $active={false}>크루 평가</S.Tab>
-                    </S.TabContainer>
-                </S.ReviewHeader>
-                
-                <S.NoCrewSelectedMessage>
-                    평가할 크루를 선택해주세요
-                    {showRecentCrews && recentCrews.length > 0 && (
-                        <S.CrewSelectContainer>
-                            <S.CrewSelectTitle>내 크루 목록</S.CrewSelectTitle>
-                            <S.CrewList>
-                                {recentCrews.map(crew => (
-                                    <S.CrewItem 
-                                        key={crew.id} 
-                                        onClick={() => handleCrewSelect(crew.id)}
-                                    >
-                                        <S.CrewItemImage 
-                                            src={crew.bannerImage || '/default-crew-profile.png'} 
-                                            alt={crew.name} 
-                                        />
-                                        <S.CrewItemName>{crew.name}</S.CrewItemName>
-                                    </S.CrewItem>
-                                ))}
-                            </S.CrewList>
-                        </S.CrewSelectContainer>
-                    )}
-                    {showRecentCrews && recentCrews.length === 0 && (
-                        <S.NoCrewsMessage>
-                            아직 가입한 크루가 없습니다. 크루에 가입하고 활동 후 평가를 작성할 수 있습니다.
-                        </S.NoCrewsMessage>
-                    )}
-                </S.NoCrewSelectedMessage>
-            </S.CrewReviewContainer>
-        );
-    }
-
-    if (error) return <S.ErrorMessage>{error}</S.ErrorMessage>;
-
     return (
         <S.CrewReviewContainer>
-            <S.ReviewHeader>
-                <S.TabContainer>
-                    <S.Tab $active={true}>크루 평가 작성</S.Tab>
-                    <S.Tab $active={false}>크루 평가</S.Tab>
-                </S.TabContainer>
-            </S.ReviewHeader>
-
             {/* 평가 작성 폼 (알림을 통해 들어온 경우에만 표시) */}
             {canReview ? (
-                isAlreadyReviewed ? (
-                    <S.AlreadyReviewedMessage>
-                        이미 해당 일정에 대한 평가를 작성하셨습니다. 크루 평가는 한 번만 작성 가능합니다.
-                    </S.AlreadyReviewedMessage>
-                ) : (
-                    <S.ReviewForm>
-                        <S.ReviewFormHeader>
-                            <S.ReviewerInfo>
-                                {/* 크루 정보 표시 */}
-                                <S.ReviewerAvatar 
-                                    src={crewInfo?.bannerImage || '/default-crew-profile.png'} 
-                                    alt={crewInfo?.name} 
-                                />
-                                <S.ReviewerName>{crewInfo?.name || '크루명'}</S.ReviewerName>
-                            </S.ReviewerInfo>
-                            <S.StarSelector>
-                                {[1, 2, 3, 4, 5].map((rating) => (
-                                    <S.StarOption 
-                                        key={rating}
-                                        $selected={formData.rating === rating}
-                                        onClick={() => handleRatingChange(rating)}
-                                    >
-                                        ★
-                                    </S.StarOption>
-                                ))}
-                            </S.StarSelector>
-                        </S.ReviewFormHeader>
-
-                        {/* 평가할 일정 정보 표시 */}
-                        {scheduleInfo && (
-                            <S.ScheduleInfoBox>
-                                <S.ScheduleInfoTitle>평가할 일정 정보</S.ScheduleInfoTitle>
-                                <S.ScheduleInfoItem>
-                                    <span>일정명:</span> {scheduleInfo.title || '일정'}
-                                </S.ScheduleInfoItem>
-                                <S.ScheduleInfoItem>
-                                    <span>날짜:</span> {formatDate(scheduleInfo.scheduleDate)}
-                                </S.ScheduleInfoItem>
-                                {scheduleInfo.location && (
-                                    <S.ScheduleInfoItem>
-                                        <span>장소:</span> {scheduleInfo.location}
-                                    </S.ScheduleInfoItem>
-                                )}
-                            </S.ScheduleInfoBox>
-                        )}
-
-                        <S.KeywordSelector>
-                            {Object.entries(keywordMapping).map(([key, value]) => (
-                                <S.KeywordOption 
-                                    key={key}
-                                    $selected={formData.keywords.includes(key)}
-                                    $disabled={!formData.keywords.includes(key) && formData.keywords.length >= 3}
-                                    onClick={() => handleKeywordToggle(key)}
-                                >
-                                    {value}
-                                </S.KeywordOption>
-                            ))}
-                        </S.KeywordSelector>
-
-                        <S.CommentTextarea 
-                            value={formData.comment}
-                            onChange={handleCommentChange}
-                            placeholder="크루에 대한 평가를 작성해주세요. 크루 평가는 한 번만 작성 가능합니다."
-                            rows={5}
+                <S.ReviewForm>
+                    <S.ReviewFormHeader>
+                        <S.ReviewerInfo>
+                            {/* 크루 정보 표시 */}
+                            <S.ReviewerAvatar 
+                                src={crewInfo?.bannerImage || '/default-crew-profile.png'} 
+                                alt={crewInfo?.name} 
+                            />
+                            <S.ReviewerName>{crewInfo?.name || '크루명'}</S.ReviewerName>
+                        </S.ReviewerInfo>
+                        <StarRating 
+                            score={formData.rating} 
+                            setScore={(rating) => handleRatingChange(rating)} 
                         />
+                    </S.ReviewFormHeader>
+                    <S.KeywordSelector>
+                        {Object.entries(keywordMapping).map(([key, value]) => (
+                            <S.KeywordOption 
+                                key={key}
+                                $selected={formData.keywords.includes(key)}
+                                $disabled={!formData.keywords.includes(key) && formData.keywords.length >= 3}
+                                onClick={() => handleKeywordToggle(key)}
+                            >
+                                {value}
+                            </S.KeywordOption>
+                        ))}
+                    </S.KeywordSelector>
 
-                        <S.SubmitButton onClick={handleSubmit} disabled={loading}>
-                            {loading ? '처리 중...' : '작성완료'}
-                        </S.SubmitButton>
-                    </S.ReviewForm>
-                )
-            ) : (
+                    <S.CommentTextarea 
+                        value={formData.comment}
+                        onChange={handleCommentChange}
+                        placeholder="크루에 대한 평가를 작성해주세요. 크루 평가는 한 번만 작성 가능합니다."
+                        rows={5}
+                    />
+
+                    <S.SubmitButton onClick={handleSubmit} disabled={loading}>
+                        {loading ? '처리 중...' : '작성완료'}
+                    </S.SubmitButton>
+                </S.ReviewForm>
+                ) : (
                 <S.NoReviewMessage>
                     알림을 통해 평가 요청을 받은 일정만 평가할 수 있습니다.
                     <br />
                     크루 일정에 참여하고 알림을 받으면 평가를 작성할 수 있습니다.
-                    <br />
-                    크루 평가는 한 번만 작성 가능합니다.
                 </S.NoReviewMessage>
             )}
 
@@ -387,41 +326,37 @@ export default function Crew({ crewIdFromUrl, scheduleIdFromUrl, notificationDat
                 ) : (
                     reviews.map((review) => (
                         <S.ReviewItem key={review.reviewId}>
-                            <S.ReviewItemHeader>
-                                <S.ReviewerInfo>
-                                    <S.ReviewerAvatar 
-                                        src={review.profileImage || '/default-profile.png'} 
-                                        alt={review.writer} 
-                                    />
-                                    <S.ReviewerName>{review.writer}</S.ReviewerName>
-                                </S.ReviewerInfo>
-                                <S.StarRating>
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                        <S.Star key={star} $filled={star <= Math.round(review.rating || 0)}>★</S.Star>
-                                    ))}
-                                </S.StarRating>
-                            </S.ReviewItemHeader>
-                            
-                            <S.ReviewDate>
-                                {new Date(review.createdAt).toLocaleDateString()}
-                            </S.ReviewDate>
-                            
+                          <S.DeleteButtonContainer>
+                            <S.ReviewerInfo>
+                                <S.ReviewerAvatar 
+                                    src={review.profileImage || '/default-profile.png'} 
+                                    alt={review.writer} 
+                                />
+                                <S.ReviewerName>{review.writer}</S.ReviewerName>
+                            </S.ReviewerInfo>
+                            {isReviewAuthor(review) && (
+                                <S.DeleteButton onClick={() => handleDeleteReview(review.reviewId)}>
+                                    삭제
+                                </S.DeleteButton>
+                            )}
+                          </S.DeleteButtonContainer>
                             <S.KeywordList>
                                 {(review.keywords || []).map((keyword, idx) => (
                                     <S.KeywordTag key={idx}>
                                         {keywordMapping[keyword] || keyword}
                                     </S.KeywordTag>
                                 ))}
+                                <S.StarRating>
+                                    <StarRating 
+                                        score={review.rating} 
+                                        setScore={(rating) => handleRatingChange(rating)} 
+                                    />
+                                </S.StarRating>
                             </S.KeywordList>
-                            
-                            {review.scheduleInfo && (
-                                <S.ReviewSchedule>
-                                    참여 일정: {review.scheduleInfo.title || '일정'} 
-                                    ({formatDate(review.scheduleInfo.date)})
-                                </S.ReviewSchedule>
-                            )}
-                            
                             <S.ReviewContent>{review.comment}</S.ReviewContent>
+                            <S.ReviewDate>
+                                {new Date(review.createdAt).toLocaleDateString()}
+                            </S.ReviewDate>
                         </S.ReviewItem>
                     ))
                 )}
