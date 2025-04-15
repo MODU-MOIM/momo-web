@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { crewAPI } from "../../api";
 import Search from "../shared/Search";
 import * as S from "./Styles/CrewList.styles";
+import StarRating from "../Review/components/StarRating";
 
 const CrewList = () => {
     const navigate = useNavigate();
@@ -41,6 +42,7 @@ const CrewList = () => {
         }
     }, [location.search]);
 
+    // 크루 목록 조회
     const fetchCrews = async () => {
         setLoading(true);
         try {
@@ -53,6 +55,7 @@ const CrewList = () => {
             setLoading(false);
         }
     };
+    
     // 검색 처리 핸들러
     const handleSearch = async (searchParams) => {
         setLoading(true);
@@ -124,9 +127,14 @@ const CrewList = () => {
                         <S.CrewInfo>
                             <S.CrewName>{crew.name}</S.CrewName>
                             <S.CrewCategory>{crew.category}</S.CrewCategory>
-                            <S.CrewMemberCount>
-                                멤버 {crew.memberCount || '?'}명
-                            </S.CrewMemberCount>
+                            <S.Content>
+                                <S.CrewMemberCount>
+                                    멤버 {crew.memberCount || '?'}명
+                                </S.CrewMemberCount>
+                                <S.CrewRating>
+                                    <StarRating score={crew.averageRatings || 0} setScore={() => {}} />
+                                </S.CrewRating>
+                            </S.Content>
                         </S.CrewInfo>
                     </S.CrewCard>
                 ))}

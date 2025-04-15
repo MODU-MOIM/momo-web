@@ -1,5 +1,5 @@
 {
-  "proxy": "http://13.124.54.225:8080",
+  "proxy": "https://modumoim.site",
   "name": "momo-web",
   "version": "0.1.0",
   "private": true,
@@ -9,6 +9,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.9",
+    "event-source-polyfill": "^1.0.31",
     "moment": "^2.30.1",
     "quill-image-resize": "^3.0.9",
     "react": "^18.3.1",

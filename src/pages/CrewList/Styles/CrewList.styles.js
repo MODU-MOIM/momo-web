@@ -61,7 +61,11 @@ export const CrewImage = styled.img`
 `;
 
 export const CrewInfo = styled.div`
-    padding: 15px 5px;
+    padding: 0 5px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `;
 
 export const CrewName = styled.h3`
@@ -99,4 +103,16 @@ export const CrewGrid = styled.div`
     display: flex;
     flex-wrap: wrap;
     margin: -15px; // 카드 마진 상쇄
+`;
+
+export const Content = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 25px;
+`;
+
+export const CrewRating = styled.div`
+    pointer-events: none;
+    margin-top: 5px;
 `;

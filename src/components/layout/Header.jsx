@@ -46,6 +46,7 @@ const Header = () => {
                 <S.AuthButtons>
                     {isLoggedIn ? (
                         <>
+                            {/* 사용자 아이콘 */}
                             <S.UserButton onClick={togglePopup}>
                                 <AiOutlineUser size={21} />
                             </S.UserButton>
