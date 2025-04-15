@@ -279,49 +279,52 @@ export const reviewAPI = {
 }
 
 export const sseAPI = {
-    subscribe: (callbacks = {}) => {
+    subscribe: (handleReview, handleError) => {  // 👈 콜백 함수를 파라미터로 받음
         const eventSource = connectSSE();
         if (!eventSource) {
             return null;
         }
         
-        // 연결 성공 이벤트
         eventSource.onopen = () => {
             console.log('SSE 연결 성공');
-            if (callbacks.onOpen) callbacks.onOpen();
         };
         
-        // 리뷰 알림 이벤트
+        // 리뷰 이벤트 리스너
         eventSource.addEventListener('review', (event) => {
             try {
                 const data = JSON.parse(event.data);
-                if (callbacks.onReview) callbacks.onReview(data);
+                console.log('리뷰 알림 수신:', data);
+                
+                // 콜백 함수 호출 👇
+                if (handleReview) handleReview(data);
             } catch (err) {
                 console.error('리뷰 이벤트 처리 오류:', err);
             }
         });
         
-        // 하트비트 이벤트
+        // 하트비트 이벤트 리스너
         eventSource.addEventListener('heartbeat', (event) => {
-            if (callbacks.onHeartbeat) callbacks.onHeartbeat(event.data);
+            console.log('하트비트 수신:', event.data);
         });
         
-        // SSE 첫 구독 이벤트
+        // SSE 첫 구독 이벤트 리스너
         eventSource.addEventListener('sse', (event) => {
-            if (callbacks.onSSE) callbacks.onSSE(event.data);
+            console.log('SSE 첫 구독 이벤트:', event.data);
         });
         
-        // 일반 메시지 수신 (이벤트 타입이 없는 경우)
+        // 일반 메시지 수신
         eventSource.onmessage = (event) => {
-            if (callbacks.onMessage) callbacks.onMessage(event.data);
+            console.log('일반 메시지 수신:', event.data);
         };
         
         // 오류 처리
         eventSource.onerror = (error) => {
-            if (callbacks.onError) {
-                callbacks.onError(error);
+            console.error('SSE 연결 오류:', error);
+            
+            // 콜백 함수 호출 👇
+            if (handleError) {
+                handleError(error);
             } else {
-                console.error('SSE 연결 오류:', error);
                 eventSource.close();
             }
         };

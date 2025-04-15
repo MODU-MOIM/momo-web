@@ -31,18 +31,17 @@ export const AuthProvider = ({ children }) => {
     const eventSourceRef = useRef(null); // SSE 연결 참조
     const notificationTimeoutRef = useRef(null); // 알림 타이머 참조
 
+    // SSE 연결 시작
     const connectToSSE = useCallback(() => {
         // 이미 연결된 경우 중복 연결 방지
         if (eventSourceRef.current) {
             return;
         }
-    
-        // SSE 연결 생성 (콜백 함수 전달)
-        const eventSource = sseAPI.subscribe({
-            // 리뷰 이벤트 콜백
-            onReview: (data) => {
-                console.log('리뷰 알림 수신:', data);
-                
+
+        // SSE 연결 생성 - 콜백 함수 전달 👇
+        const eventSource = sseAPI.subscribe(
+            // 리뷰 처리 콜백 함수
+            (data) => {
                 // 새 알림 생성
                 const newNotification = {
                     id: Date.now(),
@@ -58,25 +57,9 @@ export const AuthProvider = ({ children }) => {
                 // 자동으로 알림 표시
                 showNotification(newNotification);
             },
-            
-            // 하트비트 이벤트 콜백
-            onHeartbeat: (data) => {
-                console.log('하트비트 수신:', data);
-            },
-            
-            // SSE 첫 구독 이벤트 콜백
-            onSSE: (data) => {
-                console.log('SSE 첫 구독 이벤트:', data);
-            },
-            
-            // 일반 메시지 콜백
-            onMessage: (data) => {
-                console.log('일반 메시지 수신:', data);
-            },
-            
-            // 오류 처리 콜백
-            onError: (error) => {
-                console.error('SSE 연결 오류:', error);
+            // 오류 처리 콜백 함수
+            (error) => {
+                console.error('SSE 연결 오류(AuthProvider):', error);
                 
                 if (eventSourceRef.current) {
                     sseAPI.closeConnection(eventSourceRef.current);
@@ -86,14 +69,15 @@ export const AuthProvider = ({ children }) => {
                 // 5초 후 재연결 시도
                 setTimeout(connectToSSE, 5000);
             }
-        });
+        );
         
         if (!eventSource) {
             console.error('SSE 연결 실패: 토큰이 없거나 연결 오류');
             return;
         }
-    
+
         eventSourceRef.current = eventSource;
+        
     }, []);
 
     // 알림을 화면에 표시하는 함수
