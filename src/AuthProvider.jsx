@@ -26,32 +26,21 @@ export const AuthProvider = ({ children }) => {
     const [likeStates, setLikeStates] = useState({});
     
     // 알림 관련 상태
-    const [notifications, setNotifications] = useState([]);
+    const [notifications, setNotifications] = useState([]); // 알림 목록
     const [activeNotification, setActiveNotification] = useState(null); // 현재 표시 중인 알림
-    const eventSourceRef = useRef(null);
-    const notificationTimeoutRef = useRef(null);
+    const eventSourceRef = useRef(null); // SSE 연결 참조
+    const notificationTimeoutRef = useRef(null); // 알림 타이머 참조
 
-    // SSE 연결 시작
     const connectToSSE = useCallback(() => {
         // 이미 연결된 경우 중복 연결 방지
         if (eventSourceRef.current) {
             return;
         }
-
-        // SSE 연결 생성
-        const eventSource = sseAPI.subscribe();
-        
-        if (!eventSource) {
-            console.error('SSE 연결 실패: 토큰이 없거나 연결 오류');
-            return;
-        }
-
-        eventSourceRef.current = eventSource;
-
-        // 이벤트 리스너 등록 - 리뷰 알림
-        eventSource.addEventListener('review', (event) => {
-            try {
-                const data = JSON.parse(event.data);
+    
+        // SSE 연결 생성 (콜백 함수 전달)
+        const eventSource = sseAPI.subscribe({
+            // 리뷰 이벤트 콜백
+            onReview: (data) => {
                 console.log('리뷰 알림 수신:', data);
                 
                 // 새 알림 생성
@@ -68,28 +57,43 @@ export const AuthProvider = ({ children }) => {
                 
                 // 자동으로 알림 표시
                 showNotification(newNotification);
-            } catch (err) {
-                console.error('리뷰 이벤트 처리 오류:', err);
+            },
+            
+            // 하트비트 이벤트 콜백
+            onHeartbeat: (data) => {
+                console.log('하트비트 수신:', data);
+            },
+            
+            // SSE 첫 구독 이벤트 콜백
+            onSSE: (data) => {
+                console.log('SSE 첫 구독 이벤트:', data);
+            },
+            
+            // 일반 메시지 콜백
+            onMessage: (data) => {
+                console.log('일반 메시지 수신:', data);
+            },
+            
+            // 오류 처리 콜백
+            onError: (error) => {
+                console.error('SSE 연결 오류:', error);
+                
+                if (eventSourceRef.current) {
+                    sseAPI.closeConnection(eventSourceRef.current);
+                    eventSourceRef.current = null;
+                }
+                
+                // 5초 후 재연결 시도
+                setTimeout(connectToSSE, 5000);
             }
         });
-
-        // 하트비트 이벤트 리스너 (서버 연결 확인용)
-        eventSource.addEventListener('heartbeat', (event) => {
-            console.log('하트비트 수신:', event.data);
-        });
-
-        // 오류 발생 시 재연결 시도
-        eventSource.onerror = (error) => {
-            console.error('SSE 연결 오류:', error);
-            
-            if (eventSourceRef.current) {
-                sseAPI.closeConnection(eventSourceRef.current);
-                eventSourceRef.current = null;
-            }
-            
-            // 5초 후 재연결 시도
-            setTimeout(connectToSSE, 5000);
-        };
+        
+        if (!eventSource) {
+            console.error('SSE 연결 실패: 토큰이 없거나 연결 오류');
+            return;
+        }
+    
+        eventSourceRef.current = eventSource;
     }, []);
 
     // 알림을 화면에 표시하는 함수

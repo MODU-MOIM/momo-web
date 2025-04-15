@@ -279,35 +279,53 @@ export const reviewAPI = {
 }
 
 export const sseAPI = {
-    subscribe: () => {
+    subscribe: (callbacks = {}) => {
         const eventSource = connectSSE();
         if (!eventSource) {
             return null;
         }
+        
+        // 연결 성공 이벤트
         eventSource.onopen = () => {
             console.log('SSE 연결 성공');
+            if (callbacks.onOpen) callbacks.onOpen();
         };
+        
+        // 리뷰 알림 이벤트
         eventSource.addEventListener('review', (event) => {
             try {
                 const data = JSON.parse(event.data);
-                console.log('리뷰 알림 수신:', data);
+                if (callbacks.onReview) callbacks.onReview(data);
             } catch (err) {
                 console.error('리뷰 이벤트 처리 오류:', err);
             }
         });
+        
+        // 하트비트 이벤트
         eventSource.addEventListener('heartbeat', (event) => {
-            console.log('하트비트 수신:', event.data);
+            if (callbacks.onHeartbeat) callbacks.onHeartbeat(event.data);
         });
+        
+        // SSE 첫 구독 이벤트
         eventSource.addEventListener('sse', (event) => {
-            console.log('SSE 첫 구독 이벤트:', event.data);
+            if (callbacks.onSSE) callbacks.onSSE(event.data);
         });
+        
+        // 일반 메시지 수신 (이벤트 타입이 없는 경우)
         eventSource.onmessage = (event) => {
-            console.log('일반 메시지 수신:', event.data);
+            if (callbacks.onMessage) callbacks.onMessage(event.data);
         };
+        
+        // 오류 처리
         eventSource.onerror = (error) => {
-            console.error('SSE 연결 오류:', error);
-            eventSource.close();
+            if (callbacks.onError) {
+                callbacks.onError(error);
+            } else {
+                console.error('SSE 연결 오류:', error);
+                eventSource.close();
+            }
         };
+        
         return eventSource;
     },
 
