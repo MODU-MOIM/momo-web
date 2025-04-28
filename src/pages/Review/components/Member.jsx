@@ -33,10 +33,22 @@ export default function Member() {
                 comment: reviews[memberId],
                 rating: ratings[memberId],
             }
-            const resoponse = await crewMembersAPI.postMemberReview(crewId, memberId, review);
-            console.log(resoponse);
+            console.log(memberId);
+            console.log(members);
+            const response = await crewMembersAPI.postMemberReview(crewId, memberId, review);
+            console.log(response);
         } catch (error) {
             console.error("멤버 리뷰 실패", error);
+        }
+        getMemReviewExist(memberId);
+    }
+
+    const getMemReviewExist = async(memberId) => {
+        try {
+            const res = await crewMembersAPI.getMemberReview(crewId, memberId);
+            console.log(res);
+        } catch (error) {
+            console.log("조회 실패", error);
         }
     }
 
