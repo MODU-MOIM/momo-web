@@ -28,17 +28,28 @@ export default function Member() {
     }
 
     const SubmitReview = async(memberId) => {
+        const review = {
+            comment: reviews[memberId],
+            rating: ratings[memberId],
+        }
         try{
-            const review = {
-                comment: reviews[memberId],
-                rating: ratings[memberId],
-            }
             console.log(memberId);
             console.log(members);
             const response = await crewMembersAPI.postMemberReview(crewId, memberId, review);
             console.log(response);
         } catch (error) {
-            console.error("멤버 리뷰 실패", error);
+            if(error.status === 409){
+                // 이미 리뷰 작성한 멤버 재평가 할 때
+                try {
+                    const putReviewRes = await crewMembersAPI.putMemReview(crewId, memberId, review);
+                    console.log(putReviewRes);
+                } catch (error) {
+                    console.error("멤버 재평가 실패", error);
+                }
+            }
+            else{
+                console.error("멤버 리뷰 실패", error);
+            }
         }
         getMemReviewExist(memberId);
     }
