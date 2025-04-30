@@ -7,11 +7,11 @@ import StarRating from "./StarRating";
 export default function Member() {
     const { crewId } = useParams();
     const [members, setMembers] = useState();
-    const [reviews, setReveiws] = useState({});
+    const [reviews, setReviews] = useState({});
     const [ratings, setRatings] = useState({});
 
     const handleTextReview = (e, memberId) => {
-        setReveiws(prev => ({
+        setReviews(prev => ({
             ...prev,
             // memberId를 키값으로 설정해서 각 멤버들의 리뷰를 따로 저장
             [memberId]: e.target.value
@@ -27,37 +27,45 @@ export default function Member() {
         }
     }
 
-    const SubmitReview = async(memberId) => {
+    const submitReview = async(memberId) => {
         const review = {
-            comment: reviews[memberId],
-            rating: ratings[memberId],
+            comment: reviews[memberId] || '',
+            rating: ratings[memberId] || 0,
         }
         try{
             console.log(memberId);
-            console.log(members);
+            console.log(review);
             const response = await crewMembersAPI.postMemberReview(crewId, memberId, review);
             console.log(response);
         } catch (error) {
             if(error.status === 409){
-                // 이미 리뷰 작성한 멤버 재평가 할 때
-                try {
-                    const putReviewRes = await crewMembersAPI.putMemReview(crewId, memberId, review);
-                    console.log(putReviewRes);
-                } catch (error) {
-                    console.error("멤버 재평가 실패", error);
-                }
+                getMemReviewExist(memberId, review);
             }
             else{
                 console.error("멤버 리뷰 실패", error);
             }
         }
-        getMemReviewExist(memberId);
+    }
+    const reMemReview = async(memberId, reviewId, review) => {
+        // 이미 리뷰 작성한 멤버 재평가 할 때
+        try {
+            const putReviewRes = await crewMembersAPI.putMemReview(crewId, memberId, reviewId, review);
+            console.log(putReviewRes);
+        } catch (error) {
+            console.error("멤버 재평가 실패", error);
+        }
     }
 
-    const getMemReviewExist = async(memberId) => {
+    const getMemReviewExist = async(memberId, review) => {
         try {
-            const res = await crewMembersAPI.getMemberReview(crewId, memberId);
-            console.log(res);
+            const isWrittenRes = await crewMembersAPI.getMemberReview(crewId, memberId);
+            const memReviewRes = await crewMembersAPI.getCrewMemReview(crewId, memberId);
+            console.log(isWrittenRes.data.data.written);
+            console.log(memReviewRes.data.data[0].reviewId);
+            const reviewId = memReviewRes.data.data[0].reviewId;
+            if(isWrittenRes.data.data.written){
+                reMemReview(memberId, reviewId, review);
+            }
         } catch (error) {
             console.log("조회 실패", error);
         }
@@ -93,7 +101,7 @@ export default function Member() {
                                 onChange={(e) => handleTextReview(e, mem.memberId)}
                             />
                             <S.SubmitButton
-                                onClick={() => SubmitReview(mem.memberId)}
+                                onClick={() => submitReview(mem.memberId)}
                             >
                                 저장
                             </S.SubmitButton>
