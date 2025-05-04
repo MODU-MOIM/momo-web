@@ -28,7 +28,7 @@ export default function FloatingMenu() {
     // 접근 가능한 메뉴 (멤버가 아닌 경우 홈과 크루활동만 가능)
     const accessibleMenus = isMember 
         ? Object.values(menu) 
-        : ["crewHome", "crewActivity"];
+        : ["crewHome", "crewActivity", "review"];
 
     const [selectedMenu, setSelectedMenu] = useState(() => {
         const currentPath = location.pathname.split('/').pop();

@@ -183,6 +183,7 @@ export const crewMembersAPI = {
     delMemberReview: (crewId, memberId, reviewId) => api.delete(`/crews/${crewId}/members/${memberId}/reviews/${reviewId}`),
     getMemberReview: (crewId, memberId) => api.get(`/crews/${crewId}/members/${memberId}/reviews/exist`),
     getCrewMemReview: (crewId, memberId) => api.get(`/crews/${crewId}/members/${memberId}/reviews`),
+    getMyPostReview: (crewId, memberId) => api.get(`/crews/${crewId}/members/${memberId}/reviews/me`),
 }
 
 // 일정 api

@@ -4,9 +4,14 @@ import * as S from "../Styles/Review.styles";
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 
+const testData = [
+    {memberId: 1, profileImage: "", nickname: "test"},
+    {memberId: 2, profileImage: "", nickname: "test"},
+];
+
 export default function Member() {
     const { crewId } = useParams();
-    const [members, setMembers] = useState();
+    const [members, setMembers] = useState(testData);
     const [reviews, setReviews] = useState({});
     const [ratings, setRatings] = useState({});
 
@@ -21,7 +26,7 @@ export default function Member() {
     const fetchMembers = async() => {
         try {
             const response = await crewMembersAPI.getMemberList(crewId);
-            setMembers(response.data.data);
+            // setMembers(response.data.data);
         } catch (error) {
             console.error("크루 멤버 읽기 실패", error);
         }
@@ -39,24 +44,22 @@ export default function Member() {
             console.log(response);
         } catch (error) {
             if(error.status === 409){
-                getMemReviewExist(memberId, review);
+                // 이미 리뷰 작성한 멤버 재평가 할 때
+                try {
+                    const rvId = getMemReviewExist(memberId);
+                    const putReviewRes = await crewMembersAPI.putMemReview(crewId, memberId, rvId, review);
+                    console.log(putReviewRes);
+                } catch (error) {
+                    console.error("멤버 리뷰 수정 실패", error);
+                }
             }
             else{
                 console.error("멤버 리뷰 실패", error);
             }
         }
     }
-    const reMemReview = async(memberId, reviewId, review) => {
-        // 이미 리뷰 작성한 멤버 재평가 할 때
-        try {
-            const putReviewRes = await crewMembersAPI.putMemReview(crewId, memberId, reviewId, review);
-            console.log(putReviewRes);
-        } catch (error) {
-            console.error("멤버 재평가 실패", error);
-        }
-    }
 
-    const getMemReviewExist = async(memberId, review) => {
+    const getMemReviewExist = async(memberId) => {
         try {
             const isWrittenRes = await crewMembersAPI.getMemberReview(crewId, memberId);
             const memReviewRes = await crewMembersAPI.getCrewMemReview(crewId, memberId);
@@ -64,10 +67,19 @@ export default function Member() {
             console.log(memReviewRes.data.data[0].reviewId);
             const reviewId = memReviewRes.data.data[0].reviewId;
             if(isWrittenRes.data.data.written){
-                reMemReview(memberId, reviewId, review);
+                return reviewId;
             }
         } catch (error) {
             console.log("조회 실패", error);
+        }
+    }
+
+    const getMyReview = async(memberId) => {
+        try {
+            const res = await crewMembersAPI.getMyPostReview(crewId, memberId);
+            console.log(res);
+        } catch (error) {
+            console.error("작성한 리뷰 보기 실패", error);
         }
     }
 
@@ -78,6 +90,7 @@ export default function Member() {
     return (
         <S.Wrapper>
             {members?.map(mem => (
+                <S.Test>
                 <S.MemReviewItem key={mem.memberId}>
                     <S.MemProfile src={mem.profileImage}/>
                     <S.ContainerWrapper>
@@ -108,6 +121,8 @@ export default function Member() {
                         </S.MRBottomContainer>
                     </S.ContainerWrapper>
                 </S.MemReviewItem>
+                <S.ShowMyReview onClick={()=>getMyReview(mem.memberId)} >내가 작성한 리뷰 보기</S.ShowMyReview>
+                </S.Test>
             ))}
         </S.Wrapper>
     );

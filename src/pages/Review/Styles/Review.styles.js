@@ -44,6 +44,31 @@ export const Wrapper = styled.div`
     margin: 50px 0px;
 `;
 
+export const Test = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const ShowMyReview = styled.div`
+  margin-bottom: 16px;
+  padding: 12px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.6;
+  border: 1px solid #ddd;
+  width: 11%;
+  cursor: pointer;
+
+  &:hover{
+    color: #ffffff;
+    background-color:rgb(209, 209, 209);
+  }
+`;
+
 export const MemReviewItem = styled.div`
     width: 650px;
     height: 100px;
@@ -111,6 +136,7 @@ export const SubmitButton = styled.div`
     background-color: #352EAE;
     border-radius: 15px;
     font-size: 10px;
+    cursor: pointer;
 
     display: flex;
     justify-content: center;
