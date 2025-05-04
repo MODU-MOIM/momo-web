@@ -6,7 +6,7 @@ import StarRating from "./StarRating";
 
 export default function Member() {
     const { crewId } = useParams();
-    const [members, setMembers] = useState(testData);
+    const [members, setMembers] = useState();
     const [reviews, setReviews] = useState({});
     const [ratings, setRatings] = useState({});
 
