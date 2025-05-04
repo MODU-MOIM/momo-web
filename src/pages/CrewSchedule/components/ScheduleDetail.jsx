@@ -43,11 +43,11 @@ const ItemText = styled.div`
     margin-left: 10px;
 `;
 
-const SubButtonContainer = styled.div`
+export const SubButtonContainer = styled.div`
     display: flex;
     justify-content: flex-end;
 `;
-const SubButton = styled.button`
+export const SubButton = styled.button`
     width: 25px;
     height: 25px;
     background-color: white;
@@ -59,12 +59,12 @@ const SubButton = styled.button`
         background-color: gray;
     }
 `;
-const StyledRiEdit2Fill = styled(RiEdit2Fill)`
+export const StyledRiEdit2Fill = styled(RiEdit2Fill)`
     width: 15px;
     height: 20px;
     color: #c8c8c8;
 `;
-const StyledFaTrashAlt = styled(FaTrashAlt)`
+export const StyledFaTrashAlt = styled(FaTrashAlt)`
     width: 12px;
     height: 12px;
     color: red;

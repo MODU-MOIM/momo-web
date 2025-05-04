@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { crewMembersAPI } from "../../../api";
 import * as S from "../Styles/Review.styles";
+import * as SCH from "../../CrewSchedule/components/ScheduleDetail"
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 
@@ -9,6 +10,8 @@ export default function Member() {
     const [members, setMembers] = useState();
     const [reviews, setReviews] = useState({});
     const [ratings, setRatings] = useState({});
+    const [myRvList, setMyRvList] = useState([]);
+    const [selectMem, setSelectMem] = useState();
 
     const handleTextReview = (e, memberId) => {
         setReviews(prev => ({
@@ -72,7 +75,9 @@ export default function Member() {
     const getMyReview = async(memberId) => {
         try {
             const res = await crewMembersAPI.getMyPostReview(crewId, memberId);
-            console.log(res);
+            console.log(res.data.data);
+            setMyRvList(res.data.data);
+            setSelectMem(memberId);
         } catch (error) {
             console.error("작성한 리뷰 보기 실패", error);
         }
@@ -85,38 +90,60 @@ export default function Member() {
     return (
         <S.Wrapper>
             {members?.map(mem => (
-                <S.OneWrapper>
-                <S.MemReviewItem key={mem.memberId}>
-                    <S.MemProfile src={mem.profileImage}/>
-                    <S.ContainerWrapper>
-                        {/* 위쪽 컨테이너 */}
-                        <S.MRTopContainer>
-                            <S.MemName>{mem.nickname}</S.MemName>
-                            {/* rating */}
-                            <StarRating
-                                score={ratings[mem.memberId] || 0}
-                                setScore={(score) => setRatings(prev => ({
-                                    ...prev, [mem.memberId]: score}))
-                                }
-                            />
-                        </S.MRTopContainer>
-                        {/* 아래쪽 컨테이너 */}
-                        <S.MRBottomContainer>
-                            <S.SingleLineReview
-                                placeholder="한 줄 평가"
-                                // 속성(키) 이름이 변수이므로 대괄호 표기법 사용
-                                value={reviews[mem.memberId]}
-                                onChange={(e) => handleTextReview(e, mem.memberId)}
-                            />
-                            <S.SubmitButton
-                                onClick={() => submitReview(mem.memberId)}
-                            >
-                                저장
-                            </S.SubmitButton>
-                        </S.MRBottomContainer>
-                    </S.ContainerWrapper>
-                </S.MemReviewItem>
-                <S.ShowMyReview onClick={()=>getMyReview(mem.memberId)} >내가 작성한 리뷰 보기</S.ShowMyReview>
+                <S.OneWrapper key={mem.memberId}>
+                    <S.MainContainer>
+                        <S.MemReviewItem key={mem.memberId}>
+                            <S.MemProfile src={mem.profileImage}/>
+                            <S.ContainerWrapper>
+                                {/* 위쪽 컨테이너 */}
+                                <S.MRTopContainer>
+                                    <S.MemName>{mem.nickname}</S.MemName>
+                                    {/* rating */}
+                                    <StarRating
+                                        score={ratings[mem.memberId] || 0}
+                                        setScore={(score) => setRatings(prev => ({
+                                            ...prev, [mem.memberId]: score}))
+                                        }
+                                    />
+                                </S.MRTopContainer>
+                                {/* 아래쪽 컨테이너 */}
+                                <S.MRBottomContainer>
+                                    <S.SingleLineReview
+                                        placeholder="한 줄 평가"
+                                        // 속성(키) 이름이 변수이므로 대괄호 표기법 사용
+                                        value={reviews[mem.memberId]}
+                                        onChange={(e) => handleTextReview(e, mem.memberId)}
+                                    />
+                                    <S.SubmitButton
+                                        onClick={() => submitReview(mem.memberId)}
+                                    >
+                                        저장
+                                    </S.SubmitButton>
+                                </S.MRBottomContainer>
+                            </S.ContainerWrapper>
+                        </S.MemReviewItem>
+                        <S.ShowMyReview onClick={()=>getMyReview(mem.memberId)} >내가 작성한 리뷰 보기</S.ShowMyReview>
+                    </S.MainContainer>
+                    {/* 작성한 리뷰 리스트 */}
+                    <S.SubContainer>
+                        {(selectMem === mem.memberId) && myRvList?.map(review => (
+                            <S.MyReviewContainer>
+                                <S.MyReviewContent>
+                                    <S.Comment>{review.comment}</S.Comment>
+                                    <StarRating score={review.rating}/>
+                                </S.MyReviewContent>
+                                {/* 수정 및 삭제 버튼 */}
+                                <SCH.SubButtonContainer>
+                                    <SCH.SubButton>
+                                        <SCH.StyledRiEdit2Fill/>
+                                    </SCH.SubButton>
+                                    <SCH.SubButton>
+                                        <SCH.StyledFaTrashAlt/>
+                                    </SCH.SubButton>
+                                </SCH.SubButtonContainer>
+                            </S.MyReviewContainer>
+                        ))}
+                    </S.SubContainer>
                 </S.OneWrapper>
             ))}
         </S.Wrapper>

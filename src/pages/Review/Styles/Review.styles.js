@@ -44,10 +44,34 @@ export const Wrapper = styled.div`
     margin: 50px 0px;
 `;
 
-export const OneWrapper = styled.div`
+export const OneWrapper = styled.div``;
+
+export const MainContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+export const SubContainer = styled.div`
+  margin: 0 0 10px 20px;
+`;
+
+export const MyReviewContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid gray;
+  padding: 10px 0px;
+`;
+
+export const MyReviewContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+`;
+
+export const Comment = styled.div`
+  margin: 0 20px;
+  width: 60%;
 `;
 
 export const ShowMyReview = styled.div`
