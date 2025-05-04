@@ -4,11 +4,6 @@ import * as S from "../Styles/Review.styles";
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 
-const testData = [
-    {memberId: 1, profileImage: "", nickname: "test"},
-    {memberId: 2, profileImage: "", nickname: "test"},
-];
-
 export default function Member() {
     const { crewId } = useParams();
     const [members, setMembers] = useState(testData);
@@ -26,7 +21,7 @@ export default function Member() {
     const fetchMembers = async() => {
         try {
             const response = await crewMembersAPI.getMemberList(crewId);
-            // setMembers(response.data.data);
+            setMembers(response.data.data);
         } catch (error) {
             console.error("크루 멤버 읽기 실패", error);
         }
@@ -90,7 +85,7 @@ export default function Member() {
     return (
         <S.Wrapper>
             {members?.map(mem => (
-                <S.Test>
+                <S.OneWrapper>
                 <S.MemReviewItem key={mem.memberId}>
                     <S.MemProfile src={mem.profileImage}/>
                     <S.ContainerWrapper>
@@ -122,7 +117,7 @@ export default function Member() {
                     </S.ContainerWrapper>
                 </S.MemReviewItem>
                 <S.ShowMyReview onClick={()=>getMyReview(mem.memberId)} >내가 작성한 리뷰 보기</S.ShowMyReview>
-                </S.Test>
+                </S.OneWrapper>
             ))}
         </S.Wrapper>
     );

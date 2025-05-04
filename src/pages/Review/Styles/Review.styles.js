@@ -44,7 +44,7 @@ export const Wrapper = styled.div`
     margin: 50px 0px;
 `;
 
-export const Test = styled.div`
+export const OneWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
