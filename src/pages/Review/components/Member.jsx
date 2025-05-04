@@ -40,6 +40,7 @@ export default function Member() {
             console.log(review);
             const response = await crewMembersAPI.postMemberReview(crewId, memberId, review);
             console.log(response);
+            getMyReview(memberId);
         } catch (error) {
             if(error.status === 409){
                 // 이미 리뷰 작성한 멤버 재평가 할 때
@@ -80,6 +81,16 @@ export default function Member() {
             setSelectMem(memberId);
         } catch (error) {
             console.error("작성한 리뷰 보기 실패", error);
+        }
+    }
+
+    const handleDelete = async(memberId, reviewId) => {
+        try {
+            const res = await crewMembersAPI.delMemberReview(crewId, memberId, reviewId);
+            console.log(res);
+            getMyReview(memberId);
+        } catch (error) {
+            console.error("리뷰 삭제 실패", error);
         }
     }
 
@@ -138,7 +149,7 @@ export default function Member() {
                                         <SCH.StyledRiEdit2Fill/>
                                     </SCH.SubButton>
                                     <SCH.SubButton>
-                                        <SCH.StyledFaTrashAlt/>
+                                        <SCH.StyledFaTrashAlt onClick={() => handleDelete(selectMem, review.reviewId)}/>
                                     </SCH.SubButton>
                                 </SCH.SubButtonContainer>
                             </S.MyReviewContainer>
