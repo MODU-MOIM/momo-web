@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { FaRegStar, FaStar } from 'react-icons/fa';
+import { BsCheckCircleFill } from "react-icons/bs";
 
 export const ReviewContainer = styled.div`
   max-width: 768px;
@@ -166,6 +167,11 @@ export const SubmitButton = styled.div`
     justify-content: center;
     align-items: center;
 `;
+
+export const StyledCheck = styled(BsCheckCircleFill)`
+  color: darkseagreen;
+  margin-top: 3px;
+`
 
 // StarRating.jsx
 export const StarWrapper = styled.div`
