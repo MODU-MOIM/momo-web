@@ -9,7 +9,9 @@ export default function Member() {
     const { crewId } = useParams();
     const [members, setMembers] = useState();
     const [reviews, setReviews] = useState({});
+    const [editReviews, setEditReviews] = useState({});
     const [ratings, setRatings] = useState({});
+    const [editRatings, setEditRatings] = useState({});
     const [myRvList, setMyRvList] = useState([]);
     const [selectMem, setSelectMem] = useState();
 
@@ -36,8 +38,8 @@ export default function Member() {
             rating: ratings[memberId] || 0,
         }
         try{
-            console.log(memberId);
-            console.log(review);
+            // console.log(memberId);
+            // console.log(review);
             const response = await crewMembersAPI.postMemberReview(crewId, memberId, review);
             console.log(response);
             getMyReview(memberId);
@@ -81,6 +83,21 @@ export default function Member() {
             setSelectMem(memberId);
         } catch (error) {
             console.error("작성한 리뷰 보기 실패", error);
+        }
+    }
+
+    const handleEdit = async(memberId, reviewId) => {
+        try {
+            const editReveiw = {
+                comment: editReviews[reviewId],
+                rating: editRatings[reviewId]
+            }
+            console.log(editReveiw);
+            const res = await crewMembersAPI.putMemReview(crewId, memberId, reviewId, editReveiw);
+            console.log(res);
+            getMyReview(memberId);
+        } catch (error) {
+            console.error("리뷰 수정 실패", error);
         }
     }
 
@@ -140,16 +157,30 @@ export default function Member() {
                         {(selectMem === mem.memberId) && myRvList?.map(review => (
                             <S.MyReviewContainer>
                                 <S.MyReviewContent>
-                                    <S.Comment>{review.comment}</S.Comment>
-                                    <StarRating score={review.rating}/>
+                                    <S.Comment
+                                        contentEditable={true}
+                                        onChange={(comment) => setEditReviews(prev => ({
+                                            ...prev, [review.reviewId]: comment
+                                        }))}
+                                    >{review.comment}</S.Comment>
+                                    <StarRating
+                                        score={editRatings[review.reviewId] || review.rating }
+                                        setScore={(score) => setEditRatings(prev => ({
+                                            ...prev, [review.reviewId]: score
+                                        }))}
+                                    />
                                 </S.MyReviewContent>
                                 {/* 수정 및 삭제 버튼 */}
                                 <SCH.SubButtonContainer>
                                     <SCH.SubButton>
-                                        <SCH.StyledRiEdit2Fill/>
+                                        <SCH.StyledRiEdit2Fill
+                                            onClick={() => handleEdit(selectMem, review.reviewId)}
+                                        />
                                     </SCH.SubButton>
                                     <SCH.SubButton>
-                                        <SCH.StyledFaTrashAlt onClick={() => handleDelete(selectMem, review.reviewId)}/>
+                                        <SCH.StyledFaTrashAlt
+                                            onClick={() => handleDelete(selectMem, review.reviewId)}
+                                        />
                                     </SCH.SubButton>
                                 </SCH.SubButtonContainer>
                             </S.MyReviewContainer>
