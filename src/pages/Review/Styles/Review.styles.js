@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { FaRegStar, FaStar } from 'react-icons/fa';
+import { BsCheckCircleFill } from "react-icons/bs";
 
 export const ReviewContainer = styled.div`
   max-width: 768px;
@@ -42,6 +43,55 @@ export const ReviewContent = styled.div`
 // Member.jsx
 export const Wrapper = styled.div`
     margin: 50px 0px;
+`;
+
+export const OneWrapper = styled.div``;
+
+export const MainContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const SubContainer = styled.div`
+  margin: 0 0 10px 20px;
+`;
+
+export const MyReviewContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid gray;
+  padding: 10px 0px;
+`;
+
+export const MyReviewContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+`;
+
+export const Comment = styled.div`
+  margin: 0 20px;
+  width: 60%;
+`;
+
+export const ShowMyReview = styled.div`
+  margin-bottom: 16px;
+  padding: 12px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.6;
+  border: 1px solid #ddd;
+  width: 11%;
+  cursor: pointer;
+
+  &:hover{
+    color: #ffffff;
+    background-color:rgb(209, 209, 209);
+  }
 `;
 
 export const MemReviewItem = styled.div`
@@ -111,11 +161,17 @@ export const SubmitButton = styled.div`
     background-color: #352EAE;
     border-radius: 15px;
     font-size: 10px;
+    cursor: pointer;
 
     display: flex;
     justify-content: center;
     align-items: center;
 `;
+
+export const StyledCheck = styled(BsCheckCircleFill)`
+  color: darkseagreen;
+  margin-top: 3px;
+`
 
 // StarRating.jsx
 export const StarWrapper = styled.div`

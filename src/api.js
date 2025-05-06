@@ -179,6 +179,11 @@ export const crewMembersAPI = {
 
     // 멤버 평가 api
     postMemberReview: (crewId, memberId, review) => api.post(`/crews/${crewId}/members/${memberId}/reviews`, review),
+    putMemReview: (crewId, memberId, reviewId, review) => api.put(`/crews/${crewId}/members/${memberId}/reviews/${reviewId}`, review),
+    delMemberReview: (crewId, memberId, reviewId) => api.delete(`/crews/${crewId}/members/${memberId}/reviews/${reviewId}`),
+    getMemberReview: (crewId, memberId) => api.get(`/crews/${crewId}/members/${memberId}/reviews/exist`),
+    getCrewMemReview: (crewId, memberId) => api.get(`/crews/${crewId}/members/${memberId}/reviews`),
+    getMyPostReview: (crewId, memberId) => api.get(`/crews/${crewId}/members/${memberId}/reviews/me`),
 }
 
 // 일정 api
