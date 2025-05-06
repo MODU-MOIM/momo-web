@@ -127,7 +127,11 @@ export default function Member() {
                                 </S.MRBottomContainer>
                             </S.ContainerWrapper>
                         </S.MemReviewItem>
-                        <S.ShowMyReview onClick={()=>getMyReview(mem.memberId)} >내가 작성한 리뷰 보기</S.ShowMyReview>
+                        <S.ShowMyReview
+                            onClick={() => getMyReview(mem.memberId)}
+                        >
+                            내가 작성한 리뷰 보기
+                        </S.ShowMyReview>
                     </S.MainContainer>
                     {/* 작성한 리뷰 리스트 */}
                     <S.SubContainer>
@@ -145,7 +149,8 @@ export default function Member() {
                                     <S.MyReviewContent>
                                         <S.SingleLineReview
                                             placeholder="한 줄 평가"
-                                            value={editReviews[review.reviewId] || review.comment}
+                                            value={editReviews[review.reviewId] == null ?
+                                                review.comment : editReviews[review.reviewId]}
                                             onChange={(comment) => setEditReviews(prev => ({
                                                 ...prev, [review.reviewId]: comment.target.value
                                             }))}
